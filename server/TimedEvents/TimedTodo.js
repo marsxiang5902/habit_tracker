@@ -1,6 +1,6 @@
 const TimedEvent = require('./TimedEvent')
-exports.TimedTodo = class TimedTodo extends TimedEvent.TimedEvent {
-    constructor(user, name) {
+module.exports = class TimedTodo extends TimedEvent {
+    constructor(id, user, name) {
         super(id, user, name)
         this.type
     }

@@ -1,6 +1,6 @@
 const TimedEventSubclasses = require("../TimedEvents/TimedEventSubclasses")
 
-exports.User = class {
+module.exports = class user {
     constructor(name) {
         this.name = name
         this.timedEvents = {}
