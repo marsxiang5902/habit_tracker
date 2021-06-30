@@ -1,8 +1,7 @@
 const { MongoClient } = require("mongodb");
+const { username, password, cluster, db_name } = require('./config.json');
 
-const dbName = 'habit_tracker'
-
-const url = `mongodb+srv://marsxiang5902:7ezY4C4hU5kWL8@cluster0.2kphp.mongodb.net/${dbName}?retryWrites=true&w=majority`
+const url = `mongodb+srv://${username}:${password}@${cluster}.2kphp.mongodb.net/${dbName}?retryWrites=true&w=majority`
 const client = new MongoClient(url);
 
 let users_col = null, events_col = null

@@ -2,7 +2,7 @@
 
 we need a name
 
-# todo
+# backend:
 
 users indexed by names
 
