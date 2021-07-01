@@ -3,7 +3,9 @@ const TimedHabit = require("./TimedHabit")
 const TimedTodo = require("./TimedTodo")
 
 module.exports = {
-    super: TimedEvent,
-    habit: TimedHabit,
-    todo: TimedTodo
+    superclass: TimedEvent,
+    subclasses: {
+        habit: TimedHabit,
+        todo: TimedTodo
+    }
 }

@@ -10,12 +10,14 @@ events indexed by ids
 
 functions to write:
 
-* create a user
+* create a user -> create event lists
 
-* get info about user (ex. get their event ids)
+* get info about user (not implemented yet but maybe their pfp, email, and such)
 
-* create an event (using a TimedEvent)
+* get events of user -> get event lists -> get events, object of list of objects
+
+* create an event (using a TimedEvent) -> update event list
 
 * get info about an event
 
-* modify a event (using a TimedEvent)
+* modify an event (using a TimedEvent)

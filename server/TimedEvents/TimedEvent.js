@@ -1,6 +1,5 @@
 module.exports = class TimedEvent {
-    constructor(id, user, name) {
-        this.id = id
+    constructor(user, name) {
         this.user = user
         this.name = name
     }

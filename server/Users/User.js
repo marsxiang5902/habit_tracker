@@ -1,13 +1,8 @@
-const TimedEventSubclasses = require("../TimedEvents/TimedEventSubclasses")
+const { subclasses } = require("../TimedEvents/TimedEventClasses")
+const eventList = require("../EventLists/eventList")
 
 module.exports = class user {
-    constructor(name) {
-        this.name = name
-        this.timedEvents = {}
-        for (let property in TimedEventSubclasses) {
-            if (property != 'super') {
-                this.timedEvents[property] = []
-            }
-        }
+    constructor(user) {
+        this.user = user
     }
 }
