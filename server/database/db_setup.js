@@ -20,7 +20,7 @@ module.exports = {
                 console.log("Connected to db")
             })
         } else {
-            assert(users_col !== null && events_col !== null)
+            assert(users_col !== null && events_col !== null && event_lists_col !== null)
         }
     },
     close_db: function close_db() {
@@ -29,7 +29,8 @@ module.exports = {
                 if (err) throw err;
                 users_col = null
                 events_col = null
-                console.log("db closed")
+                event_lists_col = null
+                console.log("Closed db")
             })
         }
     },
