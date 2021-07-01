@@ -1,25 +1,36 @@
+"use strict";
+const { assert } = require("console");
 const { MongoClient } = require("mongodb");
-const { username, password, cluster, db_name } = require('./config.json');
+const { username, password, cluster, db_name } = require('./dbconfig.json');
 
-const url = `mongodb+srv://${username}:${password}@${cluster}.2kphp.mongodb.net/${dbName}?retryWrites=true&w=majority`
-const client = new MongoClient(url);
+const uri = `mongodb+srv://${username}:${password}@${cluster}.2kphp.mongodb.net/${db_name}?retryWrites=true&w=majority`
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-let users_col = null, events_col = null
+var users_col = null, events_col = null;
 
 module.exports = {
-    do_db_setup: function do__db_setup() {
-        client.connect().then(() => {
-            console.log("Connected to db");
-            const db = client.db(dbName);
-            users_col = db.collection("users")
-            events_col = db.collection("events")
-            close = client.close
-        })
+    do_db_setup: function do_db_setup() {
+        if (!client.isConnected()) {
+            client.connect(err => {
+                if (err) throw err;
+                let db = client.db(db_name)
+                users_col = db.collection("users")
+                events_col = db.collection("events")
+                console.log("Connected to db")
+            })
+        } else {
+            assert(users_col !== null && events_col !== null)
+        }
     },
     close_db: function close_db() {
-        client.close().then(() => {
-            console.log("db closed")
-        })
+        if (client.isConnected()) {
+            client.close(err => {
+                if (err) throw err;
+                users_col = null
+                events_col = null
+                console.log("db closed")
+            })
+        }
     },
-    users_col: users_col, events_col: events_col
+    get_users_col: () => { return users_col }, get_events_col: () => { return events_col }
 }
