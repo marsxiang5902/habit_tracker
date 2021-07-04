@@ -5,6 +5,7 @@ import Layout from './components/layout';
 import { Route, BrowserRouter, Switch } from 'react-router-dom';
 import All from './pages/all';
 import Dashboard from './pages/dashboard';
+import MyForm from './components/form';
 
 class App extends React.Component{
   constructor(props){
@@ -40,6 +41,7 @@ class App extends React.Component{
               <Route path="/editor" render={(props) => (
                 <All habits={this.state.habits} todos={this.state.todos} weeklyGoals={this.state.weeklyGoals} priorities={this.state.priorities} isAuthed={true}/>
               )}/>
+              <Route path="/test" component={MyForm}/>
 
             </Switch>
             </div>
