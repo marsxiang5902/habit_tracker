@@ -1,0 +1,38 @@
+
+
+.container {
+    margin-left: 10%;
+    width:20%;
+    border-radius: 10px;
+    padding: 5px 0px 10px 0px;
+}
+
+.border-2 {
+    border: 1px solid #000;
+    border-radius: 5px;
+}
+
+.card-2 {
+    margin-bottom: 5px;
+    width: 40%;
+    display:flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.habit {
+    margin-bottom: 0px;
+    padding: 10px
+}
+
+.habit-2 {
+    padding-left: 30px;
+    padding-top: 25px;
+}
+
+.subheader {
+    width: 40%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
