@@ -1,9 +1,9 @@
 "use strict";
 const express = require('express')
-const bodyParser = require('body-parser')
+// const bodyParser = require('body-parser')
 const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
+// const helmet = require('helmet');
+// const morgan = require('morgan');
 const { do_db_setup, close_db } = require('./database/db_setup')
 const interactUser = require('./database/interactUser')
 const interactEvent = require('./database/interactEvent')
