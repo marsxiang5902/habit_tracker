@@ -1,5 +1,9 @@
 "use strict";
 const express = require('express')
+const bodyParser = require('body-parser')
+const cors = require('cors');
+const helmet = require('helmet');
+const morgan = require('morgan');
 const { do_db_setup, close_db } = require('./database/db_setup')
 const interactUser = require('./database/interactUser')
 const interactEvent = require('./database/interactEvent')
@@ -8,6 +12,11 @@ const InteractEventList = require('./database/interactEventList')
 do_db_setup();
 const app = express()
 const port = process.env.PORT || 8080
+
+// app.use(helmet())
+// app.use(express.json())
+app.use(cors())
+// app.use(morgan('combined'))
 
 app.get('/users/add/:user/', async (req, res) => {
     let result = await interactUser.addUser(req.params.user)
