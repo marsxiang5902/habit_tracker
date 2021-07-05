@@ -1,4 +1,6 @@
-
+:root{
+    --border-color: #000;
+}
 
 .container {
     margin-left: 10%;
@@ -8,7 +10,7 @@
 }
 
 .border-2 {
-    border: 1px solid #000;
+    border: 1px solid var(--border-color);
     border-radius: 5px;
 }
 

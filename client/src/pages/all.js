@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import './page.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import * as Icons from "react-icons/fa";
@@ -15,6 +15,7 @@ const pct = (items) => {
         }
         avg = (count / items.length) * 100;
     }
+    //if new habit
     catch(err){
         avg=0;
     }
