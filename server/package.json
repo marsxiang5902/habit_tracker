@@ -13,7 +13,6 @@
     "mongodb": "^3.6.9",
     "morgan": "^1.10.0"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
