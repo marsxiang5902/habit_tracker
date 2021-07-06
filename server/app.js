@@ -1,22 +1,37 @@
 "use strict";
 const express = require('express')
-// const bodyParser = require('body-parser')
-const cors = require('cors');
-// const helmet = require('helmet');
-// const morgan = require('morgan');
+const cors = require('cors')
+const helmet = require('helmet')
+const morgan = require('morgan')
+const jwt = require('express-jwt')
+const jwtAuth = require('express-jwt-authz')
+const jwksRsa = require('jwks-rsa')
+const { auth0_domain, auth0_id } = require('./config.json')
 const { do_db_setup, close_db } = require('./database/db_setup')
 const interactUser = require('./database/interactUser')
 const interactEvent = require('./database/interactEvent')
-const InteractEventList = require('./database/interactEventList')
 
-do_db_setup();
+do_db_setup()
 const app = express()
 const port = process.env.PORT || 8080
 
-// app.use(helmet())
-// app.use(express.json())
+app.use(helmet())
+app.use(express.json())
 app.use(cors())
-// app.use(morgan('combined'))
+app.use(morgan('combined'))
+
+const checkJwt = jwt({
+    secret: jwksRsa.expressJwtSecret({
+        cache: true.valueOf,
+        rateLimit: true,
+        jwksRequestsPerMinute: 5,
+        jwksUri: `https://${auth0_domain}/.well-known/jwks.json`
+    }),
+    audience: auth0_id,
+    issuer: `https://${auth0_domain}`,
+    algorithms: ['RS256']
+})
+// app.use(checkJwt)
 
 app.get('/users/add/:user/', async (req, res) => {
     let result = await interactUser.addUser(req.params.user)
@@ -30,7 +45,7 @@ app.get('/users/events/:user/', async (req, res) => {
     let result = await interactUser.getUserEvents(req.params.user)
     res.json(result)
 })
-app.get('/events/add/:user/:name/:type/', async (req, res) => {
+app.get('/events/add/:user/:type/:name/', async (req, res) => {
     let result = await interactEvent.addEvent(req.params.user, req.params.name, req.params.type)
     res.send(result)
 })
@@ -44,6 +59,12 @@ app.all('/setup/', (req, res) => {
 app.all('/close/', (req, res) => {
     close_db();
     res.send('')
+})
+app.all('/exit/', async (req, res) => {
+    await close_db()
+    res.send('')
+    console.log('Exited')
+    process.kill(process.pid, 'SIGTERM')
 })
 
 app.listen(port, () => {
