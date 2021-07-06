@@ -31,7 +31,7 @@ const checkJwt = jwt({
     issuer: `https://${auth0_domain}`,
     algorithms: ['RS256']
 })
-// app.use(checkJwt)
+// app.use(checkJwt) // maybe later
 
 app.get('/users/add/:user/', async (req, res) => {
     let result = await interactUser.addUser(req.params.user)
