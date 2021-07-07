@@ -13,7 +13,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = ({
-      default: [{name:'Loading...', text:'Loading...'}],
+      default: [{ name: 'Loading...', text: 'Loading...' }],
       // habits: [
       //   { name: 'Mediatation', done: [1, 1, 0], description: "Sit Down, Think, and Be Mindful" },
       //   { name: 'Workout', done: [0, 0, 0, 1], description: "Look Good = Feel Good" },
@@ -53,11 +53,12 @@ class App extends React.Component {
   //   console.log(this.state.test.habit)
   // }
 
-  async componentDidMount(){
-    const url = 'http://localhost:8080/users/events/mars'
+  async componentDidMount() {
+    const url = 'http://localhost:8080/user/mars'
     const response = await fetch(url)
     const data = await response.json()
-    this.setState({test:data})
+    let events = data.events
+    this.setState({ test: events })
 
   }
 
@@ -65,11 +66,11 @@ class App extends React.Component {
     console.log(text)
     console.log(this.state.addedHabits)
     this.setState(state => {
-      return {addedHabits:[...state.addedHabits, {name:text}]}
+      return { addedHabits: [...state.addedHabits, { name: text }] }
     })
   }
 
-  async componentWillUnmount(){
+  async componentWillUnmount() {
     //place url post here for state of addedHabits
   }
 
@@ -82,11 +83,11 @@ class App extends React.Component {
           <Switch>
             <Route path="/" exact component={Dashboard} />
             <Route path="/editor" render={(props) => (
-              <All habits={this.state.test ? this.state.test.habit : this.state.default} 
-              todos={this.state.todos} weeklyGoals={this.state.weeklyGoals} 
-              priorities={this.state.priorities} isAuthed={true} 
-              addHabit={this.addHabit}
-              addedHabits={this.state.addedHabits}/>
+              <All habits={this.state.test ? this.state.test.habit : this.state.default}
+                todos={this.state.todos} weeklyGoals={this.state.weeklyGoals}
+                priorities={this.state.priorities} isAuthed={true}
+                addHabit={this.addHabit}
+                addedHabits={this.state.addedHabits} />
               // <All habits={this.state.habits} todos={this.state.todos} weeklyGoals={this.state.weeklyGoals} priorities={this.state.priorities} isAuthed={true} addHabit={this.addHabit}/>
             )} />
             <Route path="/test" component={MyForm} />
