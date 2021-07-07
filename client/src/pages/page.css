@@ -38,3 +38,12 @@
     justify-content: space-between;
     align-items: center;
 }
+
+.form-padding {
+    padding: 20px;
+}
+
+.hover :hover {
+    color: rgb(216, 95, 25);
+    text-decoration: underline;
+}

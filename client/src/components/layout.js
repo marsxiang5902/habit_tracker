@@ -11,7 +11,6 @@ function Layout(props) {
   const showMenu = () => {
     setMenu(!menu);
   };
-  console.log({SidebarData})
 
   return (
     <div className="header">
