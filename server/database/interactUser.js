@@ -3,6 +3,7 @@ const { assert } = require('console')
 const { get_users_col, get_events_col } = require('./db_setup')
 const User = require('../Users/User')
 const { subclasses } = require('../TimedEvents/TimedEventClasses')
+const Api404Error = require('../errors/api404Error')
 
 module.exports = {
     addUser: async function addUser(user) {
@@ -16,9 +17,20 @@ module.exports = {
             return false;
         }
     },
-    getUserInfo: function getUserInfo(user) {
+    getAllUsers: async function getAllUsers() {
         let users_col = get_users_col()
-        return users_col.findOne({ user: user })
+        let cursor = await users_col.find({})
+        let ar = await cursor.toArray()
+        return ar
+    },
+    getUser: async function getUser(user) {
+        let users_col = get_users_col()
+        let res = await users_col.findOne({ user: user })
+        if (res) {
+            return res;
+        } else {
+            throw new Api404Error(`User ${user} not found.`)
+        }
     },
     getUserEvents: async function getUserEvents(user) {
         let users_col = get_users_col(), events_col = get_events_col()
@@ -30,11 +42,12 @@ module.exports = {
             }
             let events_cursor = await events_col.find({ user: user })
             await events_cursor.forEach(doc => {
-                console.log(ret[doc.type])
                 assert(Array.isArray(ret[doc.type]))
                 ret[doc.type].push(doc)
             })
             return ret;
-        } return null;
+        } else {
+            throw new Api404Error(`User ${user} not found.`)
+        }
     }
 }

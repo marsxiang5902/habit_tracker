@@ -1,7 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
+  "description": "server",
   "main": "app.js",
   "dependencies": {
     "cors": "^2.8.5",
@@ -14,8 +14,12 @@
     "morgan": "^1.10.0"
   },
   "scripts": {
+    "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.9"
+  }
 }

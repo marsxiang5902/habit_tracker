@@ -31,6 +31,12 @@ module.exports = {
             console.log("Closed db")
         }
     },
-    get_users_col: () => { assert(users_col !== null); return users_col },
-    get_events_col: () => { assert(events_col !== null); return events_col },
+    get_users_col: () => {
+        assert(users_col !== null);
+        return users_col
+    },
+    get_events_col: () => {
+        assert(events_col !== null);
+        return events_col
+    },
 }

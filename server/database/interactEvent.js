@@ -9,7 +9,7 @@ module.exports = {
         let users_col = get_users_col(), events_col = get_events_col()
         let user_found_res = await users_col.findOne({ user: user })
         if (user_found_res) {
-            let newEvent = new subclasses[type](user, name, type)
+            let newEvent = new subclasses[type](user, name)
             let event_add_res = await events_col.insertOne(newEvent)
             return Boolean(event_add_res)
         } return false;
