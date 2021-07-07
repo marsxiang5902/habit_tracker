@@ -7,6 +7,7 @@ We need a name
 ## Users
 
  * get user info
+ * get user's events
  * create user
  * modify user info
 
@@ -19,10 +20,10 @@ We need a name
 
  * delete user
  * delete group
+ * get specific event
 
 ## Events
 
- * get user's events
  * create event
  * modify events
 

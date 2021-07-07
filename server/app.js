@@ -17,8 +17,7 @@ app.use(express.json())
 app.use(cors())
 app.use(morgan('combined'))
 
-const { userRouter, usersRouter } = require('./routes/users.js')
-app.use('/user/', userRouter)
+const usersRouter = require('./routes/users.js')
 app.use('/users/', usersRouter)
 
 // app.get('/users/add/:user/', async (req, res) => {

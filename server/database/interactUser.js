@@ -3,7 +3,7 @@ const { assert } = require('console')
 const { get_users_col, get_events_col } = require('./db_setup')
 const User = require('../Users/User')
 const { subclasses } = require('../TimedEvents/TimedEventClasses')
-const Api404Error = require('../errors/api404Error')
+const httpStatusErrors = require('../errors/httpStatusErrors')
 
 module.exports = {
     addUser: async function addUser(user) {
@@ -12,16 +12,15 @@ module.exports = {
         if (!res) {
             let newUser = new User(user)
             await users_col.insertOne(newUser);
-            return true;
         } else {
-            return false;
+            throw new httpStatusErrors.CONFLICT(`User ${user} already exists.`);
         }
     },
     getAllUsers: async function getAllUsers() {
         let users_col = get_users_col()
         let cursor = await users_col.find({})
         let ar = await cursor.toArray()
-        return ar
+        return ar;
     },
     getUser: async function getUser(user) {
         let users_col = get_users_col()
@@ -29,7 +28,7 @@ module.exports = {
         if (res) {
             return res;
         } else {
-            throw new Api404Error(`User ${user} not found.`)
+            throw new httpStatusErrors.NOT_FOUND(`User ${user} not found.`)
         }
     },
     getUserEvents: async function getUserEvents(user) {
@@ -47,7 +46,7 @@ module.exports = {
             })
             return ret;
         } else {
-            throw new Api404Error(`User ${user} not found.`)
+            throw new httpStatusErrors.NOT_FOUND(`User ${user} not found.`)
         }
     }
 }
