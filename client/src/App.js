@@ -54,7 +54,7 @@ class App extends React.Component {
   // }
 
   async componentDidMount() {
-    const url = 'http://localhost:8080/user/mars'
+    const url = 'http://localhost:8080/users/mars'
     const response = await fetch(url)
     const data = await response.json()
     let events = data.events
