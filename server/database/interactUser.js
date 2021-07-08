@@ -48,5 +48,17 @@ module.exports = {
         } else {
             throw new httpStatusErrors.NOT_FOUND(`User ${user} not found.`)
         }
+    },
+    updateUser: async function updateUser(user, updObj) {
+        if ('user' in updObj) {
+            throw new httpStatusErrors.BAD_REQUEST(`Cannot modify property "user".`)
+        }
+        let users_col = get_users_col()
+        let res = users_col.findOne({ user: user })
+        if (!res) {
+            throw new httpStatusErrors.NOT_FOUND(`User ${user} not found.`)
+        } else {
+            await users_col.updateOne({ user: user }, { "$set": updObj })
+        }
     }
 }

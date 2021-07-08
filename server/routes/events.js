@@ -1,32 +1,27 @@
 "use strict";
 const express = require('express')
-const { addUser, getAllUsers, getUser, getUserEvents } = require('../database/interactUser')
+const { addEvent, getEvent, updateEvent } = require('../database/interactEvent')
 
-let userRouter = express.Router()
-userRouter.get('/:username', async (req, res, next) => {
+let eventsRouter = express.Router()
+eventsRouter.get('/:_id', async (req, res, next) => {
     try {
-        let info = await getUser(req.params.username), events = await getUserEvents(req.params.username)
+        let info = await getEvent(req.params._id)
         let response = {
-            info: info,
-            events: events
+            info: info
         }
         res.json(response)
-    } catch (err) {
-        next(err)
-    }
+    } catch (err) { next(err) }
 })
-
-let usersRouter = express.Router()
-usersRouter.get('/', async (req, res, next) => {
+eventsRouter.post('/', async (req, res, next) => {
     try {
-        let users = await getAllUsers()
-        res.json(users)
-    } catch (err) {
-        next(err)
-    }
+        await addEvent(req.body.user, req.body.name, req.body.type, req.body.args)
+        res.status(200).send('Ok')
+    } catch (err) { next(err) }
+})
+eventsRouter.put('/:id', async (req, res, next) => { // patch?
+    try {
+        await updateEvent(req.params._id, req.body.updObj)
+    } catch (err) { next(err) }
 })
 
-module.exports = {
-    userRouter: userRouter,
-    usersRouter: usersRouter
-}
+module.exports = eventsRouter
