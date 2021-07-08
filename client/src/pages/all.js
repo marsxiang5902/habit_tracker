@@ -4,7 +4,7 @@ import { Form } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import * as Icons from "react-icons/fa";
 import MyHabitForm from '../components/form'
-import HabitList from '../components/habit-list'
+import DataList from '../components/data-list'
 
 
 const pct = (items) => {
@@ -27,21 +27,23 @@ const pct = (items) => {
 
 function All(props) {
 
-
-    const [habitFormVisible, setHabitFormVisible] = useState(false)
-    const [habitName, setHabitName] = useState("")
-
-    function handleSubmit(event){
-        event.preventDefault();
-        console.log(habitName)
-        props.addHabit(habitName)
-        setHabitFormVisible(false)
-        setHabitName("")
-    }
-
     return (
         <>
-            <HabitList addedHabits={props.addedHabits} habits={props.habits} addHabit={props.addHabit}/>
+            <div className="formatter">
+                <div className="container" id="habits">
+                    <DataList addedData={props.addedData} data={props.habits} addData={props.addData} title="Daily Habits" type="Habit"/>
+                </div>
+                <div className="container" id="todos">
+                    <DataList addedData={props.addedData} data={props.todos} addData={props.addData} title="Todos" type="Todo"/>
+                </div>
+                <div className="container" id="weeklygoal">
+                    <DataList addedData={props.addedData} data={props.weeklyGoals} addData={props.addData} title="Weekly Goals" type="Weekly Goal"/>
+                </div>
+                {/* propbably limit this to three for helping people focus (no add button) */}
+                <div className="container" id="priorities">
+                    <DataList addedData={props.addedData} data={props.priorities} addData={props.addData} title="Priorities" type="Priority"/>
+                </div>
+            </div>
         </>
     );
 }

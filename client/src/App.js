@@ -19,18 +19,18 @@ class App extends React.Component {
       //   { name: 'Workout', done: [0, 0, 0, 1], description: "Look Good = Feel Good" },
       //   { name: 'Journaling', description: "Become Aware of the Little Things" },
       // ],
-      addedHabits: [],
+      addedData: [],
       todos: [
-        { text: 'Pick up groceries', done: 1 },
-        { text: 'Buy Google', done: 0 },
-        { text: 'Solve World Hunger', done: 0 }
+        { name: 'Pick up groceries', done: 1 },
+        { name: 'Buy Google', done: 0 },
+        { name: 'Solve World Hunger', done: 0 }
       ],
       weeklyGoals: [
-        { text: 'Pick up groceries', done: 1 },
-        { text: 'Buy Google', done: 0 },
-        { text: 'Solve World Hunger', done: 0 }
+        { name: 'Pick up groceries', done: 1 },
+        { name: 'Buy Google', done: 0 },
+        { name: 'Solve World Hunger', done: 0 }
       ],
-      priorities: ['Learn Fractions', 'Solving World Hunger', 'Be a better person'],
+      priorities: [{name: 'Learn Fractions'}, {name:'Solving World Hunger'}, {name:'Be a better person'}],
       test: null,
     })
   }
@@ -62,11 +62,10 @@ class App extends React.Component {
 
   }
 
-  addHabit = (text) => {
+  addData = (text, type) => {
     console.log(text)
-    console.log(this.state.addedHabits)
     this.setState(state => {
-      return { addedHabits: [...state.addedHabits, { name: text }] }
+      return { addedData: [...state.addedData, { name: text , type: type}] }
     })
   }
 
@@ -84,11 +83,11 @@ class App extends React.Component {
             <Route path="/" exact component={Dashboard} />
             <Route path="/editor" render={(props) => (
               <All habits={this.state.test ? this.state.test.habit : this.state.default}
-                todos={this.state.todos} weeklyGoals={this.state.weeklyGoals}
+                todos={this.state.test ? this.state.test.todo : this.state.default}
+                weeklyGoals={this.state.weeklyGoals}
                 priorities={this.state.priorities} isAuthed={true}
-                addHabit={this.addHabit}
-                addedHabits={this.state.addedHabits} />
-              // <All habits={this.state.habits} todos={this.state.todos} weeklyGoals={this.state.weeklyGoals} priorities={this.state.priorities} isAuthed={true} addHabit={this.addHabit}/>
+                addData={this.addData}
+                addedData={this.state.addedData} />
             )} />
             <Route path="/test" component={MyForm} />
 
