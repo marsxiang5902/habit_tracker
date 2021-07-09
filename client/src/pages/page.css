@@ -2,6 +2,15 @@
     --border-color: #000;
 }
 
+.formatter {
+    display: grid;
+    grid-template-areas:    "habits    todos" 
+                            "weeklyGoals    priorities";
+    padding-left: 100px;
+    padding-right: 50px;
+    gap: 0 50px;
+}
+
 .container {
     margin-left: 10%;
     width:20%;
@@ -16,7 +25,7 @@
 
 .card-2 {
     margin-bottom: 5px;
-    width: 40%;
+    width: clamp(fit-content, 40%, 40%);
     display:flex;
     justify-content: flex-start;
     align-items: center;
@@ -33,7 +42,7 @@
 }
 
 .subheader {
-    width: 40%;
+    width: clamp(fit-content, 40%, 40%);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -41,6 +50,7 @@
 
 .form-padding {
     padding: 20px;
+    flex: 2;
 }
 
 .hover :hover {
