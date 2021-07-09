@@ -12,18 +12,32 @@ An app for tracking and displaying events and implementing ideas from researched
 git clone https://github.com/marsxiang5902/habit_tracker
 ```
 
-* Install the client dependencies
+* Install the client dependencies (in `client`)
 
 ```
-cd client
 npm install
 ```
 
-* Install the server dependencies (go back to main directory with `cd ../`)
+* Install the server dependencies (in `server`)
 
 ```
-cd server
 npm install
+```
+
+## Running
+
+* Run the client (in `client`)
+```
+npm start
+```
+
+* Run the server (in `server`)
+```
+node app.js
+```
+  * Or alternatively to use nodemon, which relaunches the server when you save a file:
+```
+npm run dev
 ```
 
 ## API Documentation
