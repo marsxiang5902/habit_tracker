@@ -1,3 +1,5 @@
+'use strict'
+
 import React from 'react';
 import './App.css';
 import { Button } from 'evergreen-ui';
@@ -30,7 +32,7 @@ class App extends React.Component {
         { name: 'Buy Google', done: 0 },
         { name: 'Solve World Hunger', done: 0 }
       ],
-      priorities: [{name: 'Learn Fractions'}, {name:'Solving World Hunger'}, {name:'Be a better person'}],
+      priorities: [{ name: 'Learn Fractions' }, { name: 'Solving World Hunger' }, { name: 'Be a better person' }],
       test: null,
     })
   }
@@ -65,7 +67,7 @@ class App extends React.Component {
   addData = (text, type) => {
     console.log(text)
     this.setState(state => {
-      return { addedData: [...state.addedData, { name: text , type: type}] }
+      return { addedData: [...state.addedData, { name: text, type: type }] }
     })
   }
 

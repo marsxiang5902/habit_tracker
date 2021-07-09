@@ -1,3 +1,5 @@
+'use strict'
+
 function logError(err) {
     console.log("Caught error:")
     console.log(err)

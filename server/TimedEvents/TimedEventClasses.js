@@ -1,3 +1,5 @@
+'use strict'
+
 const TimedEvent = require("./TimedEvent")
 const TimedHabit = require("./TimedHabit")
 const TimedTodo = require("./TimedTodo")
