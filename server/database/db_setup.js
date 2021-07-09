@@ -9,23 +9,20 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 var users_col = null, events_col = null;
 
 module.exports = {
-    do_db_setup: function do_db_setup() {
+    do_db_setup: async function do_db_setup() {
         if (!client.isConnected()) {
-            client.connect(err => {
-                if (err) throw err;
-                let db = client.db(db_name)
-                users_col = db.collection("users")
-                events_col = db.collection("events")
-                console.log("Connected to db")
-            })
+            await client.connect()
+            let db = client.db(db_name)
+            users_col = db.collection("users")
+            events_col = db.collection("events")
+            console.log("Connected to db")
         } else {
             assert(users_col !== null && events_col !== null)
         }
     },
     close_db: async function close_db() {
         if (client.isConnected()) {
-            let err = await client.close();
-            if (err) throw err;
+            await client.close();
             users_col = null
             events_col = null
             console.log("Closed db")

@@ -5,7 +5,7 @@ const { addUser, getAllUsers, getUser, getUserEvents, updateUser } = require('..
 
 let usersRouter = express.Router()
 
-usersRouter.get('/', async (req, res, next) => {
+usersRouter.get('/', async (req, res, next) => { // does not return events for now
     try {
         let users = await getAllUsers()
         res.json(users)
@@ -13,7 +13,8 @@ usersRouter.get('/', async (req, res, next) => {
 })
 usersRouter.get('/:user', async (req, res, next) => {
     try {
-        let info = await getUser(req.params.user), events = await getUserEvents(req.params.user)
+        let info = await getUser(req.params.user)
+        let events = await getUserEvents(req.params.user, info.eventLists)
         let response = {
             info: info,
             events: events

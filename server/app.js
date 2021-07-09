@@ -4,8 +4,8 @@ const cors = require('cors')
 const helmet = require('helmet')
 const morgan = require('morgan')
 const { do_db_setup, close_db } = require('./database/db_setup')
-const usersRouter = require('./routes/users.js')
-const eventsRouter = require('./routes/events.js')
+const usersRouter = require('./routes/usersRouter.js')
+const eventsRouter = require('./routes/eventsRouter.js')
 const { logError, returnError, isOperationalError, logErrorMiddleware } = require('./errors/errorHandler')
 
 

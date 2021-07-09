@@ -31,23 +31,25 @@ module.exports = {
             throw new httpStatusErrors.NOT_FOUND(`User ${user} not found.`)
         }
     },
-    getUserEvents: async function getUserEvents(user) {
+    getUserEvents: async function getUserEvents(user, eventLists) {
         let users_col = get_users_col(), events_col = get_events_col()
-        let res = users_col.findOne({ user: user })
-        if (res) {
-            let ret = {}
-            for (let type in subclasses) {
-                ret[type] = []
+        if (!eventLists) {
+            let res = await users_col.findOne({ user: user })
+            if (res) {
+                eventLists = res.eventLists
+            } else {
+                throw new httpStatusErrors.NOT_FOUND(`User ${user} not found.`)
             }
-            let events_cursor = await events_col.find({ user: user })
-            await events_cursor.forEach(doc => {
-                assert(Array.isArray(ret[doc.type]))
-                ret[doc.type].push(doc)
-            })
-            return ret;
-        } else {
-            throw new httpStatusErrors.NOT_FOUND(`User ${user} not found.`)
         }
+        let ret = {}
+        for (let type in subclasses) {
+            assert(type in eventLists)
+            let events_cursor = await events_col.find({ _id: { "$in": eventLists[type] } })
+            let events_array = await events_cursor.toArray()
+            assert(Array.isArray(events_array))
+            ret[type] = events_array
+        }
+        return ret;
     },
     updateUser: async function updateUser(user, updObj) {
         if ('user' in updObj) {
