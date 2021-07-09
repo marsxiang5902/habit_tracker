@@ -5,6 +5,8 @@ const User = require('../Users/User')
 const { subclasses } = require('../TimedEvents/TimedEventClasses')
 const httpStatusErrors = require('../errors/httpStatusErrors')
 
+const USER_UPDATE_ALLOWED_KEYS = new Set(['name']) // api checks frontend updates
+
 module.exports = {
     addUser: async function addUser(user) {
         let users_col = get_users_col()
@@ -52,8 +54,10 @@ module.exports = {
     //     return ret;
     // },
     updateUser: async function updateUser(user, updObj) {
-        if ('user' in updObj) {
-            throw new httpStatusErrors.BAD_REQUEST(`Cannot modify property "user".`)
+        for (let key in updObj) {
+            if (!USER_UPDATE_ALLOWED_KEYS.has(key)) {
+                throw new httpStatusErrors.BAD_REQUEST(`Cannot modify property "${key}".`)
+            }
         }
         let users_col = get_users_col()
         let res = users_col.findOne({ user: user })

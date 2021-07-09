@@ -74,7 +74,8 @@ async function updateEvent(_id, updObj) {
     }
     let events_col = get_events_col()
     let res = await events_col.findOneAndUpdate({ _id: _id }, { "$set": updObj })
-    if (!res) {
+    console.log(res)
+    if (!res.value) {
         throw new httpStatusErrors.NOT_FOUND(`Event with id ${_id} not found.`)
     }
 }

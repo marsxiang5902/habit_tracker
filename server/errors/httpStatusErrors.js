@@ -7,7 +7,7 @@ const httpStatusErrors = {
         constructor(
             name,
             statusCode = 400,
-            description = 'Bad Request.',
+            description = 'Bad Request',
             isOperational = true
         ) {
             super(name, statusCode, isOperational, description)
@@ -17,7 +17,7 @@ const httpStatusErrors = {
         constructor(
             name,
             statusCode = 404,
-            description = 'Not found.',
+            description = 'Not Found',
             isOperational = true
         ) {
             super(name, statusCode, isOperational, description)
@@ -27,7 +27,7 @@ const httpStatusErrors = {
         constructor(
             name,
             statusCode = 409,
-            description = 'Conflict.',
+            description = 'Conflict',
             isOperational = true
         ) {
             super(name, statusCode, isOperational, description)
@@ -37,7 +37,7 @@ const httpStatusErrors = {
         constructor(
             name,
             statusCode = 500,
-            description = 'Internal Error.',
+            description = 'Internal Error',
             isOperational = true
         ) {
             super(name, statusCode, isOperational, description)

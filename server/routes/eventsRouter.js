@@ -8,10 +8,13 @@ let eventsRouter = express.Router()
 eventsRouter.use('/:_id/', (req, res, next) => {
     try {
         req.body._id = ObjectId(req.params._id)
-    } catch (err) { }
-    finally {
-        next()
-    }
+    } catch (err) { req.body._id = req.params._id } finally { next() }
+})
+eventsRouter.post('/', async (req, res, next) => {
+    try {
+        await addEvent(req.body.user, req.body.name, req.body.type, req.body.args)
+        res.send()
+    } catch (err) { next(err) }
 })
 eventsRouter.get('/:_id', async (req, res, next) => {
     try {
@@ -31,22 +34,16 @@ eventsRouter.get('/:_id/history', async (req, res, next) => {
         res.json(response)
     } catch (err) { next(err) }
 })
-eventsRouter.post('/', async (req, res, next) => {
-    try {
-        await addEvent(req.body.user, req.body.name, req.body.type, req.body.args)
-        res.send('Ok')
-    } catch (err) { next(err) }
-})
 eventsRouter.put('/:id', async (req, res, next) => { // patch?
     try {
         await updateEvent(req.body._id, req.body.updObj)
-        res.send('Ok')
+        res.send()
     } catch (err) { next(err) }
 })
 eventsRouter.put('/:id/history', async (req, res, next) => { // patch?
     try {
         await updateEventHistory(req.body._id, req.body.updObj, req.body.historyManager)
-        res.send('Ok')
+        res.send()
     } catch (err) { next(err) }
 })
 

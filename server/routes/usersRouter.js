@@ -9,6 +9,12 @@ const { ObjectId } = require('mongodb');
 
 let usersRouter = express.Router()
 
+usersRouter.post('/', async (req, res, next) => {
+    try {
+        await addUser(req.body.user)
+        res.send()
+    } catch (err) { next(err) }
+})
 // usersRouter.get('/', async (req, res, next) => { // does not return events for now
 //     try {
 //         let users = await getAllUsers()
@@ -49,12 +55,6 @@ usersRouter.get('/:user/events', async (req, res, next) => {
             data: data
         }
         res.json(response)
-    } catch (err) { next(err) }
-})
-usersRouter.post('/', async (req, res, next) => {
-    try {
-        await addUser(req.body.user)
-        res.send('Ok')
     } catch (err) { next(err) }
 })
 usersRouter.put('/:user', async (req, res, next) => { // patch?

@@ -23,6 +23,7 @@ app.use('/events/', eventsRouter)
 
 app.use(logErrorMiddleware)
 app.use(returnError)
+
 process.on('unhandledRejection', err => {
     throw err
 })
