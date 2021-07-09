@@ -1,10 +1,3 @@
----
-tags: [habit_tracker]
-title: habit_tracker
-created: '2021-07-09T20:43:45.737Z'
-modified: '2021-07-09T20:50:33.239Z'
----
-
 # habit_tracker
 
 ## Description
