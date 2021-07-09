@@ -3,11 +3,11 @@ const { assert } = require('console')
 const { get_users_col, get_events_col } = require('./db_setup')
 const { subclasses: eventSubclasses } = require('../TimedEvents/TimedEventClasses')
 const httpStatusErrors = require('../errors/httpStatusErrors')
-const { subclasses: historyMangagerSubclasses } = require('../HistoryManager/HistoryManagerClasses')
+const { subclasses: historyManagerSubclasses } = require('../HistoryManager/HistoryManagerClasses')
 
 async function addEvent(user, name, type, args) {
     // also adds to user's event list
-    // args are given to events tohandle
+    // args are given to events to handle
     if (!(type in eventSubclasses)) {
         throw new httpStatusErrors.BAD_REQUEST(`Type ${type} not valid.`)
     }
@@ -30,38 +30,52 @@ async function addEvent(user, name, type, args) {
     }
 }
 
-function getEvent(_id) { // ONLY FOR ADMINS?
+async function getEvent(_id) {
     let events_col = get_events_col()
-    let res = events_col.findOne({ _id: _id })
+    let res = await events_col.findOne({ _id: _id })
     if (!res) {
         throw new httpStatusErrors.NOT_FOUND(`Event with id ${_id} not found.`)
     }
     return res;
 }
 
-function getEventHistory(_id) {
+async function getEvents(_ids) {
+    if (!Array.isArray(_ids)) {
+        throw new httpStatusErrors.BAD_REQUEST(`Query data not valid.`)
+    }
     let events_col = get_events_col()
-    let res = events_col.findOne({ _id: _id })
-    if (!res) {
-        throw new httpStatusErrors.NOT_FOUND(`Event with id ${_id} not found.`)
-    }
-    let historyManager = res.historyManager
-    if (!(historyManager.type in historyMangaerSubclasses)) {
-        throw new httpStatusErrors.BAD_REQUEST(`Type ${historyManager.type} not valid.`)
-    }
-    return historyMangagerSubclasses[historyManager.type].getHistory(historyManager.data)
+    let events_cursor = await events_col.find({ _id: { "$in": _ids } })
+    let events_array = await events_cursor.toArray()
+    assert(Array.isArray(events_array))
+    return events_array;
 }
 
+async function getEventHistory(_id, historyManager) {
+    if (!historyManager) {
+        let events_col = get_events_col()
+        let res = await events_col.findOne({ _id: _id })
+        if (!res) {
+            throw new httpStatusErrors.NOT_FOUND(`Event with id ${_id} not found.`)
+        }
+        historyManager = res.historyManager
+    }
+    if (!(historyManager.type in historyManagerSubclasses)) {
+        throw new httpStatusErrors.BAD_REQUEST(`Type ${historyManager.type} not valid.`)
+    }
+    return historyManagerSubclasses[historyManager.type].getHistory(historyManager.data)
+}
+
+const EVENT_UPDATE_ALLOWED_KEYS = new Set(['name', 'historyManager']) // api checks frontend updates
 async function updateEvent(_id, updObj) {
-    if ('_id' in updObj) {
-        throw new httpStatusErrors.BAD_REQUEST(`Cannot modify property "_id".`)
+    for (let key in updObj) {
+        if (!EVENT_UPDATE_ALLOWED_KEYS.has(key)) {
+            throw new httpStatusErrors.BAD_REQUEST(`Cannot modify property "${key}".`)
+        }
     }
     let events_col = get_events_col()
-    let res = events_col.findOne({ _id: _id })
+    let res = await events_col.findOneAndUpdate({ _id: _id }, { "$set": updObj })
     if (!res) {
-        throw new httpStatusErrors.NOT_FOUND(`Event with id ${id} not found.`)
-    } else {
-        await users_col.updateOne({ _id: _id }, { "$set": updObj })
+        throw new httpStatusErrors.NOT_FOUND(`Event with id ${_id} not found.`)
     }
 }
 
@@ -74,8 +88,13 @@ async function updateEventHistory(_id, updObj, historyManager) {
         } else {
             throw new httpStatusErrors.NOT_FOUND(`Event with id ${id} not found.`)
         }
+    } else {
+        if (!('type' in historyManager) || !(historyManager.type in historyManagerSubclasses) || !('data' in historyManager)) {
+            throw new httpStatusErrors.BAD_REQUEST(`Data not valid.`)
+        }
     }
-    historyMangagerSubclasses[historyManager.type].setHistory(updObj)
+    historyManagerSubclasses[historyManager.type].setHistory(historyManager.data, updObj)
+    await updateEvent(_id, { historyManager: historyManager })
 }
 
-module.exports = { addEvent, getEvent, getEventHistory, updateEvent, updateEventHistory }
+module.exports = { addEvent, getEvent, getEvents, getEventHistory, updateEvent, updateEventHistory }

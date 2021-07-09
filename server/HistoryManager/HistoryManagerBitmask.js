@@ -1,6 +1,6 @@
 "use strict";
 
-const { HistoryManager, MILLS_IN_DAY, getDay } = require('./HistoryManager')
+const { HistoryManager, MILLS_IN_DAY, getDay, checkData } = require('./HistoryManager')
 const httpStatusErrors = require('../errors/httpStatusErrors')
 const { assert } = require('console')
 
@@ -9,7 +9,7 @@ module.exports = class HistoryManagerBitmask extends HistoryManager {
         super('bitmask', { date: date, bit: bit })
     }
     static realignDate(data) {
-        if (!('date' in data) || !('bit' in data)) {
+        if (!('date' in data) || !('bit' in data) || !Number.isInteger(data.date) || !Number.isInteger(data.bit)) {
             throw new httpStatusErrors.BAD_REQUEST("Data is not valid.")
         }
         let realDate = getDay()
@@ -18,29 +18,25 @@ module.exports = class HistoryManagerBitmask extends HistoryManager {
         data.bit <<= dateDiff
     }
     static getHistory(data) {
-        if (!Number.isInteger(daysBefore) || daysBefore > 31) {
-            throw new httpStatusErrors.BAD_REQUEST(`${daysBefore} is not valid.`)
-        }
         this.realignDate(data)
         let ret = {}
         for (let i = 0; i < 32; i++) {
-            ret[i] = (data.bit & (1 << i)) > 0
+            ret[i] = (data.bit & (1 << i)) != 0
         }
+        assert(checkData(ret))
         return ret;
     }
     static setHistory(data, updObj) {
+        if (!checkData(updObj)) {
+            throw new httpStatusErrors.BAD_REQUEST(`Data is not valid.`)
+        }
         this.realignDate(data)
         for (let key in updObj) {
-            try {
-                let daysBefore = parseInt(key)
-                assert(Number.isInteger(daysBefore) && 0 >= daysBefore && daysBefore <= 31)
-            } catch (err) {
-                throw new httpStatusErrors.BAD_REQUEST(`Update data is not valid.`)
-            }
+            let daysBefore = parseInt(key)
             if (updObj[key]) {
-                data |= 1 << daysBefore
+                data.bit |= 1 << daysBefore
             } else {
-                data &= ~(1 << daysBefore)
+                data.bit &= ~(1 << daysBefore)
             }
         }
     }

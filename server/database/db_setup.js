@@ -2,6 +2,7 @@
 const { assert } = require("console");
 const { MongoClient } = require("mongodb");
 const { db_username, db_password, db_cluster, db_name } = require('../config.json');
+const httpStatusErrors = require('../errors/httpStatusErrors')
 
 const uri = `mongodb+srv://${db_username}:${db_password}@${db_cluster}.2kphp.mongodb.net/${db_name}?retryWrites=true&w=majority`
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -29,11 +30,15 @@ module.exports = {
         }
     },
     get_users_col: () => {
-        assert(users_col !== null);
+        if (users_col === null) {
+            throw new httpStatusErrors.INTERNAL_SERVER(`Database error.`)
+        }
         return users_col
     },
     get_events_col: () => {
-        assert(events_col !== null);
+        if (events_col === null) {
+            throw new httpStatusErrors.INTERNAL_SERVER(`Database error.`)
+        }
         return events_col
     },
 }
