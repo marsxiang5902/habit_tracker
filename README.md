@@ -35,7 +35,7 @@ npm start
 ```
 node app.js
 ```
-  * Or alternatively to use nodemon, which relaunches the server when you save a file:
+* Or alternatively to use nodemon, which relaunches the server when you save a file:
 ```
 npm run dev
 ```

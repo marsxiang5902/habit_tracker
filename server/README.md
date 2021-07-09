@@ -1,10 +1,3 @@
----
-tags: [habit_tracker]
-title: habit_tracker API Documentation
-created: '2021-07-09T20:50:19.796Z'
-modified: '2021-07-09T22:25:57.222Z'
----
-
 # habit_tracker API Documentation
 
 `habit_tracker` supports [XHR](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) JSON API for accessing the backend.
