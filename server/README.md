@@ -194,8 +194,8 @@ Omitted fields are blank.
 ```
 {
   *"eventLists": {
-    "habit": [<list of ids of habit events of user>],
-    "todo": [<list of ids of todo events of user>],
+    "habit": [<the list of habit event ids>],
+    "todo": [<the list of todo event ids>],
     ...
   }
 }
