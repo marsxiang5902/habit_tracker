@@ -156,6 +156,11 @@ Omitted fields are blank.
 }
 ```
 
+#### Delete an Event
+
+* Verb: **DELETE**
+* URL: `/:_id`
+
 ### `/users`
 
 #### Create a User
@@ -226,6 +231,15 @@ Omitted fields are blank.
 ```
 * Sets the specified fields to their respective values and leaves everything else the same. The allowed fields to change in this function are:
   * `user`
+
+#### Delete a User
+
+* Verb: **DELETE**
+* URL: `/:user`
+
+
+
+
 
 
 
