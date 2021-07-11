@@ -1,7 +1,9 @@
+'use strict'
+
 import React from 'react';
 
-function Dashboard(props){
-    return(
+function Dashboard(props) {
+    return (
         <div>
 
         </div>

@@ -1,9 +1,11 @@
 "use strict";
-const { assert } = require('console')
+const { assert } = require('assert')
 const { get_users_col, get_events_col } = require('./db_setup')
 const User = require('../Users/User')
 const { subclasses } = require('../TimedEvents/TimedEventClasses')
 const httpStatusErrors = require('../errors/httpStatusErrors')
+
+const USER_UPDATE_ALLOWED_KEYS = new Set(['name']) // api checks frontend updates
 
 module.exports = {
     addUser: async function addUser(user) {
@@ -16,12 +18,12 @@ module.exports = {
             throw new httpStatusErrors.CONFLICT(`User ${user} already exists.`);
         }
     },
-    getAllUsers: async function getAllUsers() {
-        let users_col = get_users_col()
-        let cursor = await users_col.find({})
-        let ar = await cursor.toArray()
-        return ar;
-    },
+    // getAllUsers: async function getAllUsers() {
+    //     let users_col = get_users_col()
+    //     let cursor = await users_col.find({})
+    //     let ar = await cursor.toArray()
+    //     return ar;
+    // },
     getUser: async function getUser(user) {
         let users_col = get_users_col()
         let res = await users_col.findOne({ user: user })
@@ -31,27 +33,31 @@ module.exports = {
             throw new httpStatusErrors.NOT_FOUND(`User ${user} not found.`)
         }
     },
-    getUserEvents: async function getUserEvents(user) {
-        let users_col = get_users_col(), events_col = get_events_col()
-        let res = users_col.findOne({ user: user })
-        if (res) {
-            let ret = {}
-            for (let type in subclasses) {
-                ret[type] = []
-            }
-            let events_cursor = await events_col.find({ user: user })
-            await events_cursor.forEach(doc => {
-                assert(Array.isArray(ret[doc.type]))
-                ret[doc.type].push(doc)
-            })
-            return ret;
-        } else {
-            throw new httpStatusErrors.NOT_FOUND(`User ${user} not found.`)
-        }
-    },
+    // getUserEvents: async function getUserEvents(user, eventLists) {
+    //     let users_col = get_users_col(), events_col = get_events_col()
+    //     if (!eventLists) {
+    //         let res = await users_col.findOne({ user: user })
+    //         if (res) {
+    //             eventLists = res.eventLists
+    //         } else {
+    //             throw new httpStatusErrors.NOT_FOUND(`User ${user} not found.`)
+    //         }
+    //     }
+    //     let ret = {}
+    //     for (let type in subclasses) {
+    //         assert(type in eventLists)
+    //         let events_cursor = await events_col.find({ _id: { "$in": eventLists[type] } })
+    //         let events_array = await events_cursor.toArray()
+    //         assert(Array.isArray(events_array))
+    //         ret[type] = events_array
+    //     }
+    //     return ret;
+    // },
     updateUser: async function updateUser(user, updObj) {
-        if ('user' in updObj) {
-            throw new httpStatusErrors.BAD_REQUEST(`Cannot modify property "user".`)
+        for (let key in updObj) {
+            if (!USER_UPDATE_ALLOWED_KEYS.has(key)) {
+                throw new httpStatusErrors.BAD_REQUEST(`Cannot modify property "${key}".`)
+            }
         }
         let users_col = get_users_col()
         let res = users_col.findOne({ user: user })

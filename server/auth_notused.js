@@ -1,3 +1,5 @@
+'use strict'
+
 const jwt = require('express-jwt')
 const jwtAuth = require('express-jwt-authz')
 const jwksRsa = require('jwks-rsa')
