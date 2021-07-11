@@ -27,8 +27,17 @@
     margin-bottom: 5px;
     width: clamp(fit-content, 40%, 40%);
     display:flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.habit-card {
+    margin-bottom: 5px;
+    width: clamp(fit-content, 40%, 40%);
+    display:flex;
     justify-content: flex-start;
     align-items: center;
+    padding-left: 50%;
 }
 
 .habit {

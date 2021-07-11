@@ -9,6 +9,7 @@ import All from './pages/all';
 import Dashboard from './pages/dashboard';
 import MyForm from './components/form';
 import axios from 'axios';
+import Habits from './pages/habits'
 
 
 class App extends React.Component {
@@ -16,12 +17,7 @@ class App extends React.Component {
     super(props);
     this.state = ({
       default: [{ name: 'Loading...', text: 'Loading...' }],
-      // habits: [
-      //   { name: 'Mediatation', done: [1, 1, 0], description: "Sit Down, Think, and Be Mindful" },
-      //   { name: 'Workout', done: [0, 0, 0, 1], description: "Look Good = Feel Good" },
-      //   { name: 'Journaling', description: "Become Aware of the Little Things" },
-      // ],
-      addedData: [],
+      habits: [],
       todos: [
         { name: 'Pick up groceries', done: 1 },
         { name: 'Buy Google', done: 0 },
@@ -61,14 +57,45 @@ class App extends React.Component {
     const data = await response.json()
     let events = data.events
     this.setState({ test: events })
+    console.log(this.state.test)
+
+    let date = new Date()
+    date = date.getDate()
+
+    events.habit.map((item, index) => {
+      if ((events.habit.some(el => el.name === item.name))) {
+        this.setState(state => {
+          return { habits: [...state.habits, {name:item.name, done:[{checked: 0, date: date}]}] }
+        })
+      }
+    })
 
   }
 
   addData = (text, type) => {
     console.log(text)
-    this.setState(state => {
-      return { addedData: [...state.addedData, { name: text, type: type }] }
+    let test = this.state.test
+    test.habit.push({name: text, type: type})
+    this.setState({
+      test: test
     })
+  }
+
+  checkHabit = (text, value) => {
+    this.state.test.habit.map((item, index) => {
+      // if (item.done.length() === 0){
+      //   this.setState(state => {
+      //     let temp = [...state.habits]
+      //     temp.done = [[0, date]]
+      //     return { habits: temp }
+      //   })
+      // } 
+
+    })
+  }
+
+  changeData = (data, updatedValue, deleteTrue) => {
+
   }
 
   async componentWillUnmount() {
@@ -89,9 +116,13 @@ class App extends React.Component {
                 weeklyGoals={this.state.weeklyGoals}
                 priorities={this.state.priorities} isAuthed={true}
                 addData={this.addData}
-                addedData={this.state.addedData} />
+                addedData={this.state.addedData} 
+                changeData={this.changeData}/>
             )} />
             <Route path="/test" component={MyForm} />
+            <Route path="/habits" render={(props) => (
+              <Habits habits={this.state.habits}/>
+            )} />
 
           </Switch>
         </div>

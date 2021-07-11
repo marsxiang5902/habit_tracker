@@ -2,13 +2,34 @@
 
 import React, { useState } from 'react';
 import * as Icons from "react-icons/fa";
-import { Form } from 'react-bootstrap'
+import { Form, Popover, Button } from 'react-bootstrap'
 
 
 function HabitList(props) {
 
     const [formVisible, setFormVisible] = useState(false)
     const [name, setName] = useState("")
+    const [popoverVisible, setPopoverVisible] = useState(false)
+
+    const popover = (
+        <Popover id="popover-basic">
+          <Popover.Title as="h3">Edit {props.type}</Popover.Title>
+          <Popover.Content>
+            <Form onSubmit={handleEdit}>
+            <Form.Group>
+                <Form.Control type="text" placeholder={`${props.type} Name`} value={name} onChange={(e) => setName(e.target.value)}/>
+                <Button variant="danger" onClick={handleEdit('delete')} style={{marginTop: "10px"}}>
+                    Delete
+                </Button>
+            </Form.Group>
+            </Form>
+          </Popover.Content>
+        </Popover>
+    );
+
+    function handleEdit(event, del){
+        props.changeData()
+    }
 
     function handleSubmit(event) {
         event.preventDefault();

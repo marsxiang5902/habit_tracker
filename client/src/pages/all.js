@@ -33,7 +33,7 @@ function All(props) {
         <>
             <div className="formatter">
                 <div className="container" id="habits">
-                    <DataList addedData={props.addedData} data={props.habits} addData={props.addData} title="Daily Habits" type="Habit" />
+                    <DataList addedData={props.addedData} data={props.habits} addData={props.addData} changeData={props.changeData} title="Daily Habits" type="Habit"/>
                 </div>
                 <div className="container" id="todos">
                     <DataList addedData={props.addedData} data={props.todos} addData={props.addData} title="Todos" type="Todo" />
