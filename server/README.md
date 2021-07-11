@@ -236,7 +236,7 @@ Omitted fields are blank.
 
 * Verb: **DELETE**
 * URL: `/:user`
-
+* This deletes all the user's events.
 
 
 
