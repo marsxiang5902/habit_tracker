@@ -2,7 +2,7 @@
 
 const { HistoryManager, MILLS_IN_DAY, getDay, checkData } = require('./HistoryManager')
 const httpStatusErrors = require('../errors/httpStatusErrors')
-const { assert } = require('console')
+const { assert } = require('assert')
 
 module.exports = class HistoryManagerBitmask extends HistoryManager {
     constructor(date = getDay(new Date()), bit = 0) {
