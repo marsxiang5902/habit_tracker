@@ -17,12 +17,9 @@ class App extends React.Component {
     super(props);
     this.state = ({
       default: [{ name: 'Loading...', text: 'Loading...' }],
+      loading: true,
       habits: [],
-      todos: [
-        { name: 'Pick up groceries', done: 1 },
-        { name: 'Buy Google', done: 0 },
-        { name: 'Solve World Hunger', done: 0 }
-      ],
+      todos: [],
       weeklyGoals: [
         { name: 'Pick up groceries', done: 1 },
         { name: 'Buy Google', done: 0 },
@@ -55,30 +52,61 @@ class App extends React.Component {
     const url = 'http://localhost:8080/users/mars'
     const response = await fetch(url)
     const data = await response.json()
-    let events = data.events
+    let events = data.data.eventLists
     this.setState({ test: events })
     console.log(this.state.test)
 
-    let date = new Date()
-    date = date.getDate()
-
-    events.habit.map((item, index) => {
-      if ((events.habit.some(el => el.name === item.name))) {
-        this.setState(state => {
-          return { habits: [...state.habits, {name:item.name, done:[{checked: 0, date: date}]}] }
-        })
-      }
+    events.habit.map(async(item, index) => {
+      const habitUrl = `http://localhost:8080/events/${item}`
+      const habitResponse = await fetch(habitUrl)
+      const habitData = await habitResponse.json()
+      let habits = this.state.habits
+      habits.push(habitData.data)
+      this.setState({ habits: habits, loading:false})
     })
+
+    events.todo.map(async(item, index) => {
+      const todoUrl = `http://localhost:8080/events/${item}`
+      const todoResponse = await fetch(todoUrl)
+      const todoData = await todoResponse.json()
+      let todos = this.state.todos
+      todos.push(todoData.data)
+      this.setState({ todos: todos, loading:false})
+    })
+
+    // let date = new Date()
+    // date = date.getDate()
+
+    // events.habit.map((item, index) => {
+    //   if ((events.habit.some(el => el.name === item.name))) {
+    //     this.setState(state => {
+    //       return { habits: [...state.habits, {name:item.name, done:[{checked: 0, date: date}]}] }
+    //     })
+    //   }
+    // })
 
   }
 
-  addData = (text, type) => {
-    console.log(text)
-    let test = this.state.test
-    test.habit.push({name: text, type: type})
-    this.setState({
-      test: test
-    })
+  addData = async(text, type) => {
+    if (type === "Habit") {
+      let habits = this.state.habits
+      habits.push({user: 'mars', name: text, type: "habit"})
+      this.setState({habits: habits})
+    }
+
+    if (type === "Todo"){
+      let data = {user: "mars", name: text, type: "todo"}
+      let todos = this.state.todos
+      todos.push(data)
+      this.setState(todos)
+
+      const url = 'http://localhost:8080/events/'
+      const post = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(data)
+      })
+    }
+    
   }
 
   checkHabit = (text, value) => {
@@ -111,8 +139,8 @@ class App extends React.Component {
           <Switch>
             <Route path="/" exact component={Dashboard} />
             <Route path="/editor" render={(props) => (
-              <All habits={this.state.test ? this.state.test.habit : this.state.default}
-                todos={this.state.test ? this.state.test.todo : this.state.default}
+              <All habits={!this.state.loading ? this.state.habits : this.state.default}
+                todos={!this.state.loading ? this.state.todos : this.state.default}
                 weeklyGoals={this.state.weeklyGoals}
                 priorities={this.state.priorities} isAuthed={true}
                 addData={this.addData}

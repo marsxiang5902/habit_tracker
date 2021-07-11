@@ -28,16 +28,12 @@ function HabitList(props) {
     );
 
     function handleEdit(event, del){
-        props.changeData()
+        // props.changeData()
     }
 
-    function handleEdit(event, del){
-        props.changeData()
-    }
 
     function handleSubmit(event) {
         event.preventDefault();
-        console.log(name)
         props.addData(name, props.type)
         setFormVisible(false)
         setName("")
