@@ -1,6 +1,6 @@
 "use strict";
 const express = require('express')
-const { addEvent, getEvent, getEvents, getEventHistory, updateEvent, updateEventHistory } = require('../database/interactEvent')
+const { addEvent, getEvent, getEvents, getEventHistory, updateEvent, updateEventHistory, removeEvent } = require('../database/interactEvent')
 const { ObjectId } = require('mongodb');
 
 
@@ -8,7 +8,11 @@ let eventsRouter = express.Router()
 eventsRouter.use('/:_id/', (req, res, next) => {
     try {
         req.body._id = ObjectId(req.params._id)
-    } catch (err) { req.body._id = req.params._id } finally { next() }
+    } catch (err) {
+        req.body._id = req.params._id
+    } finally {
+        next()
+    }
 })
 eventsRouter.post('/', async (req, res, next) => {
     try {
@@ -43,6 +47,12 @@ eventsRouter.put('/:id', async (req, res, next) => { // patch?
 eventsRouter.put('/:id/history', async (req, res, next) => { // patch?
     try {
         await updateEventHistory(req.body._id, req.body.updObj, req.body.historyManager)
+        res.send()
+    } catch (err) { next(err) }
+})
+eventsRouter.delete('/:id', async (req, res, next) => {
+    try {
+        await removeEvent(req.body._id)
         res.send()
     } catch (err) { next(err) }
 })

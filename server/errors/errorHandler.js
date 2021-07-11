@@ -11,6 +11,10 @@ function logErrorMiddleware(err, req, res, next) {
     next(err, req, res, next)
 }
 function returnError(err, req, res, next) {
+    if (!(err instanceof BaseError)) {
+        err.message = 'Server error.'
+        err.description = 'Server error.'
+    }
     res.status(err.statusCode || 500).json({ error: err.message, description: err.description })
 }
 function isOperationalError(err) {

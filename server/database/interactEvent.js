@@ -98,4 +98,21 @@ async function updateEventHistory(_id, updObj, historyManager) {
     await updateEvent(_id, { historyManager: historyManager })
 }
 
-module.exports = { addEvent, getEvent, getEvents, getEventHistory, updateEvent, updateEventHistory }
+async function removeEvent(_id) {
+    let events_col = get_events_col(), users_col = get_users_col()
+    let events_res = await events_col.findOne({ _id: _id })
+    if (events_res) {
+        let user = events_res.user, type = events_res.type
+        let users_res = await users_col.findOne({ user: user })
+        if (users_res) {
+            events_col.deleteOne({ _id: _id })
+            users_col.updateOne({ user: user }, { "$pull": { [`eventLists.${type}`]: _id } })
+        } else {
+            throw new httpStatusErrors.INTERNAL_SERVER(`Event has invalid user.`)
+        }
+    } else {
+        throw new httpStatusErrors.NOT_FOUND(`Event with id ${_id} not found.`)
+    }
+}
+
+module.exports = { addEvent, getEvent, getEvents, getEventHistory, updateEvent, updateEventHistory, removeEvent }

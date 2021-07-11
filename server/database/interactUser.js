@@ -61,10 +61,21 @@ module.exports = {
         }
         let users_col = get_users_col()
         let res = users_col.findOne({ user: user })
-        if (!res) {
-            throw new httpStatusErrors.NOT_FOUND(`User ${user} not found.`)
-        } else {
+        if (res) {
             await users_col.updateOne({ user: user }, { "$set": updObj })
+        } else {
+            throw new httpStatusErrors.NOT_FOUND(`User ${user} not found.`)
+        }
+    },
+    removeUser: async function removeUser(user) {
+        // not indexed by id since i don't expect this to get called too much
+        let events_col = get_events_col(), users_col = get_users_col()
+        let res = await users_col.findOne({ user: user })
+        if (res) {
+            await users_col.deleteOne({ user: user })
+            console.log(await events_col.deleteMany({ user: user }))
+        } else {
+            throw new httpStatusErrors.NOT_FOUND(`User ${user} not found.`)
         }
     }
 }

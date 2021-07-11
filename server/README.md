@@ -78,7 +78,7 @@ Omitted fields are blank.
 {
   "user": "<the user it belongs to>",
   "name": "<the name of the event>",
-  "type: "<the type of the event>",
+  "type": "<the type of the event>",
   *"args": <arguments passed to certain event types>
 }
 ```

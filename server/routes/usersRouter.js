@@ -1,7 +1,7 @@
 "use strict";
 const express = require('express')
 const User = require('../Users/User')
-const { addUser, getAllUsers, getUser, updateUser } = require('../database/interactUser')
+const { addUser, getAllUsers, getUser, updateUser, removeUser } = require('../database/interactUser')
 const { subclasses } = require('../TimedEvents/TimedEventClasses')
 const httpStatusErrors = require('../errors/httpStatusErrors')
 const { getEvents } = require('../database/interactEvent')
@@ -60,6 +60,13 @@ usersRouter.get('/:user/events', async (req, res, next) => {
 usersRouter.put('/:user', async (req, res, next) => { // patch?
     try {
         await updateUser(req.params.user, req.body.updObj)
+        res.send()
+    } catch (err) { next(err) }
+})
+usersRouter.delete('/:user', async (req, res, next) => {
+    try {
+        await removeUser(req.params.user)
+        res.send()
     } catch (err) { next(err) }
 })
 
