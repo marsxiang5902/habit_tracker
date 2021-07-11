@@ -69,7 +69,7 @@ Omitted fields are blank.
 
 ### `/events`
 
-#### Create an event
+#### Create an Event
 
 * Verb: **POST**
 * URL: `/`
@@ -158,7 +158,7 @@ Omitted fields are blank.
 
 ### `/users`
 
-#### Create a user
+#### Create a User
 
 * Verb: **POST**
 * URL: `/`
@@ -169,7 +169,7 @@ Omitted fields are blank.
 }
 ```
 
-#### Get information of user
+#### Get Information of User
 
 * Verb: **GET**
 * URL: `/:user`
@@ -186,7 +186,7 @@ Omitted fields are blank.
 }
 ```
 
-#### Get events of user
+#### Get Events of User
 
 * Verb: **GET**
 * URL: `/:user/events`
@@ -210,7 +210,7 @@ Omitted fields are blank.
 ```
 * See [Get an Event](#get-an-event) for the returned events.
 
-#### Edit a user
+#### Edit a User
 
 * Verb: **PUT**
 * URL: `/:user`
@@ -224,9 +224,8 @@ Omitted fields are blank.
   }
 }
 ```
-* Changes only specified fields to values. The allowed fields to change in this function are:
+* Sets the specified fields to their respective values and leaves everything else the same. The allowed fields to change in this function are:
   * `user`
-
 
 
 
