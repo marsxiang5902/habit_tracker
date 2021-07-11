@@ -1,12 +1,33 @@
 import React, {useState} from 'react';
 import * as Icons from "react-icons/fa";
-import {Form} from 'react-bootstrap'
+import {Form, Popover, OverlayTrigger, Button} from 'react-bootstrap'
 
 
 function HabitList(props){
 
     const [formVisible, setFormVisible] = useState(false)
     const [name, setName] = useState("")
+    const [popoverVisible, setPopoverVisible] = useState(false)
+
+    const popover = (
+        <Popover id="popover-basic">
+          <Popover.Title as="h3">Edit {props.type}</Popover.Title>
+          <Popover.Content>
+            <Form onSubmit={handleEdit}>
+            <Form.Group>
+                <Form.Control type="text" placeholder={`${props.type} Name`} value={name} onChange={(e) => setName(e.target.value)}/>
+                <Button variant="danger" onClick={handleEdit('delete')} style={{marginTop: "10px"}}>
+                    Delete
+                </Button>
+            </Form.Group>
+            </Form>
+          </Popover.Content>
+        </Popover>
+    );
+
+    function handleEdit(event, del){
+        props.changeData()
+    }
 
     function handleSubmit(event){
         event.preventDefault();
@@ -33,21 +54,10 @@ function HabitList(props){
                                 <h5>{item.name}</h5>
                                 {/* <p>{item.description}</p> */}
                             </div>
+                            <OverlayTrigger trigger="click" placement="right" overlay={popover}>
+                                <Icons.FaPencilAlt style={{marginRight:'20px'}} onClick={(e) => {setPopoverVisible(!popoverVisible)}}></Icons.FaPencilAlt>
+                            </OverlayTrigger>
                         </div>
-                    );
-                })}
-                {props.addedData.map((item, index) => {
-                    return (
-                        (item.type === props.type ?
-                        <div className="card-2 border-2" key={index}>
-
-                            {/* <h4 className="habit">{pct(item.done)}%</h4> */}
-                            <div className="habit habit-2">
-                                <h5>{item.name}</h5>
-                                {/* <p>{item.description}</p> */}
-                            </div>
-                        </div> : null )
-                        
                     );
                 })}
                 {formVisible ? 
