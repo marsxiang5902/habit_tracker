@@ -1,5 +1,5 @@
 "use strict";
-const { assert } = require('assert')
+const assert = require('assert')
 const { get_users_col, get_events_col } = require('./db_setup')
 const User = require('../Users/User')
 const { subclasses } = require('../TimedEvents/TimedEventClasses')

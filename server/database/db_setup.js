@@ -1,5 +1,5 @@
 "use strict";
-const { assert } = require("assert");
+const assert = require('assert');
 const { MongoClient } = require("mongodb");
 const { db_username, db_password, db_cluster, db_name } = require('../config.json');
 const httpStatusErrors = require('../errors/httpStatusErrors')

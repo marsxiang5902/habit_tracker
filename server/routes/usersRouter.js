@@ -5,7 +5,7 @@ const { addUser, getAllUsers, getUser, updateUser } = require('../database/inter
 const { subclasses } = require('../TimedEvents/TimedEventClasses')
 const httpStatusErrors = require('../errors/httpStatusErrors')
 const { getEvents } = require('../database/interactEvent')
-const { ObjectId } = require('mongodb');
+const { ObjectId } = require('mongodb')
 
 let usersRouter = express.Router()
 
