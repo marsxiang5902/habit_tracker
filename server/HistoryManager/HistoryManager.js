@@ -3,9 +3,10 @@
 const assert = require('assert')
 const MILLS_IN_MIN = 1000 * 60, MILLS_IN_DAY = MILLS_IN_MIN * 60 * 24
 const getDay = function (date = new Date()) {
+    // HARDCODE: USE LOCAL TIMEZONE OFFSET
     return Math.floor((date.getTime() - date.getTimezoneOffset() * MILLS_IN_MIN) / MILLS_IN_DAY)
 }
-const checkData = function (data, minDaysBefore = 0, maxDaysBefore = 1000000) {
+const checkData = function (data, minDaysBefore = 0, maxDaysBefore = getDay()) {
     // check if data is in the form of a object: {daysbefore: data}
     try {
         for (let key in data) {
