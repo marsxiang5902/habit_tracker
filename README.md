@@ -1,30 +1,45 @@
 # habit_tracker
 
-We need a name
+## Description
 
-# Backend API functions to write
+An app for tracking and displaying events and implementing ideas from researched sources.
 
-## Users
+## Installation
 
- * get user info
- * get user's events
- * create user
- * modify user info
+* Clone the directory
 
-### Groups (later)
+```
+git clone https://github.com/marsxiang5902/habit_tracker
+```
 
- * get group info, members
- * create group
+* Install the client dependencies (in `client`)
 
-### Admin
+```
+npm install
+```
 
- * delete user
- * delete group
- * get specific event
+* Install the server dependencies (in `server`)
 
-## Events
+```
+npm install
+```
 
- * create event
- * modify events
+## Running
 
-## Tracking: data / display
+* Run the client (in `client`)
+```
+npm start
+```
+
+* Run the server (in `server`)
+```
+node app.js
+```
+* Or alternatively to use nodemon, which relaunches the server when you save a file:
+```
+npm run dev
+```
+
+## API Documentation
+
+See the API Documentation in the `server` folder.
