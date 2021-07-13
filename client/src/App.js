@@ -56,22 +56,22 @@ class App extends React.Component {
     this.setState({ test: events })
     console.log(this.state.test)
 
-    events.habit.map(async(item, index) => {
+    events.habit.map(async (item, index) => {
       const habitUrl = `http://localhost:8080/events/${item}`
       const habitResponse = await fetch(habitUrl)
       const habitData = await habitResponse.json()
       let habits = this.state.habits
       habits.push(habitData.data)
-      this.setState({ habits: habits, loading:false})
+      this.setState({ habits: habits, loading: false })
     })
 
-    events.todo.map(async(item, index) => {
+    events.todo.map(async (item, index) => {
       const todoUrl = `http://localhost:8080/events/${item}`
       const todoResponse = await fetch(todoUrl)
       const todoData = await todoResponse.json()
       let todos = this.state.todos
       todos.push(todoData.data)
-      this.setState({ todos: todos, loading:false})
+      this.setState({ todos: todos, loading: false })
     })
 
     // let date = new Date()
@@ -87,15 +87,15 @@ class App extends React.Component {
 
   }
 
-  addData = async(text, type) => {
+  addData = async (text, type) => {
     if (type === "Habit") {
       let habits = this.state.habits
-      habits.push({user: 'mars', name: text, type: "habit"})
-      this.setState({habits: habits})
+      habits.push({ user: 'mars', name: text, type: "habit" })
+      this.setState({ habits: habits })
     }
 
-    if (type === "Todo"){
-      let data = {user: "mars", name: text, type: "todo"}
+    if (type === "Todo") {
+      let data = { user: "mars", name: text, type: "todo" }
       let todos = this.state.todos
       todos.push(data)
       this.setState(todos)
@@ -106,7 +106,7 @@ class App extends React.Component {
         body: JSON.stringify(data)
       })
     }
-    
+
   }
 
   checkHabit = (text, value) => {
@@ -134,8 +134,7 @@ class App extends React.Component {
     return (
       <BrowserRouter>
         <div className="App">
-          <Layout name="🗺 THE PLAN">
-          </Layout>
+          <Layout name="🗺 THE PLAN" />
           <Switch>
             <Route path="/" exact component={Dashboard} />
             <Route path="/editor" render={(props) => (
@@ -144,12 +143,12 @@ class App extends React.Component {
                 weeklyGoals={this.state.weeklyGoals}
                 priorities={this.state.priorities} isAuthed={true}
                 addData={this.addData}
-                addedData={this.state.addedData} 
-                changeData={this.changeData}/>
+                addedData={this.state.addedData}
+                changeData={this.changeData} />
             )} />
             <Route path="/test" component={MyForm} />
             <Route path="/habits" render={(props) => (
-              <Habits habits={this.state.habits}/>
+              <Habits habits={this.state.habits} />
             )} />
 
           </Switch>

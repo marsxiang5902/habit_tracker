@@ -5,10 +5,19 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { Auth0Provider } from "@auth0/auth0-react";
+import config from "./config";
+import urljoin from 'url-join';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Auth0Provider
+      domain={config.auth0_domain}
+      clientId={config.auth0_client_id}
+      redirectUri={urljoin(config.origin, 'callback')}
+    >
+      <App />
+    </Auth0Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
