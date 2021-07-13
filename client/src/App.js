@@ -96,7 +96,7 @@ class App extends React.Component {
   addData = async(text, type) => {
     if (type === "Habit") {
       let habits = this.state.habits
-      habits.push({user: 'mars', name: text, type: "habit"})
+      habits.push({user: 'mars', name: text, type: "habit", completion:[false]})
       this.setState({habits: habits})
     }
 
@@ -115,15 +115,26 @@ class App extends React.Component {
     
   }
 
+
+  //checkbox of habit
   checkHabit = (value, index) => {
     let habits = this.state.habits
     habits[index].completion[0] = value
     this.setState({habits: habits})
-    console.log(habits)
   }
 
-  changeData = (data, updatedValue, deleteTrue) => {
+  changeData = (updatedValue, index, deleteTrue) => {
+    if (deleteTrue === true) {
+      let habits = this.state.habits
+      habits.splice(index, 1)
+      this.setState({habits: habits})
+    }
+    else{
+      let habits = this.state.habits
+      habits[index].name = updatedValue
+      this.setState({habits: habits})
 
+    }
   }
 
   async componentWillUnmount() {

@@ -68,3 +68,8 @@
     color: rgb(216, 95, 25);
     text-decoration: underline;
 }
+
+.button {
+    margin-top: 10px;
+    margin-right: 10px;
+}
