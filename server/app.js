@@ -7,6 +7,7 @@ const { do_db_setup, close_db } = require('./database/db_setup')
 const usersRouter = require('./routes/usersRouter.js')
 const eventsRouter = require('./routes/eventsRouter.js')
 const { logError, returnError, isOperationalError, logErrorMiddleware } = require('./errors/errorHandler')
+const wrapResponse = require('./routes/wrapResponse')
 
 
 do_db_setup()
@@ -23,6 +24,7 @@ app.use('/events/', eventsRouter)
 
 app.use(logErrorMiddleware)
 app.use(returnError)
+app.use(wrapResponse)
 
 process.on('unhandledRejection', err => {
     throw err

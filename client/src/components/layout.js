@@ -49,9 +49,9 @@ function Layout(props) {
                 <hr></hr>
             </div>
             <div className="loginButton">
-                {LoginButton()}
-                {LogoutButton()}
-                {Profile()}
+                <LoginButton />
+                <LogoutButton />
+                <Profile />
             </div>
         </div>
     );
