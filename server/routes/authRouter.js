@@ -12,5 +12,10 @@ authRouter.post('/login', async (req, res, next) => {
         next()
     } catch (err) { next(err) }
 })
+authRouter.post('/logout', async (req, res, next) => {
+    try {
+        next()
+    } catch (err) { next(err) }
+})
 
 module.exports = authRouter

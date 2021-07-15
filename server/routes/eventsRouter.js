@@ -2,7 +2,7 @@
 const express = require('express')
 const { addEvent, getEvent, getEvents, getEventHistory, updateEvent, updateEventHistory, removeEvent } = require('../database/interactEvent')
 const { ObjectId } = require('mongodb');
-
+const { authorizeEndpoint: auth } = require('../permissions/permsMiddleware')
 
 let eventsRouter = express.Router()
 eventsRouter.use('/:_id/', (req, res, next) => {

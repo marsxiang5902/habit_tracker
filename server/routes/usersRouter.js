@@ -2,6 +2,7 @@
 const express = require('express')
 const { addUser, getUser, updateUser, removeUser } = require('../database/interactUser')
 const getUserEvents = require('../services/getUserEvents')
+const { authorizeEndpoint: auth } = require('../permissions/permsMiddleware')
 
 let usersRouter = express.Router()
 
@@ -11,7 +12,7 @@ usersRouter.post('/', async (req, res, next) => {
         next()
     } catch (err) { next(err) }
 })
-usersRouter.get('/:user', async (req, res, next) => {
+usersRouter.get('/:user', auth(['read:self_user']), async (req, res, next) => {
     try {
         let data = await getUser(req.params.user)
         res.locals.data = data

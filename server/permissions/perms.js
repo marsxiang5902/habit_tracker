@@ -1,7 +1,6 @@
 'use strict'
 
 const ALL_PERMS = new Set([
-    'create:user',
     'create:event',
     'read:user',
     'read:event',

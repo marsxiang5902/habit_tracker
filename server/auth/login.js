@@ -16,7 +16,7 @@ async function login(user, password) {
     if (!userRecord) {
         throw new httpStatusErrors.UNAUTHORIZED(`Incorrect username or password.`)
     }
-    if (await argon2.verify(userRecord.password_hashed, password)) {
+    if (await argon2.verify(userRecord.auth.password_hashed, password)) {
         return generateJWT({ user: userRecord.user, roles: userRecord.roles })
     } else {
         throw new httpStatusErrors.UNAUTHORIZED(`Incorrect username or password.`)

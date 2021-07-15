@@ -11,7 +11,6 @@ const ALL_ROLES = {
         'update:self_event',
         'delete:self_event',
     ]), 'admin': new Set([
-        'create:user',
         'create:event',
         'read:user',
         'read:event',
