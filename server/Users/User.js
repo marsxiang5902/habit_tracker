@@ -14,7 +14,7 @@ module.exports = class User {
         this.roles = ['default']
     }
     async init() {
-        this.password_hashed = await argon2.hash(password)
+        this.password_hashed = await argon2.hash(this.password)
         delete this.password
     }
 }

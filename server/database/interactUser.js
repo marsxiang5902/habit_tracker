@@ -7,11 +7,11 @@ const httpStatusErrors = require('../errors/httpStatusErrors')
 
 const USER_UPDATE_ALLOWED_KEYS = new Set(['name']) // api checks frontend updates
 
-async function addUser(user) {
+async function addUser(user, password) {
     let users_col = get_users_col()
     let res = await users_col.findOne({ user: user })
     if (!res) {
-        let newUser = new User(user)
+        let newUser = new User(user, password)
         await newUser.init()
         await users_col.insertOne(newUser);
     } else {

@@ -13,6 +13,16 @@ const httpStatusErrors = {
             super(name, statusCode, isOperational, description)
         }
     },
+    UNAUTHORIZED: class unauthorizedError extends BaseError {
+        constructor(
+            name,
+            statusCode = 401,
+            description = 'Unauthorized',
+            isOperational = true
+        ) {
+            super(name, statusCode, isOperational, description)
+        }
+    },
     NOT_FOUND: class notFoundError extends BaseError {
         constructor(
             name,

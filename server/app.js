@@ -5,7 +5,8 @@ const helmet = require('helmet')
 const morgan = require('morgan')
 const { do_db_setup, close_db } = require('./database/db_setup')
 const usersRouter = require('./routes/usersRouter.js')
-const eventsRouter = require('./routes/eventsRouter.js')
+const eventsRouter = require('./routes/authRouter.js')
+const authRouter = require('./routes/authRouter.js')
 const { logError, returnError, isOperationalError, logErrorMiddleware } = require('./errors/errorHandler')
 const wrapResponse = require('./routes/wrapResponse')
 
@@ -21,6 +22,7 @@ app.use(morgan('combined'))
 
 app.use('/users/', usersRouter)
 app.use('/events/', eventsRouter)
+app.use('/auth/', authRouter)
 
 app.use(logErrorMiddleware)
 app.use(returnError)

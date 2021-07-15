@@ -7,7 +7,7 @@ let usersRouter = express.Router()
 
 usersRouter.post('/', async (req, res, next) => {
     try {
-        await addUser(req.body.user)
+        await addUser(req.body.user, req.body.password)
         next()
     } catch (err) { next(err) }
 })
