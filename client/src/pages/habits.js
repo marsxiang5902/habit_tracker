@@ -1,9 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import '../static/page.css'
 
-function Habits(props){
-
-
+function Habits(props) {
     return(
         <>
             {props.habits.map((item, index) => {

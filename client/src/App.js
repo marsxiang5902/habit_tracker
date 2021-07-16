@@ -4,13 +4,17 @@ import React from 'react';
 import './App.css';
 import { Button } from 'evergreen-ui';
 import Layout from './components/layout';
-import { Route, BrowserRouter, Switch } from 'react-router-dom';
+import { Route, Switch, withRouter } from 'react-router-dom';
 import All from './pages/all';
 import Dashboard from './pages/dashboard';
 import MyForm from './components/form';
 import axios from 'axios';
 import Habits from './pages/habits'
 import Cues from './pages/cues';
+import Signup from './auth/Signup';
+import Login from './auth/Login';
+import { defaultSessionContext, sessionContext } from './auth/sessionContext'
+import jwt from 'jsonwebtoken';
 
 
 class App extends React.Component {
@@ -56,7 +60,7 @@ class App extends React.Component {
     const data = await response.json()
     let events = data.data.eventLists
 
-    events.habit.map(async(item, index) => {
+    events.habit.map(async (item, index) => {
       const habitUrl = `http://localhost:8080/events/${item}`
       const habitResponse = await fetch(habitUrl)
       const habitData = await habitResponse.json()
@@ -68,15 +72,16 @@ class App extends React.Component {
       habits.push(temp)
       this.setState({ habits: habits, loading:false})
 
+
     })
 
-    events.todo.map(async(item, index) => {
+    events.todo.map(async (item, index) => {
       const todoUrl = `http://localhost:8080/events/${item}`
       const todoResponse = await fetch(todoUrl)
       const todoData = await todoResponse.json()
       let todos = this.state.todos
       todos.push(todoData.data)
-      this.setState({ todos: todos, loading:false})
+      this.setState({ todos: todos, loading: false })
     })
 
     console.log(this.state.habits)
@@ -100,10 +105,11 @@ class App extends React.Component {
       let habits = this.state.habits
       habits.push({user: 'mars', name: text, type: "habit", completion:[false]})
       this.setState({habits: habits})
+
     }
 
-    if (type === "Todo"){
-      let data = {user: "mars", name: text, type: "todo"}
+    if (type === "Todo") {
+      let data = { user: "mars", name: text, type: "todo" }
       let todos = this.state.todos
       todos.push(data)
       this.setState(todos)
@@ -165,9 +171,32 @@ class App extends React.Component {
     //place url post here for state of addedHabits
   }
 
+  handleLogin = token => {
+    if (token) {
+      let decoded = jwt.decode(token)
+      if ('user' in decoded && 'perms' in decoded) {
+        this.setState({
+          session: {
+            isAuthed: true,
+            jwt: token,
+            user: decoded.user,
+            perms: decoded.perms
+          }
+        })
+        this.props.history.push('/')
+      }
+    }
+  }
+
+  handleLogout = () => {
+    console.log('here')
+    this.setState({ session: defaultSessionContext })
+    this.props.history.push('/')
+  }
+
   render() {
     return (
-      <BrowserRouter>
+      <sessionContext.Provider value={this.state.session}>
         <div className="App">
           
           <Switch>
@@ -196,6 +225,12 @@ class App extends React.Component {
                 <Habits habits={this.state.habits} checkHabit={this.checkHabit}/>
               </>
             )} />
+            <Route path="/signup">
+              <Signup handleLogin={this.handleLogin} />
+            </Route>
+            <Route path="/login">
+              <Login handleLogin={this.handleLogin} />
+            </Route>
 
             <Route path="/cues" render={(props) => (
               <>
@@ -210,9 +245,8 @@ class App extends React.Component {
 
           </Switch>
         </div>
-      </BrowserRouter>
+      </sessionContext.Provider>
     );
   }
 }
-
-export default App;
+export default withRouter(App);

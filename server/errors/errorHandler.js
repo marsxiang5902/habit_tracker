@@ -8,14 +8,17 @@ function logError(err) {
 }
 function logErrorMiddleware(err, req, res, next) {
     logError(err)
-    next(err, req, res, next)
+    next(err)
 }
 function returnError(err, req, res, next) {
     if (!(err instanceof BaseError)) {
         err.message = 'Server error.'
         err.description = 'Server error.'
     }
-    res.status(err.statusCode || 500).json({ error: err.message, description: err.description })
+    res.status(err.statusCode || 500)
+    res.locals.error = err.message
+    res.locals.error_description = err.description
+    next()
 }
 function isOperationalError(err) {
     return err instanceof BaseError ? err.isOperational : true
