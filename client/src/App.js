@@ -10,6 +10,7 @@ import Dashboard from './pages/dashboard';
 import MyForm from './components/form';
 import axios from 'axios';
 import Habits from './pages/habits'
+import Cues from './pages/cues';
 
 
 class App extends React.Component {
@@ -20,13 +21,14 @@ class App extends React.Component {
       loading: true,
       habits: [],
       todos: [],
-      weeklyGoals: [
-        { name: 'Pick up groceries', done: 1 },
-        { name: 'Buy Google', done: 0 },
-        { name: 'Solve World Hunger', done: 0 }
+      cues: [
+        {habitId: "60e89e88f7486f49781951aa", link:"https://i.ytimg.com/vi/uwMGMEYYFZw/maxresdefault.jpg", type: "image"},
+        {habitId: "60e892b8855b3f1b0c44dc5a", link:"https://api.memegen.link/images/custom/_/my_background.png?background=https://deadline.com/wp-content/uploads/2016/12/walt-disney-studios.png", type: "image"},
+        {habitId: "60e892bf855b3f1b0c44dc5b", link:"https://soundcloud.com/seratostudio/doms-demise?in=seratostudio/sets/concert-hall-vol-1", type:"music"},
+        {habitId: "60e89e88f7486f49781951aa", link:"https://open.spotify.com/track/2zQl59dZMzwhrmeSBEgiXY?si=db6cc9af8b4d4bce", type: "music"},
+        {habitId: "60e89e88f7486f49781951aa", link:"https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/662143949&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true", type: "music"},
       ],
-      priorities: [{ name: 'Learn Fractions' }, { name: 'Solving World Hunger' }, { name: 'Be a better person' }],
-      test: null,
+      name: "",
     })
   }
 
@@ -93,7 +95,7 @@ class App extends React.Component {
 
   }
 
-  addData = async(text, type) => {
+  addData = async(text, type, habitId) => {
     if (type === "Habit") {
       let habits = this.state.habits
       habits.push({user: 'mars', name: text, type: "habit", completion:[false]})
@@ -107,10 +109,18 @@ class App extends React.Component {
       this.setState(todos)
 
       const url = 'http://localhost:8080/events/'
-      const post = await fetch(url, {
+      await fetch(url, {
         method: "POST",
         body: JSON.stringify(data)
       })
+    }
+
+    //if its a cue
+    else {
+      let data = {habitId: habitId, link: text, type: type}
+      let cues = this.state.cues
+      cues.push(data)
+      this.setState(cues)
     }
     
   }
@@ -123,16 +133,30 @@ class App extends React.Component {
     this.setState({habits: habits})
   }
 
-  changeData = (updatedValue, index, deleteTrue) => {
+  changeData = (updatedValue, index, deleteTrue, type) => {
     if (deleteTrue === true) {
-      let habits = this.state.habits
-      habits.splice(index, 1)
-      this.setState({habits: habits})
+      if (type === "Habit"){
+        let habits = this.state.habits
+        habits.splice(index, 1)
+        this.setState({habits: habits})
+      }
+      if (type === "Todo") {
+        let todos = this.state.todos
+        todos.splice(index, 1)
+        this.setState({todos:todos})
+      }
     }
     else{
-      let habits = this.state.habits
-      habits[index].name = updatedValue
-      this.setState({habits: habits})
+      if (type === "Habit"){
+        let habits = this.state.habits
+        habits[index].name = updatedValue
+        this.setState({habits: habits})
+      }
+      if (type === "Todo") {
+        let todos = this.state.todos
+        todos[index].name = updatedValue
+        this.setState({todos:todos})
+      }
 
     }
   }
@@ -145,23 +169,44 @@ class App extends React.Component {
     return (
       <BrowserRouter>
         <div className="App">
-          <Layout name="🗺 THE PLAN">
-          </Layout>
+          
           <Switch>
             <Route path="/" exact component={Dashboard} />
-            <Route path="/editor" render={(props) => (
-              <All habits={!this.state.loading ? this.state.habits : this.state.default}
+            <Route path="/editor" render={(props) => {
+              return(
+                <>
+                <Layout name="🗺 THE PLAN">
+                </Layout>
+                <All habits={!this.state.loading ? this.state.habits : this.state.default}
+                cues={this.state.cues}
                 todos={!this.state.loading ? this.state.todos : this.state.default}
                 weeklyGoals={this.state.weeklyGoals}
                 priorities={this.state.priorities} isAuthed={true}
                 addData={this.addData}
                 addedData={this.state.addedData} 
                 changeData={this.changeData}/>
-            )} />
+                </>
+              )
+            }}/>
             <Route path="/test" component={MyForm} />
             <Route path="/habits" render={(props) => (
-              <Habits habits={this.state.habits} checkHabit={this.checkHabit}/>
+              <>
+                <Layout name="🗺 THE LITTLE THINGS">
+                </Layout>
+                <Habits habits={this.state.habits} checkHabit={this.checkHabit}/>
+              </>
             )} />
+
+            <Route path="/cues" render={(props) => (
+              <>
+              <Layout name="🗺 THE TRIGGERS">
+              </Layout>
+              <Cues habits={!this.state.loading ? this.state.habits : this.state.default}
+              cues={this.state.cues}
+              addData={this.addData}
+              />
+              </>
+            )}/>
 
           </Switch>
         </div>

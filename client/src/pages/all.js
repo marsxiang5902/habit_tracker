@@ -28,23 +28,22 @@ const pct = (items) => {
 }
 
 function All(props) {
-
     return (
         <>
             <div className="formatter">
                 <div className="container" id="habits">
-                    <DataList addedData={props.addedData} data={props.habits} addData={props.addData} changeData={props.changeData} title="Daily Habits" type="Habit"/>
+                    <DataList addedData={props.addedData} data={props.habits} addData={props.addData} changeData={props.changeData} cues={props.cues} title="Daily Habits" type="Habit"/>
                 </div>
                 <div className="container" id="todos">
-                    <DataList addedData={props.addedData} data={props.todos} addData={props.addData} title="Todos" type="Todo" />
+                    <DataList addedData={props.addedData} data={props.todos} addData={props.addData} changeData={props.changeData} title="Todos" type="Todo" />
                 </div>
-                <div className="container" id="weeklygoal">
-                    <DataList addedData={props.addedData} data={props.weeklyGoals} addData={props.addData} title="Weekly Goals" type="Weekly Goal" />
+                {/* <div className="container" id="weeklygoal">
+                    <DataList addedData={props.addedData} data={props.weeklyGoals} addData={props.addData} changeData={props.changeData} title="Weekly Goals" type="Weekly Goal" />
                 </div>
-                {/* propbably limit this to three for helping people focus (no add button) */}
+                propbably limit this to three for helping people focus (no add button)
                 <div className="container" id="priorities">
-                    <DataList addedData={props.addedData} data={props.priorities} addData={props.addData} title="Priorities" type="Priority" />
-                </div>
+                    <DataList addedData={props.addedData} data={props.priorities} addData={props.addData} changeData={props.changeData} title="Priorities" type="Priority" />
+                </div> */}
             </div>
         </>
     );

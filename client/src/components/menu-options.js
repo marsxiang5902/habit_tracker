@@ -11,16 +11,15 @@ export const SidebarData = [
     cName: 'nav-text'
   },
   {
-    title: 'Editor',
-    path: '/editor',
-    icon: <Icons.FaPencilAlt />,
-    cName: 'nav-text',
-    pageTitle: "🗺 THE PLAN",
-  },
-  {
     title: 'Habits',
     path: '/habits',
     icon: <Icons.FaRegCheckSquare />,
+    cName: 'nav-text'
+  },
+  {
+    title: 'Cues',
+    path: '/cues',
+    icon: <Icons.FaBullhorn />,
     cName: 'nav-text'
   },
   {
@@ -34,5 +33,11 @@ export const SidebarData = [
     path: '/data',
     icon: <Icons.FaDatabase />,
     cName: 'nav-text'
-  }
+  },
+  {
+    title: 'Editor',
+    path: '/editor',
+    icon: <Icons.FaPencilAlt />,
+    cName: 'nav-text',
+  },
 ];

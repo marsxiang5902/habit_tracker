@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import { Checkbox } from 'evergreen-ui';
 import '../static/page.css'
 
 function Habits(props){
@@ -10,10 +9,11 @@ function Habits(props){
             {props.habits.map((item, index) => {
                     return (
                         <div className="habit-card" key={index}>
-                            <Checkbox
+                            <input type="checkbox" className="checkbox"
                                 checked={item.completion[0]}
-                                onChange={e => (props.checkHabit(e.target.checked, index))}
-                            />
+                                onChange={e => (props.checkHabit(e.target.checked, index))}>
+                            </input>
+                            
                             <div className="habit">
                                 <h5 style={{marginBottom: "0px"}}>{item.name}</h5>
                             </div>

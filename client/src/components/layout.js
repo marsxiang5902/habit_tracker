@@ -13,7 +13,6 @@ function Layout(props) {
     const showMenu = () => {
         setMenu(!menu);
     };
-
     return (
         <div className="header">
             <div className="navbar">
