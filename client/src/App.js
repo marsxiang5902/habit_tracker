@@ -33,6 +33,7 @@ class App extends React.Component {
         { habitId: "60e89e88f7486f49781951aa", link: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/662143949&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true", type: "music" },
       ],
       name: "",
+      session: defaultSessionContext
     })
   }
 
