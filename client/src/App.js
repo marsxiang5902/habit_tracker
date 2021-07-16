@@ -58,16 +58,20 @@ class App extends React.Component {
     const response = await fetch(url)
     const data = await response.json()
     let events = data.data.eventLists
-    this.setState({ test: events })
-    console.log(this.state.test)
 
     events.habit.map(async (item, index) => {
       const habitUrl = `http://localhost:8080/events/${item}`
       const habitResponse = await fetch(habitUrl)
       const habitData = await habitResponse.json()
+      const habitHistoryUrl = `http://localhost:8080/events/${item}/history`
+      const habitHistoryResponse = await fetch(habitHistoryUrl)
+      const habitHistoryData = await habitHistoryResponse.json()
       let habits = this.state.habits
-      habits.push(habitData.data)
-      this.setState({ habits: habits, loading: false })
+      let temp = {...habitData.data, completion: habitHistoryData.data}
+      habits.push(temp)
+      this.setState({ habits: habits, loading:false})
+
+
     })
 
     events.todo.map(async (item, index) => {
@@ -78,6 +82,9 @@ class App extends React.Component {
       todos.push(todoData.data)
       this.setState({ todos: todos, loading: false })
     })
+
+    console.log(this.state.habits)
+
 
     // let date = new Date()
     // date = date.getDate()
@@ -95,8 +102,9 @@ class App extends React.Component {
   addData = async (text, type) => {
     if (type === "Habit") {
       let habits = this.state.habits
-      habits.push({ user: 'mars', name: text, type: "habit" })
-      this.setState({ habits: habits })
+      habits.push({user: 'mars', name: text, type: "habit", completion:[false]})
+      this.setState({habits: habits})
+
     }
 
     if (type === "Todo") {
@@ -114,21 +122,26 @@ class App extends React.Component {
 
   }
 
-  checkHabit = (text, value) => {
-    this.state.test.habit.map((item, index) => {
-      // if (item.done.length() === 0){
-      //   this.setState(state => {
-      //     let temp = [...state.habits]
-      //     temp.done = [[0, date]]
-      //     return { habits: temp }
-      //   })
-      // } 
 
-    })
+  //checkbox of habit
+  checkHabit = (value, index) => {
+    let habits = this.state.habits
+    habits[index].completion[0] = value
+    this.setState({habits: habits})
   }
 
-  changeData = (data, updatedValue, deleteTrue) => {
+  changeData = (updatedValue, index, deleteTrue) => {
+    if (deleteTrue === true) {
+      let habits = this.state.habits
+      habits.splice(index, 1)
+      this.setState({habits: habits})
+    }
+    else{
+      let habits = this.state.habits
+      habits[index].name = updatedValue
+      this.setState({habits: habits})
 
+    }
   }
 
   async componentWillUnmount() {
@@ -176,7 +189,7 @@ class App extends React.Component {
             )} />
             <Route path="/test" component={MyForm} />
             <Route path="/habits" render={(props) => (
-              <Habits habits={this.state.habits} />
+              <Habits habits={this.state.habits} checkHabit={this.checkHabit}/>
             )} />
             <Route path="/signup">
               <Signup handleLogin={this.handleLogin} />

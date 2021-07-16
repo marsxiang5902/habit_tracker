@@ -9,35 +9,39 @@ function HabitList(props) {
 
     const [formVisible, setFormVisible] = useState(false)
     const [name, setName] = useState("")
-    const [popoverVisible, setPopoverVisible] = useState(false)
+    const [popoverVisible, setPopoverVisible] = useState(-1)
+    const [del, setDelete] = useState(false)
 
-    const popover = (
+    function handleEdit(event) {
+        event.preventDefault();
+        props.changeData(name, popoverVisible, del)
+        setPopoverVisible(-1)
+        setName("")
+    }
+
+    function handleSubmit(event) {
+        event.preventDefault();
+        console.log(event.target.value)
+        props.addData(name, props.type)
+        setFormVisible(false)
+        setName("")
+    }
+
+    const popover = (index) => (
         <Popover id="popover-basic">
           <Popover.Title as="h3">Edit {props.type}</Popover.Title>
           <Popover.Content>
-            <Form onSubmit={handleEdit}>
+            <Form onSubmit={(e) => handleEdit(e, index, false)}>
             <Form.Group>
                 <Form.Control type="text" placeholder={`${props.type} Name`} value={name} onChange={(e) => setName(e.target.value)}/>
-                <Button variant="danger" onClick={handleEdit('delete')} style={{marginTop: "10px"}}>
-                    Delete
-                </Button>
+                <Button className="button" variant="success" type="submit" value='change'>Change</Button>
+                <Button className="button" variant="danger" type="submit" value='delete' onClick={(e) => setDelete(true)}>Delete</Button>
             </Form.Group>
             </Form>
           </Popover.Content>
         </Popover>
     );
 
-    function handleEdit(event, del){
-        // props.changeData()
-    }
-
-
-    function handleSubmit(event) {
-        event.preventDefault();
-        props.addData(name, props.type)
-        setFormVisible(false)
-        setName("")
-    }
 
     return (
         <>
@@ -56,8 +60,8 @@ function HabitList(props) {
                                 <h5>{item.name}</h5>
                                 {/* <p>{item.description}</p> */}
                             </div>
-                            <OverlayTrigger trigger="click" placement="right" overlay={popover}>
-                                <Icons.FaPencilAlt style={{marginRight:'20px'}} onClick={(e) => {setPopoverVisible(!popoverVisible)}}></Icons.FaPencilAlt>
+                            <OverlayTrigger trigger="click" placement="left" overlay={popover(index)} show={popoverVisible === index ? true: false}>
+                                <Icons.FaPencilAlt className="hover" style={{marginRight:'20px'}} onClick={(e) => {setPopoverVisible(popoverVisible === index ? -1: index)}}></Icons.FaPencilAlt>
                             </OverlayTrigger>
                         </div>
                     );

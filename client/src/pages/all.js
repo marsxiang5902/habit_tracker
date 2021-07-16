@@ -1,7 +1,7 @@
 'use strict'
 
 import React, { useState, useEffect } from "react";
-import './page.css'
+import '../static/page.css'
 import { Form } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import * as Icons from "react-icons/fa";
