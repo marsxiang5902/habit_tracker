@@ -94,6 +94,7 @@ async function extractEventMiddleware(req, res, next) {
     let _id = req.params._id;
     try {
         _id = ObjectId(_id)
+        req.body._id = _id
     } catch (err) { } finally {
         let events_col = get_events_col()
         let eventRecord = await events_col.findOne({ _id: req.params._id })

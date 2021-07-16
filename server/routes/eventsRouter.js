@@ -7,6 +7,7 @@ const {
 const { authorizeEndpoint: auth } = require('../permissions/permsMiddleware')
 
 let eventsRouter = express.Router()
+
 eventsRouter.post('/', async (req, res, next) => {
     try {
         await addEvent(req.body.user, req.body.name, req.body.type, req.body.args)

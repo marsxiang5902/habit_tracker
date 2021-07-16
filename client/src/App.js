@@ -72,8 +72,7 @@ class App extends React.Component {
       let temp = { ...habitData.data, completion: habitHistoryData.data }
       habits.push(temp)
       this.setState({ habits: habits, loading: false })
-
-
+      console.log(habitData)
     })
 
     events.todo.map(async (item, index) => {
