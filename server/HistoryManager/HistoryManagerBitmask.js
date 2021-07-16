@@ -1,7 +1,7 @@
 "use strict";
 
 const { HistoryManager, MILLS_IN_DAY, getDay, checkData } = require('./HistoryManager')
-const httpStatusErrors = require('../errors/httpStatusErrors')
+const httpAssert = require('../errors/httpAssert')
 const assert = require('assert')
 
 module.exports = class HistoryManagerBitmask extends HistoryManager {
@@ -9,9 +9,13 @@ module.exports = class HistoryManagerBitmask extends HistoryManager {
         super('bitmask', { date: date, bit: bit })
     }
     static realignDate(data) {
-        if (!('date' in data) || !('bit' in data) || !Number.isInteger(data.date) || !Number.isInteger(data.bit)) {
-            throw new httpStatusErrors.BAD_REQUEST("Data is not valid.")
-        }
+        httpAssert.BAD_REQUEST(
+            'date' in data &&
+            'bit' in data &&
+            Number.isInteger(data.date) &&
+            Number.isInteger(data.bit),
+            `Data is invalid.`
+        )
         let realDate = getDay()
         let dateDiff = realDate - data.date
         data.date = realDate
@@ -27,9 +31,7 @@ module.exports = class HistoryManagerBitmask extends HistoryManager {
         return ret;
     }
     static setHistory(data, updObj) {
-        if (!checkData(updObj)) {
-            throw new httpStatusErrors.BAD_REQUEST(`Data is not valid.`)
-        }
+        httpAssert.BAD_REQUEST(checkData(updObj), `Data is invalid.`)
         this.realignDate(data)
         for (let key in updObj) {
             let daysBefore = parseInt(key)

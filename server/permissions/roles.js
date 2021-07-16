@@ -1,43 +1,39 @@
 'use strict'
 
-const httpStatusErrors = require('../errors/httpStatusErrors')
+const httpAssert = require('../errors/httpAssert')
 
 const ALL_ROLES = {
     'default': new Set([
         'create:event',
-        'read:self_user',
-        'read:self_event',
-        'update:self_user',
-        'update:self_event',
-        'delete:self_event',
+        'read:user_self',
+        'read:event_self',
+        'update:user_self',
+        'update:event_self',
+        'delete:event_self',
     ]), 'admin': new Set([
         'create:event',
         'read:user',
         'read:event',
-        'read:self_user',
-        'read:self_event',
+        'read:user_self',
+        'read:event_self',
         'update:user',
         'update:event',
-        'update:self_user',
-        'update:self_event',
+        'update:user_self',
+        'update:event_self',
         'update:user_roles',
         'delete:user',
         'delete:event',
-        'delete:self_user',
-        'delete:self_event'
+        'delete:user_self',
+        'delete:event_self'
     ])
 }
 
 const ROLES_ORDER = ['default', 'admin']
 
 function checkRoles(roles) {
-    if (!Array.isArray(roles)) {
-        throw new httpStatusErrors.BAD_REQUEST(`Data invalid.`)
-    }
+    httpAssert.BAD_REQUEST(Array.isArray(roles), `Data is invalid.`)
     for (let role in roles) {
-        if (!(role instanceof string) || !(role in ALL_ROLES)) {
-            throw new httpStatusErrors.BAD_REQUEST(`Data invalid.`)
-        }
+        httpAssert.BAD_REQUEST(role instanceof string && role in ALL_ROLES, `Data is invalid.`)
     }
 }
 

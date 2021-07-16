@@ -21,7 +21,7 @@ app.use(express.json())
 app.use(cors())
 app.use(morgan('combined'))
 
-app.use('/auth/', authRouter)
+app.use('/', authRouter)
 app.use('/users/', usersRouter)
 app.use('/events/', eventsRouter)
 

@@ -1,3 +1,5 @@
+'use strict'
+
 const REQUIRED_FIELDS = {
     'data': {},
     'error': "",

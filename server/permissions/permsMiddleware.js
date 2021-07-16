@@ -1,3 +1,5 @@
+'use strict'
+
 const httpStatusErrors = require('../errors/httpStatusErrors')
 const { jwt_secret, jwt_alg } = require('../config.json')
 const ALL_PERMS = require('./perms')
@@ -12,15 +14,8 @@ function addPermsMiddleware(req, res, next) {
             if (parts.length == 2 && parts[0] == 'Bearer') {
                 let token = parts[1]
                 let decoded = jwt.verify(token, jwt_secret, { algorithms: [jwt_alg] })
-                if ('roles' in decoded) {
-                    let roles = decoded.roles
-                    let perms = new Set([])
-                    roles.forEach(role => {
-                        if (role in ALL_ROLES) {
-                            perms = new Set([...perms, ...ALL_ROLES[role]])
-                        }
-                    })
-                    req.user.perms = perms
+                if ('perms' in decoded) {
+                    req.user.perms = decoded.perms
                 }
                 req.user.user = decoded.user
             }
@@ -28,12 +23,20 @@ function addPermsMiddleware(req, res, next) {
     } catch (err) { } finally { next() }
 }
 
+function permSelf(perm) {
+    return `${perm}_self`
+}
+function checkPermSelf(req, perm) {
+    return req.resource && req.resource.user && req.resource.user == req.user.user &&
+        req.user.perms.has(permSelf(perm))
+}
+
 function authorizeEndpoint(perms) {
     // if user does not have all these perms, error
     return (req, res, next) => {
         addPermsMiddleware(req, res, () => {
             perms.forEach(perm => {
-                if (!req.user || !req.user.perms || !req.user.perms.has(perm)) {
+                if (!req.user || !req.user.perms || (!req.user.perms.has(perm) && !checkPermSelf(req, perm))) {
                     next(new httpStatusErrors.UNAUTHORIZED(`Not authorized.`))
                 }
             })

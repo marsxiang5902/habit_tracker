@@ -8,19 +8,13 @@ import reportWebVitals from './reportWebVitals';
 import { Auth0Provider } from "@auth0/auth0-react";
 import config from "./config";
 import urljoin from 'url-join';
-
+import { BrowserRouter } from 'react-router-dom';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Auth0Provider
-      domain={config.auth0_domain}
-      clientId={config.auth0_client_id}
-      redirectUri={urljoin(config.origin, 'callback')}
-      audience={`https://${config.auth0_domain}/api/v2/`}
-      scope="read:current_user update:current_user_metadata"
-    >
+    <BrowserRouter>
       <App />
-    </Auth0Provider>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );

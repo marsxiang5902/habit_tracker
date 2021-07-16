@@ -1,25 +1,21 @@
 "use strict";
 const express = require('express')
-const { addEvent, getEvent, getEvents, getEventHistory, updateEvent, updateEventHistory, removeEvent } = require('../database/interactEvent')
-const { ObjectId } = require('mongodb');
+const {
+    addEvent, getEvent, getEvents, getEventHistory, updateEvent, updateEventHistory,
+    removeEvent, extractEventMiddleware
+} = require('../database/interactEvent')
 const { authorizeEndpoint: auth } = require('../permissions/permsMiddleware')
 
 let eventsRouter = express.Router()
-eventsRouter.use('/:_id/', (req, res, next) => {
-    try {
-        req.body._id = ObjectId(req.params._id)
-    } catch (err) {
-        req.body._id = req.params._id
-    } finally {
-        next()
-    }
-})
 eventsRouter.post('/', async (req, res, next) => {
     try {
         await addEvent(req.body.user, req.body.name, req.body.type, req.body.args)
         next()
     } catch (err) { next(err) }
 })
+
+usersRouter.use('/:_id', extractUserMiddleware)
+
 eventsRouter.get('/:_id', async (req, res, next) => {
     try {
         let data = await getEvent(req.body._id)

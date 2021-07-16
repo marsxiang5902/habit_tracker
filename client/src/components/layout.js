@@ -7,7 +7,7 @@ import { SidebarData } from "./menu-options";
 import { IconContext } from "react-icons";
 import "../static/layout.css";
 import '../auth/auth'
-import { LoginButton, LogoutButton, Profile } from "../auth/auth";
+import AuthButtons from "../auth/AuthButtons";
 
 function Layout(props) {
     const [menu, setMenu] = useState(false);
@@ -48,11 +48,7 @@ function Layout(props) {
                 <h1 className={menu ? "title-active" : "title"}>{props.name}</h1>
                 <hr></hr>
             </div>
-            <div className="loginButton">
-                <LoginButton />
-                <LogoutButton />
-                <Profile />
-            </div>
+            <AuthButtons handleLogout={props.handleLogout} />
         </div>
     );
 }

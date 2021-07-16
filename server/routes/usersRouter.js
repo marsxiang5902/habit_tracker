@@ -1,18 +1,23 @@
 "use strict";
 const express = require('express')
-const { addUser, getUser, updateUser, removeUser } = require('../database/interactUser')
+const { addUser, getUser, updateUser, removeUser, extractUserMiddleware } = require('../database/interactUser')
 const getUserEvents = require('../services/getUserEvents')
 const { authorizeEndpoint: auth } = require('../permissions/permsMiddleware')
 
+
 let usersRouter = express.Router()
 
-usersRouter.post('/', async (req, res, next) => {
-    try {
-        await addUser(req.body.user, req.body.password)
-        next()
-    } catch (err) { next(err) }
-})
-usersRouter.get('/:user', auth(['read:self_user']), async (req, res, next) => {
+// function add_to_router(url, verb, logic, middleware, mirrored) {
+//     usersRouter[verb](url, ...middleware, logic)
+//     if (mirrored) {
+//         usersRouter[verb](url, ...middleware, logic)
+//     }
+// }
+
+
+usersRouter.use('/:user', extractUserMiddleware)
+
+usersRouter.get('/:user', auth(['read:user']), async (req, res, next) => {
     try {
         let data = await getUser(req.params.user)
         res.locals.data = data
