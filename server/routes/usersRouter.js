@@ -17,7 +17,7 @@ let usersRouter = express.Router()
 
 usersRouter.use('/:user', extractUserMiddleware)
 
-usersRouter.get('/:user', auth(['read:user']), async (req, res, next) => {
+usersRouter.get('/:user', /*auth(['read:user']), */async (req, res, next) => {
     try {
         let data = await getUser(req.params.user)
         res.locals.data = data

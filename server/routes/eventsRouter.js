@@ -14,7 +14,7 @@ eventsRouter.post('/', async (req, res, next) => {
     } catch (err) { next(err) }
 })
 
-usersRouter.use('/:_id', extractUserMiddleware)
+eventsRouter.use('/:_id', extractEventMiddleware)
 
 eventsRouter.get('/:_id', async (req, res, next) => {
     try {
