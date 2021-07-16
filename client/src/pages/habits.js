@@ -1,10 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Checkbox } from 'evergreen-ui';
 import '../static/page.css'
 
-function Habits(props){
-
-
+function Habits(props) {
     return(
         <>
             {props.habits.map((item, index) => {

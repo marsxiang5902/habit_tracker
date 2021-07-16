@@ -2,7 +2,7 @@
 
 const TimedEvent = require('./TimedEvent')
 const { subclasses } = require('../HistoryManager/HistoryManagerClasses')
-const httpStatusErrors = require('../errors/httpStatusErrors')
+const httpAssert = require('../errors/httpAssert')
 
 const DEFAULT_ARGS = {
     historyManagerType: 'bitmask'
@@ -18,10 +18,7 @@ module.exports = class TimedHabit extends TimedEvent {
             }
         }
         let historyManagerType = args.historyManagerType
-        if (!(historyManagerType in subclasses)) {
-            throw new httpStatusErrors.BAD_REQUEST(`Type ${historyManagerType} is not valid.`)
-        } else {
-            super(user, name, 'habit', new subclasses[historyManagerType]())
-        }
+        httpAssert.BAD_REQUEST(historyManagerType in subclasses, `Type ${historyManagerType} is not valid.`)
+        super(user, name, 'habit', new subclasses[historyManagerType]())
     }
 }

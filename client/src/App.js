@@ -4,13 +4,16 @@ import React from 'react';
 import './App.css';
 import { Button } from 'evergreen-ui';
 import Layout from './components/layout';
-import { Route, BrowserRouter, Switch } from 'react-router-dom';
+import { Route, Switch, withRouter } from 'react-router-dom';
 import All from './pages/all';
 import Dashboard from './pages/dashboard';
 import MyForm from './components/form';
 import axios from 'axios';
 import Habits from './pages/habits'
-
+import Signup from './auth/Signup';
+import Login from './auth/Login';
+import { defaultSessionContext, sessionContext } from './auth/sessionContext'
+import jwt from 'jsonwebtoken';
 
 class App extends React.Component {
   constructor(props) {
@@ -27,6 +30,7 @@ class App extends React.Component {
       ],
       priorities: [{ name: 'Learn Fractions' }, { name: 'Solving World Hunger' }, { name: 'Be a better person' }],
       test: null,
+      session: defaultSessionContext
     })
   }
 
@@ -49,12 +53,13 @@ class App extends React.Component {
   // }
 
   async componentDidMount() {
+    return;
     const url = 'http://localhost:8080/users/mars'
     const response = await fetch(url)
     const data = await response.json()
     let events = data.data.eventLists
 
-    events.habit.map(async(item, index) => {
+    events.habit.map(async (item, index) => {
       const habitUrl = `http://localhost:8080/events/${item}`
       const habitResponse = await fetch(habitUrl)
       const habitData = await habitResponse.json()
@@ -66,15 +71,16 @@ class App extends React.Component {
       habits.push(temp)
       this.setState({ habits: habits, loading:false})
 
+
     })
 
-    events.todo.map(async(item, index) => {
+    events.todo.map(async (item, index) => {
       const todoUrl = `http://localhost:8080/events/${item}`
       const todoResponse = await fetch(todoUrl)
       const todoData = await todoResponse.json()
       let todos = this.state.todos
       todos.push(todoData.data)
-      this.setState({ todos: todos, loading:false})
+      this.setState({ todos: todos, loading: false })
     })
 
     console.log(this.state.habits)
@@ -93,15 +99,16 @@ class App extends React.Component {
 
   }
 
-  addData = async(text, type) => {
+  addData = async (text, type) => {
     if (type === "Habit") {
       let habits = this.state.habits
       habits.push({user: 'mars', name: text, type: "habit", completion:[false]})
       this.setState({habits: habits})
+
     }
 
-    if (type === "Todo"){
-      let data = {user: "mars", name: text, type: "todo"}
+    if (type === "Todo") {
+      let data = { user: "mars", name: text, type: "todo" }
       let todos = this.state.todos
       todos.push(data)
       this.setState(todos)
@@ -112,7 +119,7 @@ class App extends React.Component {
         body: JSON.stringify(data)
       })
     }
-    
+
   }
 
 
@@ -141,12 +148,34 @@ class App extends React.Component {
     //place url post here for state of addedHabits
   }
 
+  handleLogin = token => {
+    if (token) {
+      let decoded = jwt.decode(token)
+      if ('user' in decoded && 'perms' in decoded) {
+        this.setState({
+          session: {
+            isAuthed: true,
+            jwt: token,
+            user: decoded.user,
+            perms: decoded.perms
+          }
+        })
+        this.props.history.push('/')
+      }
+    }
+  }
+
+  handleLogout = () => {
+    console.log('here')
+    this.setState({ session: defaultSessionContext })
+    this.props.history.push('/')
+  }
+
   render() {
     return (
-      <BrowserRouter>
+      <sessionContext.Provider value={this.state.session}>
         <div className="App">
-          <Layout name="🗺 THE PLAN">
-          </Layout>
+          <Layout name="🗺 THE PLAN" handleLogout={this.handleLogout} />
           <Switch>
             <Route path="/" exact component={Dashboard} />
             <Route path="/editor" render={(props) => (
@@ -155,19 +184,24 @@ class App extends React.Component {
                 weeklyGoals={this.state.weeklyGoals}
                 priorities={this.state.priorities} isAuthed={true}
                 addData={this.addData}
-                addedData={this.state.addedData} 
-                changeData={this.changeData}/>
+                addedData={this.state.addedData}
+                changeData={this.changeData} />
             )} />
             <Route path="/test" component={MyForm} />
             <Route path="/habits" render={(props) => (
               <Habits habits={this.state.habits} checkHabit={this.checkHabit}/>
             )} />
+            <Route path="/signup">
+              <Signup handleLogin={this.handleLogin} />
+            </Route>
+            <Route path="/login">
+              <Login handleLogin={this.handleLogin} />
+            </Route>
 
           </Switch>
         </div>
-      </BrowserRouter>
+      </sessionContext.Provider>
     );
   }
 }
-
-export default App;
+export default withRouter(App);
