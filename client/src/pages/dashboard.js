@@ -1,12 +1,11 @@
 'use strict'
 
 import React from 'react';
+import Layout from '../components/layout';
 
 function Dashboard(props) {
     return (
-        <div>
-
-        </div>
+        <Layout name="Home" />
     );
 }
 

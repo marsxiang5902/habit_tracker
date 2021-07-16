@@ -244,9 +244,6 @@ class App extends React.Component {
               </>
             )} />
 
-            <Route path="/" render={props => (
-              <Layout name="Home" />
-            )} />
 
           </Switch>
         </div>
