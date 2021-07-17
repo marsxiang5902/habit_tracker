@@ -5,6 +5,7 @@ function Habits(props) {
     return(
         <>
             {props.habits.map((item, index) => {
+                console.log(item)
                     return (
                         <div className="habit-card" key={index}>
                             <input type="checkbox" className="checkbox"
