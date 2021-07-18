@@ -1,7 +1,6 @@
 'use strict'
 
 const argon2 = require('argon2')
-const exp_jwt = require('express-jwt')
 const jwt = require('jsonwebtoken')
 const { jwt_secret, jwt_alg } = require('../config.json')
 const httpAssert = require('../errors/httpAssert')
@@ -23,9 +22,8 @@ async function login(user, password) {
     let users_col = get_users_col()
     let userRecord = await users_col.findOne({ user: user })
     httpAssert.UNAUTHORIZED(userRecord, `Invalid data.`)
-    httpAssert.UNAUTHORIZED(await argon2.verify(userRecord.auth.password_hashed, password),
+    httpAssert.UNAUTHORIZED(await argon2.verify(userRecord.password_hashed, password),
         `Incorrect username or password.`)
-
     return generateJWT({ user: userRecord.user, perms: Array.from(getPerms(userRecord.roles)) })
 }
 

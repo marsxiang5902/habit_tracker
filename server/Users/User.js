@@ -14,9 +14,7 @@ module.exports = class User {
         this.password = password
     }
     async init() {
-        this.auth = {
-            password_hashed: await argon2.hash(this.password)
-        }
+        this.password_hashed = await argon2.hash(this.password)
         delete this.password
     }
 }

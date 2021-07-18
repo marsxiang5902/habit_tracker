@@ -1,48 +1,32 @@
 "use strict";
 const express = require('express')
-const { addUser, getUser, updateUser, removeUser, extractUserMiddleware } = require('../database/interactUser')
-const getUserEvents = require('../services/getUserEvents')
+const { extractUserMiddleware } = require('../database/extractRequestMiddleware')
+const { getUser, getUserAuth, getUserEvents, removeUser } = require('../services/userServices')
 const { authorizeEndpoint: auth } = require('../permissions/permsMiddleware')
 
-
 let usersRouter = express.Router()
-
-// function add_to_router(url, verb, logic, middleware, mirrored) {
-//     usersRouter[verb](url, ...middleware, logic)
-//     if (mirrored) {
-//         usersRouter[verb](url, ...middleware, logic)
-//     }
-// }
-
-
 usersRouter.use('/:user', extractUserMiddleware)
 
-usersRouter.get('/:user', /*auth(['read:user']), */async (req, res, next) => {
-    try {
-        let data = await getUser(req.params.user)
-        res.locals.data = data
-        next()
-    } catch (err) { next(err) }
-})
+const ENDPOINTS = [
+    ['get', '/:user', [['read:user']], getUser],
+    ['get', '/:user/events', [['read:user']], getUserEvents],
+    ['get', '/:user/auth', [['read:user_auth']], getUserAuth],
+    ['delete', '/:user', [['delete:user']], removeUser]
+]
 
-usersRouter.get('/:user/events', async (req, res, next) => {
-    try {
-        let data = await getUserEvents(req.params.user, req.body.eventLists)
-        res.locals.data = data
-        next()
-    } catch (err) { next(err) }
+// example:
+// usersRouter.get('/:user', async (req, res, next) => {
+//     try {
+//         res.locals.data = await getUser(...req.resource)
+//         next()
+//     } catch (err) { next(err) }
+// })
+ENDPOINTS.forEach(ops => {
+    usersRouter[ops[0]](ops[1], auth(...ops[2]), async (req, res, next) => {
+        try {
+            res.locals.data = await ops[3](...(req.resource || []), req.body)
+            next()
+        } catch (err) { next(err) }
+    })
 })
-usersRouter.put('/:user', async (req, res, next) => { // patch?
-    try {
-        await updateUser(req.params.user, req.body.updObj)
-        next()
-    } catch (err) { next(err) }
-})
-usersRouter.delete('/:user', async (req, res, next) => {
-    try {
-        await removeUser(req.params.user)
-        next()
-    } catch (err) { next(err) }
-})
-
 module.exports = usersRouter

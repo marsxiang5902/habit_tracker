@@ -6,7 +6,7 @@ const getDay = function (date = new Date()) {
     // HARDCODE: USE LOCAL TIMEZONE OFFSET
     return Math.floor((date.getTime() - date.getTimezoneOffset() * MILLS_IN_MIN) / MILLS_IN_DAY)
 }
-const checkData = function (data, minDaysBefore = 0, maxDaysBefore = getDay()) {
+const checkData = function (data, maxDaysBefore = getDay(), minDaysBefore = 0) {
     // check if data is in the form of a object: {daysbefore: data}
     try {
         for (let key in data) {

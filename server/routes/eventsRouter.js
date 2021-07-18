@@ -1,53 +1,29 @@
 "use strict";
 const express = require('express')
-const {
-    addEvent, getEvent, getEvents, getEventHistory, updateEvent, updateEventHistory,
-    removeEvent, extractEventMiddleware
-} = require('../database/interactEvent')
+const { extractEventMiddleware } = require('../database/extractRequestMiddleware')
+const { addEvent, getEvent, getEventHistory, updateEvent,
+    updateEventHistory, removeEvent } = require('../services/eventServices')
 const { authorizeEndpoint: auth } = require('../permissions/permsMiddleware')
 
+
 let eventsRouter = express.Router()
-
-eventsRouter.post('/', async (req, res, next) => {
-    try {
-        await addEvent(req.body.user, req.body.name, req.body.type, req.body.args)
-        next()
-    } catch (err) { next(err) }
-})
-
 eventsRouter.use('/:_id', extractEventMiddleware)
 
-eventsRouter.get('/:_id', async (req, res, next) => {
-    try {
-        let data = await getEvent(req.body._id)
-        res.locals.data = data
-        next()
-    } catch (err) { next(err) }
-})
-eventsRouter.get('/:_id/history', async (req, res, next) => {
-    try {
-        let data = await getEventHistory(req.body._id, req.body.historyManager)
-        res.locals.data = data
-        next()
-    } catch (err) { next(err) }
-})
-eventsRouter.put('/:id', async (req, res, next) => { // patch?
-    try {
-        await updateEvent(req.body._id, req.body.updObj)
-        next()
-    } catch (err) { next(err) }
-})
-eventsRouter.put('/:id/history', async (req, res, next) => { // patch?
-    try {
-        await updateEventHistory(req.body._id, req.body.updObj, req.body.historyManager)
-        next()
-    } catch (err) { next(err) }
-})
-eventsRouter.delete('/:id', async (req, res, next) => {
-    try {
-        await removeEvent(req.body._id)
-        next()
-    } catch (err) { next(err) }
-})
+const ENDPOINTS = [
+    ['post', '/', [['create:event'], req => req.body.user], addEvent],
+    ['get', '/:_id', [['read:event']], getEvent],
+    ['get', '/:_id/history', [['read:event']], getEventHistory],
+    ['put', '/:_id', [['update:event']], updateEvent],
+    ['put', '/:_id/history', [['update:event']], updateEventHistory],
+    ['delete', '/:_id', [['delete:event']], removeEvent]
+]
 
+ENDPOINTS.forEach(ops => {
+    eventsRouter[ops[0]](ops[1], auth(...ops[2]), async (req, res, next) => {
+        try {
+            res.locals.data = await ops[3](...(req.resource || []), req.body)
+            next()
+        } catch (err) { next(err) }
+    })
+})
 module.exports = eventsRouter

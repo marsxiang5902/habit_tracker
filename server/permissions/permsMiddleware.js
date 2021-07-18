@@ -5,6 +5,7 @@ const { jwt_secret, jwt_alg } = require('../config.json')
 const ALL_PERMS = require('./perms')
 const { ALL_ROLES, ROLES_ORDER, getPerms, getHighestRole, cmpRoles } = require('./roles')
 const jwt = require('jsonwebtoken')
+const assert = require('assert')
 
 function addPermsMiddleware(req, res, next) {
     try {
@@ -14,31 +15,35 @@ function addPermsMiddleware(req, res, next) {
             if (parts.length == 2 && parts[0] == 'Bearer') {
                 let token = parts[1]
                 let decoded = jwt.verify(token, jwt_secret, { algorithms: [jwt_alg] })
-                if ('perms' in decoded) {
-                    req.user.perms = decoded.perms
-                }
-                req.user.user = decoded.user
+                req.user = { user: decoded.user }
+                req.user.perms = new Set(decoded.perms || [])
             }
         }
     } catch (err) { } finally { next() }
 }
 
+function hasSelf(perm) {
+    return perm.endsWith('_self')
+}
+function removeSelf(perm) {
+    return hasSelf(perm) ? perm.substring(0, perm.length - 5) : perm
+}
 function permSelf(perm) {
     return `${perm}_self`
 }
-function checkPermSelf(req, perm) {
-    return req.resource && req.resource.user && req.resource.user == req.user.user &&
-        req.user.perms.has(permSelf(perm))
+function defaultGetTargetUser(req) {
+    return req.resource[1].user
 }
-
-function authorizeEndpoint(perms) {
+function authorizeEndpoint(perms, getTargetUser = defaultGetTargetUser) {
     // if user does not have all these perms, error
+    // perms should not contain self, getTargetUser checks that
     return (req, res, next) => {
         addPermsMiddleware(req, res, () => {
             perms.forEach(perm => {
-                if (!req.user || !req.user.perms || (!req.user.perms.has(perm) && !checkPermSelf(req, perm))) {
-                    next(new httpStatusErrors.UNAUTHORIZED(`Not authorized.`))
-                }
+                try {
+                    assert(req.user.perms.has(perm) ||
+                        (getTargetUser(req) == req.user.user && req.user.perms.has(permSelf(perm))))
+                } catch (err) { next(new httpStatusErrors.UNAUTHORIZED(`Not authorized.`)) }
             })
             next()
         })

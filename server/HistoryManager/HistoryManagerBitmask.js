@@ -5,34 +5,41 @@ const httpAssert = require('../errors/httpAssert')
 const assert = require('assert')
 
 module.exports = class HistoryManagerBitmask extends HistoryManager {
-    constructor(date = getDay(new Date()), bit = 0) {
-        super('bitmask', { date: date, bit: bit })
+    constructor(startDay = getDay(), curDay = getDay(), bit = 0) {
+        super('bitmask', { startDay: startDay, curDay: curDay, bit: bit })
     }
-    static realignDate(data) {
+    static checkBitmaskData(data) {
         httpAssert.BAD_REQUEST(
-            'date' in data &&
+            'startDay' in data &&
+            'curDay' in data &&
             'bit' in data &&
-            Number.isInteger(data.date) &&
+            Number.isInteger(data.startDay) &&
+            Number.isInteger(data.curDay) &&
             Number.isInteger(data.bit),
             `Data is invalid.`
         )
-        let realDate = getDay()
-        let dateDiff = realDate - data.date
-        data.date = realDate
-        data.bit <<= dateDiff
+    }
+    static realignDate(data) {
+        let realDay = getDay()
+        let dayDiff = realDay - data.curDay
+        data.curDay = realDay
+        data.bit <<= dayDiff
+        return realDay - data.startDay
     }
     static getHistory(data) {
-        this.realignDate(data)
+        this.checkBitmaskData(data)
+        let daysPassed = this.realignDate(data)
         let ret = {}
-        for (let i = 0; i < 32; i++) {
+        for (let i = 0; i < Math.min(32, daysPassed + 1); i++) {
             ret[i] = (data.bit & (1 << i)) != 0
         }
         assert(checkData(ret))
         return ret;
     }
     static setHistory(data, updObj) {
-        httpAssert.BAD_REQUEST(checkData(updObj), `Data is invalid.`)
-        this.realignDate(data)
+        this.checkBitmaskData(data)
+        let daysPassed = this.realignDate(data)
+        httpAssert.BAD_REQUEST(checkData(updObj, daysPassed), `Data is invalid.`)
         for (let key in updObj) {
             let daysBefore = parseInt(key)
             if (updObj[key]) {

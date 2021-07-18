@@ -1,14 +1,16 @@
 'use strict'
 
+const { wrapObject } = require("../services/wrapSliceObject")
+
 const REQUIRED_FIELDS = {
     'data': {},
     'error': "",
     'error_description': ""
 }
 module.exports = function wrapResponse(req, res) {
-    let ret = {}
-    for (let field in REQUIRED_FIELDS) {
-        ret[field] = (field in res.locals) ? res.locals[field] : REQUIRED_FIELDS[field];
+    if (res.locals.data === undefined) {
+        res.locals.data = {}
     }
-    res.json(ret)
+    wrapObject(res.locals, REQUIRED_FIELDS)
+    res.json(res.locals)
 }

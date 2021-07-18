@@ -1,30 +1,18 @@
 "use strict";
-const express = require('express')
-const httpAssert = require('../errors/httpAssert')
-const { login } = require('../auth/login')
-const { addUser } = require('../database/interactUser')
-
+const express = require('express');
+const { login, signup } = require('../services/authServices');
 
 let authRouter = express.Router()
 
-authRouter.post('/signup', async (req, res, next) => {
-    // and login
-    try {
-        await addUser(req.body.user, req.body.password)
-        let data = await login(req.body.user, req.body.password)
-        res.locals.data = { jwt: data }
-        next()
-    } catch (err) { next(err) }
-})
 authRouter.post('/login', async (req, res, next) => {
     try {
-        let data = await login(req.body.user, req.body.password)
-        res.locals.data = { jwt: data }
+        res.locals.data = await login(req.body.user, req.body.password)
         next()
     } catch (err) { next(err) }
 })
-authRouter.post('/logout', async (req, res, next) => {
+authRouter.post('/signup', async (req, res, next) => {
     try {
+        res.locals.data = await signup(req.body.user, req.body.password)
         next()
     } catch (err) { next(err) }
 })

@@ -3,8 +3,10 @@
 const ALL_PERMS = new Set([
     'create:event',
     'read:user',
+    'read:user_auth',
     'read:event',
     'read:user_self',
+    'read:user_auth_self',
     'read:event_self',
     'update:user',
     'update:event',
