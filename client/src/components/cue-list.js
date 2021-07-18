@@ -15,6 +15,7 @@ function CuesList(props) {
     const [del, setDelete] = useState(false)
     const [modalShow, setModalShow] = useState(-1);
     const [cueVisible, setCueVisible] = useState(false);
+    const [type, setType] = useState("")
 
     function handleEdit(event) {
         event.preventDefault();
@@ -27,9 +28,10 @@ function CuesList(props) {
     function handleSubmit(event) {
         event.preventDefault();
         console.log(event.target.value)
-        props.addData(cue, props.type)
-        setFormVisible(-1)
+        props.addData(cue, type)
+        setModalShow(-1)
         setCue("")
+        setType("")
     }
 
     const popover = (index) => (
@@ -66,10 +68,10 @@ function CuesList(props) {
                     Cues are anything that put you in a certain mood or motivate you to do a certain habit. Add your own cue
                     here through a link to music, text, an imager or a youtube video! Make the cue specific to the habit!
                 </p>
-                <Form onSubmit={(e) => handleEdit}>
+                <Form onSubmit={(e) => handleSubmit}>
                     <Form.Group>
-                    <Select onChange={event => alert(event.target.value)} width="100%" disabled>
-                        <option value="foo" disabeled selected>Type of Media
+                    <Select required onChange={event => setType(event.target.value)} width="100%">
+                        <option value="" disabeled selected>Type of Media
                         </option>
                         <option value="video">Youtube Video</option>
                         <option value="music">Music</option>
@@ -80,8 +82,7 @@ function CuesList(props) {
                         <Form.Control type="text" placeholder="Link to Cue" value={cue} onChange={(e) => setCue(e.target.value)}/>
                         {cueVisible && cue !== "" ? <div className="parent"><img src={cue} alt=""></img></div>:null}
                         <Button className="button" variant="primary" type="button" value='preview' onClick={setCueVisible(true)}>Preview</Button>
-                        <Button className="button" variant="success" type="submit" value='change'>Change</Button>
-                        <Button className="button" variant="danger" type="submit" value='delete' onClick={(e) => setDelete(true)}>Delete</Button>
+                        <Button className="button" variant="success" type="submit" value='change'>Create Cue</Button>
                     </Form.Group>
                 </Form>
             </Modal.Body>

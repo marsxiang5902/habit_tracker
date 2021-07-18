@@ -2,9 +2,8 @@
 
 import React from 'react';
 import './App.css';
-import { Button } from 'evergreen-ui';
 import Layout from './components/layout';
-import { Route, Switch, withRouter } from 'react-router-dom';
+import { Route, Switch, withRouter} from 'react-router-dom';
 import All from './pages/all';
 import Dashboard from './pages/dashboard';
 import MyForm from './components/form';
@@ -15,6 +14,7 @@ import Signup from './auth/Signup';
 import Login from './auth/Login';
 import { defaultSessionContext, sessionContext } from './auth/sessionContext'
 import jwt from 'jsonwebtoken';
+import makeRequest from './api/makeRequest';
 
 
 class App extends React.Component {
@@ -56,11 +56,29 @@ class App extends React.Component {
   // }
 
   async componentDidMount() {
-    const url = 'http://localhost:8080/users/mars'
+    const user = this.state.session.user
+    if (user === null){
+      this.props.history.push('/login')
+    }
+    else{
+      this.fetchData()
+    }
+    console.log('mount')
+
+  }
+
+  async fetchData(){
+    console.log('fetch')
+    const user = this.state.session.user
+    const url = `http://localhost:8080/users/${user}`
     const response = await fetch(url)
     const data = await response.json()
     let events = data.data.eventLists
 
+
+    this.setState({habits: [], todos: []})
+    console.log(this.state.habits)
+    console.log(this.state.todos)
     events.habit.map(async (item, index) => {
       const habitUrl = `http://localhost:8080/events/${item}`
       const habitResponse = await fetch(habitUrl)
@@ -72,7 +90,6 @@ class App extends React.Component {
       let temp = { ...habitData.data, completion: habitHistoryData.data }
       habits.push(temp)
       this.setState({ habits: habits, loading: false })
-      console.log(habitData)
     })
 
     events.todo.map(async (item, index) => {
@@ -84,41 +101,31 @@ class App extends React.Component {
       this.setState({ todos: todos, loading: false })
     })
 
-    console.log(this.state.habits)
-
-
-    // let date = new Date()
-    // date = date.getDate()
-
-    // events.habit.map((item, index) => {
-    //   if ((events.habit.some(el => el.name === item.name))) {
-    //     this.setState(state => {
-    //       return { habits: [...state.habits, {name:item.name, done:[{checked: 0, date: date}]}] }
-    //     })
-    //   }
-    // })
+    this.setState({loading: false})
 
   }
 
+
   addData = async (text, type, habitId) => {
     if (type === "Habit") {
-      let habits = this.state.habits
-      habits.push({ user: 'mars', name: text, type: "habit", completion: [false] })
-      this.setState({ habits: habits })
-
+      let data = { user: this.state.session.user, name: text, type: "habit"}
+      // let habits = this.state.habits
+      // habits.push(data)
+      // this.setState({ habits: habits })
+      const url = 'http://localhost:8080/events/'
+      await makeRequest(url,'post', data)
+      await this.fetchData()
     }
 
     if (type === "Todo") {
-      let data = { user: "mars", name: text, type: "todo" }
-      let todos = this.state.todos
-      todos.push(data)
-      this.setState(todos)
+      let data = { user: this.state.session.user, name: text, type: "todo" }
+      // let todos = this.state.todos
+      // todos.push(data)
+      // this.setState(todos)
 
       const url = 'http://localhost:8080/events/'
-      await fetch(url, {
-        method: "POST",
-        body: JSON.stringify(data)
-      })
+      await makeRequest(url,'post', data)
+      await this.fetchData()
     }
 
     //if its a cue
@@ -139,15 +146,21 @@ class App extends React.Component {
     this.setState({ habits: habits })
   }
 
-  changeData = (updatedValue, index, deleteTrue, type) => {
+  changeData = async(updatedValue, index, deleteTrue, type) => {
     if (deleteTrue === true) {
       if (type === "Habit") {
         let habits = this.state.habits
+        let id = habits[index]._id
+        const url = `http://localhost:8080/events/${id}`
+        await makeRequest(url,'delete')
         habits.splice(index, 1)
         this.setState({ habits: habits })
       }
       if (type === "Todo") {
         let todos = this.state.todos
+        let id = todos[index]._id
+        const url = `http://localhost:8080/events/${id}`
+        await makeRequest(url,'delete')
         todos.splice(index, 1)
         this.setState({ todos: todos })
       }
@@ -155,6 +168,10 @@ class App extends React.Component {
     else {
       if (type === "Habit") {
         let habits = this.state.habits
+        let id = habits[index]._id
+        const url = `http://localhost:8080/events/${id}`
+        //makeRequest but gets internal server error
+        await makeRequest(url, 'put', {name: updatedValue})
         habits[index].name = updatedValue
         this.setState({ habits: habits })
       }
@@ -171,7 +188,7 @@ class App extends React.Component {
     //place url post here for state of addedHabits
   }
 
-  handleLogin = token => {
+  handleLogin = async token => {
     if (token) {
       let decoded = jwt.decode(token)
       if ('user' in decoded && 'perms' in decoded) {
@@ -183,6 +200,7 @@ class App extends React.Component {
             perms: decoded.perms
           }
         })
+        await this.fetchData()
         this.props.history.push('/')
       }
     }
@@ -191,7 +209,7 @@ class App extends React.Component {
   handleLogout = () => {
     console.log('here')
     this.setState({ session: defaultSessionContext })
-    this.props.history.push('/')
+    this.props.history.push('/login')
   }
 
   render() {
@@ -226,9 +244,13 @@ class App extends React.Component {
               </>
             )} />
             <Route path="/signup">
+              <Layout name="🗺 THE BEGINNING">
+                </Layout>
               <Signup handleLogin={this.handleLogin} />
             </Route>
             <Route path="/login">
+                <Layout name="THE LOGIN">
+                </Layout>
               <Login handleLogin={this.handleLogin} />
             </Route>
 
