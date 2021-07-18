@@ -28,7 +28,7 @@ module.exports = {
             this.data = data
         }
         static getHistory = function getHistory() {
-            return [];
+            return {};
         }
         static setHistory = function setHistory() { }
     }, MILLS_IN_MIN, MILLS_IN_DAY, getDay, checkData
