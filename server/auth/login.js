@@ -24,7 +24,7 @@ async function login(user, password) {
     httpAssert.UNAUTHORIZED(userRecord, `Invalid data.`)
     httpAssert.UNAUTHORIZED(await argon2.verify(userRecord.password_hashed, password),
         `Incorrect username or password.`)
-    return generateJWT({ user: userRecord.user, perms: Array.from(getPerms(userRecord.roles)) })
+    return generateJWT({ user: user, perms: Array.from(getPerms(userRecord.roles)) })
 }
 
 function generateJWT(data, exp = 3600) {
