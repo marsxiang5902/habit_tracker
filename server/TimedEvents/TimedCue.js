@@ -5,7 +5,6 @@ const { subclasses } = require('../HistoryManager/HistoryManagerClasses')
 const httpAssert = require('../errors/httpAssert')
 
 const DEFAULT_ARGS = {
-    historyManagerType: 'none',
     resourceURL: ""
 }
 
@@ -19,7 +18,7 @@ module.exports = class TimedHabit extends TimedEvent {
         }
         let historyManagerType = args.historyManagerType
         httpAssert.BAD_REQUEST(historyManagerType in subclasses, `Type ${historyManagerType} is not valid.`)
-        super(user, name, 'cue', new subclasses[historyManagerType]())
+        super(user, name, 'cue')
         httpAssert.BAD_REQUEST(typeof args.resourceURL == 'string', `Resource URL is invalid.`)
         this.resourceURL = args.resourceURL
     }
