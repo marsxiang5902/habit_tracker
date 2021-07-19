@@ -180,7 +180,6 @@ function CuesList(props) {
             </div>
             <hr className="cues-hr" />
             <div className="formatter">
-                {console.log(props.cues)}
                 {
                     props.cues.map((item, index) => {
                         try {
@@ -188,6 +187,7 @@ function CuesList(props) {
                             const temp = item.resourceURL.split(" ")
                             let cueItem = { link: temp[0], type: temp[1], habitId: temp[2] }
                             if (cueItem.habitId === props.habit._id) {
+                                console.log(cueItem)
                                 if (cueItem.type === "music") {
                                     return (
                                         music(cueItem)
