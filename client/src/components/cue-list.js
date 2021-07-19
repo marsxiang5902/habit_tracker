@@ -19,7 +19,7 @@ function ModalBody(props) {
                 Cues are anything that put you in a certain mood or motivate you to do a certain habit. Add your own cue
                 here through a link to music, text, an imager or a youtube video! Make the cue specific to the habit!
             </p>
-            <Form onSubmit={(e) => props.handleSubmit(e)}>
+            <Form onSubmit={(e) => props.handleSubmit(e, cue, type, name)}>
                 <Form.Group>
                     <select onChange={(e) => setType(e.target.value)}>
                         <option value="" disabled selected>Type of Media</option>
@@ -60,14 +60,13 @@ function CuesList(props) {
         setCue("")
     }
 
-    function handleSubmit(event) {
+    function handleSubmit(event, cue, type, name) {
         event.preventDefault();
         let link = `${cue} ${type} ${props.habit._id}`
-        console.log(link)
         props.addData(name, "cue", link)
         setModalShow(-1)
-        setCue("")
-        setType("")
+        // setCue("")
+        // setType("")
     }
 
     const popover = (index) => (
@@ -181,30 +180,34 @@ function CuesList(props) {
             </div>
             <hr className="cues-hr" />
             <div className="formatter">
-                {props.cues.map((item, index) => {
-                    const temp = item.resourceURL.split(" ")
-                    let cueItem = { link: temp[0], type: temp[1], habitId: temp[2] }
-                    console.log(cueItem)
-                    if (cueItem.habitId === props.habit._id) {
-                        if (cueItem.type === "music") {
-                            return (
-                                music(cueItem)
-                            )
-                        }
-                        if (cueItem.type === "image") {
-                            return (
-                                image(cueItem)
-                            )
-                        }
-                        if (cueItem.type === "video") {
-                            return (
-                                video(cueItem)
-                            )
-                        }
-                        // return(blank(cueItem))
-                    }
+                {console.log(props.cues)}
+                {
+                    props.cues.map((item, index) => {
+                        try {
+                            if (item.type != 'cue') return null;
+                            const temp = item.resourceURL.split(" ")
+                            let cueItem = { link: temp[0], type: temp[1], habitId: temp[2] }
+                            if (cueItem.habitId === props.habit._id) {
+                                if (cueItem.type === "music") {
+                                    return (
+                                        music(cueItem)
+                                    )
+                                }
+                                if (cueItem.type === "image") {
+                                    return (
+                                        image(cueItem)
+                                    )
+                                }
+                                if (cueItem.type === "video") {
+                                    return (
+                                        video(cueItem)
+                                    )
+                                }
+                                // return(blank(cueItem))
+                            }
+                        } catch (err) { return null; }
 
-                })}
+                    })}
             </div>
 
         </>
