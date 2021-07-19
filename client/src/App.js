@@ -211,7 +211,15 @@ class App extends React.Component {
         <div className="App">
 
           <Switch>
-            <Route path="/" exact component={Dashboard} />
+            <Route path="/" exact render={(props) => {
+              return(
+                <>
+                  <Dashboard habits={!this.state.loading ? this.state.habits : this.state.default}
+                                      cues={this.state.cues}
+                  />
+                </>
+              )
+            }} />
             <Route path="/editor" render={(props) => {
               return (
                 <>

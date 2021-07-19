@@ -76,7 +76,7 @@ function HabitList(props) {
                             <OverlayTrigger trigger="click" placement="left" overlay={popover(index)} show={popoverVisible === index ? true : false}>
                                 <Icons.FaPencilAlt className="hover" style={{ marginRight: '20px' }} onClick={(e) => { setPopoverVisible(popoverVisible === index ? -1 : index) }}></Icons.FaPencilAlt>
                             </OverlayTrigger>
-                            <Icons.FaPlusCircle className="hover" style={{ marginRight: '20px' }} onClick={() => setModalShow(true)}></Icons.FaPlusCircle>
+                            {/* <Icons.FaPlusCircle className="hover" style={{marginRight:'20px'}} onClick={() => setModalShow(true)}></Icons.FaPlusCircle> */}
                         </div>
                     </div>
                 );

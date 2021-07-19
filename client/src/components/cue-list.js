@@ -182,23 +182,26 @@ function CuesList(props) {
             <hr className="cues-hr" />
             <div className="formatter">
                 {props.cues.map((item, index) => {
-                    if (item.habitId === props.habit._id) {
-                        // if (item.type === "music"){
-                        //     return(
-                        //         music(item)
-                        //     )
-                        // }
-                        // if (item.type === "image"){
-                        //     return(
-                        //         image(item)
-                        //     )
-                        // }
-                        // if (item.type === "video"){
-                        //     return(
-                        //         video(item)
-                        //     )
-                        // }
-                        return (blank(item))
+                    const temp = item.resourceURL.split(" ")
+                    let cueItem = { link: temp[0], type: temp[1], habitId: temp[2] }
+                    console.log(cueItem)
+                    if (cueItem.habitId === props.habit._id) {
+                        if (cueItem.type === "music") {
+                            return (
+                                music(cueItem)
+                            )
+                        }
+                        if (cueItem.type === "image") {
+                            return (
+                                image(cueItem)
+                            )
+                        }
+                        if (cueItem.type === "video") {
+                            return (
+                                video(cueItem)
+                            )
+                        }
+                        // return(blank(cueItem))
                     }
 
                 })}
