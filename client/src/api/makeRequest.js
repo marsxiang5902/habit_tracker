@@ -10,14 +10,15 @@ export default async function makeRequest(url, verb = 'get', data = {}, bearer =
         method: verb,
         headers: {
             'Content-Type': 'application/json',
-            Authorization: bearer || config.default_bearer
+            'authorization': `Bearer ${bearer || config.default_bearer}`
         },
         data: data,
     })
-    return {
+    let ret =  {
         ...res.data,
         status: res.status,
         statusText: res.statusText,
-
     }
+    console.log(ret)
+    return ret;
 }

@@ -52,42 +52,6 @@ function HabitList(props) {
             <img src={props.type === "Habit" ? 'https://drive.google.com/file/d/10be3xLM_uDyIOiusK3Jd36tjL87gOsZI/view?usp=sharing': null} alt=""></img>
         </div>
     )
-
-    const MyVerticallyCenteredModal = () => {
-        return (
-          <Modal
-            size="lg"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-            show={modalShow}
-            onHide={() => setModalShow(false)}
-          >
-            <Modal.Header closeButton>
-              <Modal.Title id="contained-modal-title-vcenter">
-                Add a Cue
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <p>
-                    Cues are anything that put you in a certain mood or motivate you to do a certain habit. Add your own cue
-                    here through a link to music, text, an imager or a youtube video! Make the cue specific to the habit!
-                </p>
-                <Form onSubmit={(e) => handleEdit}>
-                    <Form.Group>
-                        <Form.Control type="text" placeholder="Link to Cue" value={name} onChange={(e) => setName(e.target.value)}/>
-                        {cueVisible && name!== "" ? <div className="parent"><img src={name} alt=""></img></div>:null}
-                        <Button className="button" variant="primary" type="button" value='change' onClick={setCueVisible(true)}>Preview</Button>
-                        <Button className="button" variant="success" type="submit" value='change'>Change</Button>
-                        <Button className="button" variant="danger" type="submit" value='delete' onClick={(e) => setDelete(true)}>Delete</Button>
-                    </Form.Group>
-                </Form>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button onClick={props.onHide}>Close</Button>
-            </Modal.Footer>
-          </Modal>
-        );
-    }
       
 
 
@@ -114,8 +78,6 @@ function HabitList(props) {
                                 </OverlayTrigger>
                                 <Icons.FaPlusCircle className="hover" style={{marginRight:'20px'}} onClick={() => setModalShow(true)}></Icons.FaPlusCircle>
                             </div>
-                            <MyVerticallyCenteredModal
-                            />
                     </div>
                     );
                 }

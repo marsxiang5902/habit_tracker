@@ -15,6 +15,7 @@ import Login from './auth/Login';
 import { defaultSessionContext, sessionContext } from './auth/sessionContext'
 import jwt from 'jsonwebtoken';
 import makeRequest from './api/makeRequest';
+import config from './config';
 
 
 class App extends React.Component {
@@ -25,13 +26,8 @@ class App extends React.Component {
       loading: true,
       habits: [],
       todos: [],
-      cues: [
-        { habitId: "60e89e88f7486f49781951aa", link: "https://i.ytimg.com/vi/uwMGMEYYFZw/maxresdefault.jpg", type: "image" },
-        { habitId: "60e892b8855b3f1b0c44dc5a", link: "https://api.memegen.link/images/custom/_/my_background.png?background=https://deadline.com/wp-content/uploads/2016/12/walt-disney-studios.png", type: "image" },
-        { habitId: "60e892bf855b3f1b0c44dc5b", link: "https://soundcloud.com/seratostudio/doms-demise?in=seratostudio/sets/concert-hall-vol-1", type: "music" },
-        { habitId: "60e89e88f7486f49781951aa", link: "https://open.spotify.com/track/2zQl59dZMzwhrmeSBEgiXY?si=db6cc9af8b4d4bce", type: "music" },
-        { habitId: "60e89e88f7486f49781951aa", link: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/662143949&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true", type: "music" },
-      ],
+      // DON'T HARDCODE THIS
+      cues: [],
       name: "",
       session: defaultSessionContext
     })
@@ -68,45 +64,33 @@ class App extends React.Component {
   }
 
   async fetchData(){
-    console.log('fetch')
-    const user = this.state.session.user
-    const url = `http://localhost:8080/users/${user}`
-    const response = await fetch(url)
-    const data = await response.json()
-    let events = data.data.eventLists
 
 
-    this.setState({habits: [], todos: []})
-    console.log(this.state.habits)
+    try{
+      let data = (await makeRequest(`${config.api_domain}users/${this.state.session.user}/events`,
+      'get', {}, this.state.session.jwt)).data
+      for(let key in data){
+        // CHANGE TO SINGULAR
+        this.setState({[`${key}s`]: data[key]})
+      }
+      this.setState({loading: false})
+
+      this.state.habits.map(async(item, index) => {
+        const habitHistoryUrl = `${config.api_domain}events/${item._id}/history`
+        let data = (await makeRequest(habitHistoryUrl, 'get')).data
+        let habits = this.state.habits
+        habits[index] = {...habits[index], completion: data}
+        this.setState({habits:habits})
+      })
+    } catch(err){
+      console.log(err)
+    }
     console.log(this.state.todos)
-    events.habit.map(async (item, index) => {
-      const habitUrl = `http://localhost:8080/events/${item}`
-      const habitResponse = await fetch(habitUrl)
-      const habitData = await habitResponse.json()
-      const habitHistoryUrl = `http://localhost:8080/events/${item}/history`
-      const habitHistoryResponse = await fetch(habitHistoryUrl)
-      const habitHistoryData = await habitHistoryResponse.json()
-      let habits = this.state.habits
-      let temp = { ...habitData.data, completion: habitHistoryData.data }
-      habits.push(temp)
-      this.setState({ habits: habits, loading: false })
-    })
-
-    events.todo.map(async (item, index) => {
-      const todoUrl = `http://localhost:8080/events/${item}`
-      const todoResponse = await fetch(todoUrl)
-      const todoData = await todoResponse.json()
-      let todos = this.state.todos
-      todos.push(todoData.data)
-      this.setState({ todos: todos, loading: false })
-    })
-
-    this.setState({loading: false})
-
+    
   }
 
 
-  addData = async (text, type, habitId) => {
+  addData = async (text, type, link) => {
     if (type === "Habit") {
       let data = { user: this.state.session.user, name: text, type: "habit"}
       // let habits = this.state.habits
@@ -130,10 +114,17 @@ class App extends React.Component {
 
     //if its a cue
     else {
-      let data = { habitId: habitId, link: text, type: type }
+      // let data = { habitId: habitId, resourceUrl: text, name: type }
+      let data = { user: this.state.session.user, name: text, type: type, args: {resourceURL: link} }
+      console.log(data)
+      const url = 'http://localhost:8080/events/'
+      await makeRequest(url,'post', data)
+      await this.fetchData()
+
       let cues = this.state.cues
       cues.push(data)
       this.setState(cues)
+      console.log(this.state.cues)
     }
 
   }
@@ -170,13 +161,15 @@ class App extends React.Component {
         let habits = this.state.habits
         let id = habits[index]._id
         const url = `http://localhost:8080/events/${id}`
-        //makeRequest but gets internal server error
         await makeRequest(url, 'put', {name: updatedValue})
         habits[index].name = updatedValue
         this.setState({ habits: habits })
       }
       if (type === "Todo") {
         let todos = this.state.todos
+        let id = todos[index]._id
+        const url = `http://localhost:8080/events/${id}`
+        await makeRequest(url, 'put', {name: updatedValue})
         todos[index].name = updatedValue
         this.setState({ todos: todos })
       }

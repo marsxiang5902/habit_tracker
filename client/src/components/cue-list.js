@@ -11,6 +11,7 @@ function CuesList(props) {
 
     const [formVisible, setFormVisible] = useState(-1)
     const [cue, setCue] = useState("")
+    const [name, setName] = useState("")
     const [popoverVisible, setPopoverVisible] = useState(-1)
     const [del, setDelete] = useState(false)
     const [modalShow, setModalShow] = useState(-1);
@@ -27,8 +28,9 @@ function CuesList(props) {
 
     function handleSubmit(event) {
         event.preventDefault();
-        console.log(event.target.value)
-        props.addData(cue, type)
+        let link = `${cue} ${type} ${props.habit._id}`
+        console.log(link)
+        props.addData(name, "cue", link)
         setModalShow(-1)
         setCue("")
         setType("")
@@ -49,7 +51,7 @@ function CuesList(props) {
         </Popover>
     );
 
-    const MyVerticallyCenteredModal = () => {
+    const AddModal = () => {
         return (
           <Modal
             size="lg"
@@ -68,19 +70,20 @@ function CuesList(props) {
                     Cues are anything that put you in a certain mood or motivate you to do a certain habit. Add your own cue
                     here through a link to music, text, an imager or a youtube video! Make the cue specific to the habit!
                 </p>
-                <Form onSubmit={(e) => handleSubmit}>
+                <Form onSubmit={(e) => handleSubmit(e)}>
                     <Form.Group>
-                    <Select required onChange={event => setType(event.target.value)} width="100%">
-                        <option value="" disabeled selected>Type of Media
-                        </option>
+                    <select onChange={(e) => setType(e.target.value)}>
+                        <option value="" disabled selected>Type of Media</option>
                         <option value="video">Youtube Video</option>
                         <option value="music">Music</option>
                         <option value="image">Image</option>
-                    </Select>
+                        <option value="call">Call to Action</option>
+                    </select>
                     </Form.Group>
                     <Form.Group>
+                        <Form.Control type="text" placeholder="Name of Cue" value={name} onChange={(e) => setName(e.target.value)}/>
                         <Form.Control type="text" placeholder="Link to Cue" value={cue} onChange={(e) => setCue(e.target.value)}/>
-                        {cueVisible && cue !== "" ? <div className="parent"><img src={cue} alt=""></img></div>:null}
+                        {cueVisible && cue !== "" && type==="image" ? <div className="parent"><img src={cue} alt=""></img></div>:null}
                         <Button className="button" variant="primary" type="button" value='preview' onClick={setCueVisible(true)}>Preview</Button>
                         <Button className="button" variant="success" type="submit" value='change'>Create Cue</Button>
                     </Form.Group>
@@ -93,7 +96,26 @@ function CuesList(props) {
     const blank = (item) => {
         return(
             <div className="parent blank">
-                <a href={item.link}><h3 style={{color:"white"}}>Link to {item.type}</h3></a>
+                <a href={item.resourceUrl}><h3 style={{color:"white"}}>Link to {item.name}</h3></a>
+            </div>
+        )
+    }
+
+    const video = (item) => {
+        if(item.link.includes('youtube')){
+            let request = item.link;
+            if (!request.includes('embed')){
+                request = `https://youtube.com/embed/${request.replace('https://www.youtube.com/watch?v=', '')}?theme=0`;
+            }
+            return(
+                <div className="parent">
+                    <iframe width="150%" height="300" src={request} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>            
+                </div>
+            )
+        }
+        return(
+            <div className="parent">
+                <iframe width="150%" height="300" src={item.link} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>            
             </div>
         )
     }
@@ -143,7 +165,7 @@ function CuesList(props) {
                 <Icons.FaRegPlusSquare onClick={() => { setModalShow(props.index) }} className="hover"></Icons.FaRegPlusSquare> :
                 <>
                 <Icons.FaRegWindowClose onClick={() => { setModalShow(-1); setCueVisible(false)}} className="hover"></Icons.FaRegWindowClose>
-                <MyVerticallyCenteredModal/>
+                <AddModal/>
                 </>
                 }
             </div>
@@ -151,17 +173,24 @@ function CuesList(props) {
             <div className="formatter">
             {props.cues.map((item, index) => {
                 if(item.habitId === props.habit._id){
-                    if (item.type === "music"){
-                        return(
-                            music(item)
-                        )
-                    }
-                    if (item.type === "image"){
-                        return(
-                            image(item)
-                        )
-                    }
+                    // if (item.type === "music"){
+                    //     return(
+                    //         music(item)
+                    //     )
+                    // }
+                    // if (item.type === "image"){
+                    //     return(
+                    //         image(item)
+                    //     )
+                    // }
+                    // if (item.type === "video"){
+                    //     return(
+                    //         video(item)
+                    //     )
+                    // }
+                    return(blank(item))
                 }
+
             })}
             </div>
             
