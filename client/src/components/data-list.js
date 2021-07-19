@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import * as Icons from "react-icons/fa";
-import {Form, Popover, OverlayTrigger, Button, Modal} from 'react-bootstrap'
+import { Form, Popover, OverlayTrigger, Button, Modal } from 'react-bootstrap'
 
 
 function HabitList(props) {
@@ -37,11 +37,11 @@ function HabitList(props) {
             <Popover.Title as="h3">Edit {props.type}</Popover.Title>
             <Popover.Content>
                 <Form onSubmit={(e) => handleEdit(e, index, false)}>
-                <Form.Group>
-                    <Form.Control type="text" placeholder={`${props.type} Name`} value={name} onChange={(e) => setName(e.target.value)}/>
-                    <Button className="button" variant="success" type="submit" value='change'>Change</Button>
-                    <Button className="button" variant="danger" type="submit" value='delete' onClick={(e) => setDelete(true)}>Delete</Button>
-                </Form.Group>
+                    <Form.Group>
+                        <Form.Control type="text" placeholder={`${props.type} Name`} value={name} onChange={(e) => setName(e.target.value)} />
+                        <Button className="button" variant="success" type="submit" value='change'>Change</Button>
+                        <Button className="button" variant="danger" type="submit" value='delete' onClick={(e) => setDelete(true)}>Delete</Button>
+                    </Form.Group>
                 </Form>
             </Popover.Content>
         </Popover>
@@ -49,10 +49,10 @@ function HabitList(props) {
 
     const test = () => (
         <div className="parent">
-            <img src={props.type === "Habit" ? 'https://drive.google.com/file/d/10be3xLM_uDyIOiusK3Jd36tjL87gOsZI/view?usp=sharing': null} alt=""></img>
+            <img src={props.type === "Habit" ? 'https://drive.google.com/file/d/10be3xLM_uDyIOiusK3Jd36tjL87gOsZI/view?usp=sharing' : null} alt=""></img>
         </div>
     )
-      
+
 
 
     return (
@@ -67,22 +67,22 @@ function HabitList(props) {
                 return (
                     <div className="card-2 border-2" key={index}>
 
-                            {/* <h4 className="habit">{pct(item.done)}%</h4> */}
-                            <div className="habit habit-2">
-                                <h5>{item.name}</h5>
-                                {/* <p>{item.description}</p> */}
-                            </div>
-                            <div>
-                                <OverlayTrigger trigger="click" placement="left" overlay={popover(index)} show={popoverVisible === index ? true: false}>
-                                    <Icons.FaPencilAlt className="hover" style={{marginRight:'20px'}} onClick={(e) => {setPopoverVisible(popoverVisible === index ? -1: index)}}></Icons.FaPencilAlt>
-                                </OverlayTrigger>
-                                <Icons.FaPlusCircle className="hover" style={{marginRight:'20px'}} onClick={() => setModalShow(true)}></Icons.FaPlusCircle>
-                            </div>
+                        {/* <h4 className="habit">{pct(item.done)}%</h4> */}
+                        <div className="habit habit-2">
+                            <h5>{item.name}</h5>
+                            {/* <p>{item.description}</p> */}
+                        </div>
+                        <div>
+                            <OverlayTrigger trigger="click" placement="left" overlay={popover(index)} show={popoverVisible === index ? true : false}>
+                                <Icons.FaPencilAlt className="hover" style={{ marginRight: '20px' }} onClick={(e) => { setPopoverVisible(popoverVisible === index ? -1 : index) }}></Icons.FaPencilAlt>
+                            </OverlayTrigger>
+                            <Icons.FaPlusCircle className="hover" style={{ marginRight: '20px' }} onClick={() => setModalShow(true)}></Icons.FaPlusCircle>
+                        </div>
                     </div>
-                    );
-                }
+                );
+            }
             )}
-                {formVisible ? 
+            {formVisible ?
                 <div className="card-2 border-2">
                     <div className="form-padding">
                         {/* <MyHabitForm name={name} setName={setName} visible={setFormVisible} updateHabits={props.addHabit}/> */}
