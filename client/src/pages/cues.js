@@ -13,7 +13,7 @@ function Cues(props) {
         <>
             {props.habits.map((item, index) => {
                 return (
-                    <CuesList habit={item} index={index} cues={props.cues} addData={props.addData}></CuesList>
+                    <CuesList habit={item} index={index} cues={props.cues} addData={props.addData} changeData={props.changeData}></CuesList>
                 )
             })}
         </>

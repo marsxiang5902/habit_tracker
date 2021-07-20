@@ -1,6 +1,6 @@
 'use strict'
 
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Layout from '../components/layout';
 
 function Dashboard(props) {
@@ -8,7 +8,7 @@ function Dashboard(props) {
     const [uncompleted, setUncompleted] = useState([])
 
     return (
-        <Layout name="Home" />
+        <Layout name="Home" handleLogout={props.handleLogout} />
 
     );
 }

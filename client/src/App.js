@@ -3,7 +3,7 @@
 import React from 'react';
 import './App.css';
 import Layout from './components/layout';
-import { Route, Switch, withRouter} from 'react-router-dom';
+import { Route, Switch, withRouter } from 'react-router-dom';
 import All from './pages/all';
 import Dashboard from './pages/dashboard';
 import MyForm from './components/form';
@@ -53,51 +53,51 @@ class App extends React.Component {
 
   async componentDidMount() {
     const user = this.state.session.user
-    if (user === null){
+    if (user === null) {
       this.props.history.push('/login')
     }
-    else{
+    else {
       this.fetchData()
     }
     console.log('mount')
 
   }
 
-  async fetchData(){
+  async fetchData() {
 
 
-    try{
+    try {
       let data = (await makeRequest(`${config.api_domain}users/${this.state.session.user}/events`,
-      'get', {}, this.state.session.jwt)).data
-      for(let key in data){
+        'get', {}, this.state.session.jwt)).data
+      for (let key in data) {
         // CHANGE TO SINGULAR
-        this.setState({[`${key}s`]: data[key]})
+        this.setState({ [`${key}s`]: data[key] })
       }
-      this.setState({loading: false})
+      this.setState({ loading: false })
 
-      this.state.habits.map(async(item, index) => {
+      this.state.habits.map(async (item, index) => {
         const habitHistoryUrl = `${config.api_domain}events/${item._id}/history`
         let data = (await makeRequest(habitHistoryUrl, 'get')).data
         let habits = this.state.habits
-        habits[index] = {...habits[index], completion: data}
-        this.setState({habits:habits})
+        habits[index] = { ...habits[index], completion: data }
+        this.setState({ habits: habits })
       })
-    } catch(err){
+    } catch (err) {
       console.log(err)
     }
     console.log(this.state.todos)
-    
+
   }
 
 
   addData = async (text, type, link) => {
     if (type === "Habit") {
-      let data = { user: this.state.session.user, name: text, type: "habit"}
+      let data = { user: this.state.session.user, name: text, type: "habit" }
       // let habits = this.state.habits
       // habits.push(data)
       // this.setState({ habits: habits })
       const url = 'http://localhost:8080/events/'
-      await makeRequest(url,'post', data)
+      await makeRequest(url, 'post', data)
       await this.fetchData()
     }
 
@@ -108,17 +108,17 @@ class App extends React.Component {
       // this.setState(todos)
 
       const url = 'http://localhost:8080/events/'
-      await makeRequest(url,'post', data)
+      await makeRequest(url, 'post', data)
       await this.fetchData()
     }
 
     //if its a cue
     else {
       // let data = { habitId: habitId, resourceUrl: text, name: type }
-      let data = { user: this.state.session.user, name: text, type: type, args: {resourceURL: link} }
+      let data = { user: this.state.session.user, name: text, type: type, args: { resourceURL: link } }
       console.log(data)
       const url = 'http://localhost:8080/events/'
-      await makeRequest(url,'post', data)
+      await makeRequest(url, 'post', data)
       await this.fetchData()
 
       let cues = this.state.cues
@@ -137,13 +137,13 @@ class App extends React.Component {
     this.setState({ habits: habits })
   }
 
-  changeData = async(updatedValue, index, deleteTrue, type) => {
+  changeData = async (updatedValue, index, deleteTrue, type) => {
     if (deleteTrue === true) {
       if (type === "Habit") {
         let habits = this.state.habits
         let id = habits[index]._id
         const url = `http://localhost:8080/events/${id}`
-        await makeRequest(url,'delete')
+        await makeRequest(url, 'delete')
         habits.splice(index, 1)
         this.setState({ habits: habits })
       }
@@ -151,9 +151,17 @@ class App extends React.Component {
         let todos = this.state.todos
         let id = todos[index]._id
         const url = `http://localhost:8080/events/${id}`
-        await makeRequest(url,'delete')
+        await makeRequest(url, 'delete')
         todos.splice(index, 1)
         this.setState({ todos: todos })
+      }
+      if (type === "Cue") {
+        let cues = this.state.cues
+        let id = cues[index]._id
+        const url = `http://localhost:8080/events/${id}`
+        await makeRequest(url, 'delete')
+        cues.splice(index, 1)
+        this.setState({ cues: cues })
       }
     }
     else {
@@ -161,7 +169,7 @@ class App extends React.Component {
         let habits = this.state.habits
         let id = habits[index]._id
         const url = `http://localhost:8080/events/${id}`
-        await makeRequest(url, 'put', {name: updatedValue})
+        await makeRequest(url, 'put', { name: updatedValue })
         habits[index].name = updatedValue
         this.setState({ habits: habits })
       }
@@ -169,9 +177,19 @@ class App extends React.Component {
         let todos = this.state.todos
         let id = todos[index]._id
         const url = `http://localhost:8080/events/${id}`
-        await makeRequest(url, 'put', {name: updatedValue})
+        await makeRequest(url, 'put', { name: updatedValue })
         todos[index].name = updatedValue
         this.setState({ todos: todos })
+      }
+      if (type === "Cue") {
+        let cues = this.state.cues
+        let id = cues[index]._id
+        const url = `http://localhost:8080/events/${id}`
+        await makeRequest(url, 'put', updatedValue)
+        for (let key in updatedValue) {
+          cues[index][key] = updatedValue[key]
+        }
+        this.setState({ cues: cues })
       }
 
     }
@@ -212,10 +230,10 @@ class App extends React.Component {
 
           <Switch>
             <Route path="/" exact render={(props) => {
-              return(
+              return (
                 <>
                   <Dashboard habits={!this.state.loading ? this.state.habits : this.state.default}
-                                      cues={this.state.cues}
+                    cues={this.state.cues} handleLogout={this.handleLogout}
                   />
                 </>
               )
@@ -246,12 +264,12 @@ class App extends React.Component {
             )} />
             <Route path="/signup">
               <Layout name="🗺 THE BEGINNING">
-                </Layout>
+              </Layout>
               <Signup handleLogin={this.handleLogin} />
             </Route>
             <Route path="/login">
-                <Layout name="THE LOGIN">
-                </Layout>
+              <Layout name="THE LOGIN">
+              </Layout>
               <Login handleLogin={this.handleLogin} />
             </Route>
 
@@ -262,6 +280,7 @@ class App extends React.Component {
                 <Cues habits={!this.state.loading ? this.state.habits : this.state.default}
                   cues={this.state.cues}
                   addData={this.addData}
+                  changeData={this.changeData}
                 />
               </>
             )} />

@@ -41,6 +41,52 @@ function ModalBody(props) {
     );
 }
 
+function Cue(props) {
+    const [previewVisible, setPreviewVisible] = useState(false)
+    const [name, setName] = useState("")
+    const [link, setLink] = useState("")
+    const [deleted, setDeleted] = useState(false)
+    const [popoverVisible, setPopoverVisible] = useState(false)
+
+    let handleSubmit = e => {
+        e.preventDefault()
+        props.changeData({ name: name, link: link }, props.index, deleted, 'Cue')
+        setDeleted(false)
+        setName("")
+        setLink("")
+        setPopoverVisible(-1)
+    }
+    const popover = index => (
+        <Popover id="popover-basic">
+            <Popover.Title as="h3">Edit Cue</Popover.Title>
+            <Popover.Content>
+                <Form onSubmit={e => handleSubmit(e)}>
+                    <Form.Group>
+                        <Form.Control type="text" placeholder="Cue Name" value={name} onChange={(e) => setName(e.target.value)} />
+                        <Form.Control type="text" placeholder="Resource URL" value={link} onChange={(e) => setLink(e.target.value)} />
+                        <Button className="button" variant="success" type="submit" value='change'>Change</Button>
+                        <Button className="button" variant="danger" type="submit" value='delete' onClick={(e) => setDeleted(true)}>Delete</Button>
+                    </Form.Group>
+                </Form>
+            </Popover.Content>
+        </Popover>
+    );
+    return (
+        <div className="card-2 border-2" key={props.index}>
+            <div className="habit habit-2">
+                <h5>{props.item.name}</h5>
+            </div>
+            <div>
+                <OverlayTrigger trigger="click" placement="left" overlay={popover(props.index)} show={popoverVisible === props.index ? true : false}>
+                    <Icons.FaPencilAlt className="hover" style={{ marginRight: '20px' }} onClick={(e) => { setPopoverVisible(popoverVisible === props.index ? -1 : props.index) }}></Icons.FaPencilAlt>
+                </OverlayTrigger>
+                <Icons.FaEye className="hover" style={{ marginRight: '20px' }} onClick={(e) => { setPreviewVisible(!previewVisible) }}></Icons.FaEye>
+            </div>
+            {previewVisible && props.cuePreview}
+        </div>
+    )
+}
+
 function CuesList(props) {
 
     const [formVisible, setFormVisible] = useState(-1)
@@ -186,22 +232,26 @@ function CuesList(props) {
                             if (item.type != 'cue') return null;
                             const temp = item.resourceURL.split(" ")
                             let cueItem = { link: temp[0], type: temp[1], habitId: temp[2] }
+                            let changeData = (data, index, deleted) => {
+                                let newData = {}
+                                for (let key in data) {
+                                    if (key == 'link') {
+                                        newData.resourceURL = `${data[key]} ${cueItem.type} ${cueItem.habitId}`
+                                    } else {
+                                        newData[key] = data[key]
+                                    }
+                                }
+                                props.changeData(newData, index, deleted, 'Cue')
+                            }
                             if (cueItem.habitId === props.habit._id) {
-                                console.log(cueItem)
                                 if (cueItem.type === "music") {
-                                    return (
-                                        music(cueItem)
-                                    )
+                                    return <Cue changeData={changeData} item={item} index={index} cuePreview={music(cueItem)} />
                                 }
                                 if (cueItem.type === "image") {
-                                    return (
-                                        image(cueItem)
-                                    )
+                                    return <Cue changeData={changeData} item={item} index={index} cuePreview={image(cueItem)} />
                                 }
                                 if (cueItem.type === "video") {
-                                    return (
-                                        video(cueItem)
-                                    )
+                                    return <Cue changeData={changeData} item={item} index={index} cuePreview={video(cueItem)} />
                                 }
                                 // return(blank(cueItem))
                             }
