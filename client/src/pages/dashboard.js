@@ -46,8 +46,8 @@ function DashboardContent(props) {
     return (
         cue ? (
             <div className="dashboard">
-                <h1>{event.name}</h1>
-                <h1>{cue.name}</h1>
+                <h3>Habit: {event.name}</h3>
+                <h1>Cue: {cue.name}</h1>
                 <div className="parent">
                 {renderCueResource(cue)}
                 {console.log(cue)}

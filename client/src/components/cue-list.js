@@ -93,15 +93,15 @@ function Cue(props) {
     )
 }
 
-let blank = (item) => {
+let blank = (item, name) => {
     return (
         <div className="blank">
-            <a href={item.link}><h3 style={{ color: "white" }}>Link to {item.name}</h3></a>
+            <a href={item.link}><h3 style={{ color: "white" }}>Link to {name}</h3></a>
         </div>
     )
 }
 
-let video = (item) => {
+let video = (item, name) => {
     if (item.link.includes('youtube')) {
         let request = item.link;
         if (!request.includes('embed')) {
@@ -120,7 +120,7 @@ let video = (item) => {
     )
 }
 
-let music = (item) => {
+let music = (item, name) => {
     if (item.link.includes('spotify')) {
         let request;
         if (!item.link.includes('embed')) {
@@ -140,11 +140,11 @@ let music = (item) => {
         )
     }
     return (
-        blank(item)
+        blank(item, name)
     )
 }
 
-let image = (item) => {
+let image = (item, name) => {
     return (
         <div className="parent">
             <img src={item.link} alt=""></img>
@@ -157,16 +157,16 @@ let renderCueResource = item => {
     let cueItem = { link: temp[0], type: temp[1], habitId: temp[2] }
 
     if (cueItem.type === "music") {
-        return music(cueItem)
+        return music(cueItem, item.name)
     }
     if (cueItem.type === "image") {
-        return image(cueItem)
+        return image(cueItem, item.name)
     }
     if (cueItem.type === "video") {
-        return video(cueItem)
+        return video(cueItem, item.name)
     }
     else {
-        return blank(cueItem)
+        return blank(cueItem, item.name)
     }
 }
 
