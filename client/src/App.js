@@ -73,7 +73,6 @@ class App extends React.Component {
         // CHANGE TO SINGULAR
         this.setState({ [`${key}s`]: data[key] })
       }
-      this.setState({ loading: false })
 
       this.state.habits.map(async (item, index) => {
         const habitHistoryUrl = `${config.api_domain}events/${item._id}/history`
@@ -82,6 +81,7 @@ class App extends React.Component {
         habits[index] = { ...habits[index], completion: data }
         this.setState({ habits: habits })
       })
+      this.setState({ loading: false })
     } catch (err) {
       console.log(err)
     }
@@ -131,9 +131,14 @@ class App extends React.Component {
 
 
   //checkbox of habit
-  checkHabit = (value, index) => {
+  checkHabit = async (value, index) => {
     let habits = this.state.habits
+    const url = `http://localhost:8080/events/${this.state.habits[index]._id}`
     habits[index].completion[0] = value
+    // let data = habits[index].completion
+    // console.log(data)
+    // await makeRequest(url,'put', data)
+    // await this.fetchData()
     this.setState({ habits: habits })
   }
 
