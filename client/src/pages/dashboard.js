@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { renderCueResource } from '../components/cue-list';
 import Layout from '../components/layout';
+import '../static/page.css'
 
 
 function DashboardContent(props) {
@@ -44,12 +45,16 @@ function DashboardContent(props) {
 
     return (
         cue ? (
-            <div>
+            <div className="dashboard">
                 <h1>{event.name}</h1>
+                <h1>{cue.name}</h1>
+                <div className="parent">
                 {renderCueResource(cue)}
+                {console.log(cue)}
+                </div>
             </div>
         ) : (
-            <h1>All Done!</h1>
+            <h1 className="dashboard">Congrats you crushed the day! <a href="https://www.youtube.com/watch?v=tmTZj0emGHw">You deserve this.</a></h1>
         )
     )
 

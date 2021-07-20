@@ -76,7 +76,7 @@ function HabitList(props) {
 
                         <div className="habit habit-2 inline">
                             {item.type === 'habit' ? <h4 className="habit no-padding-top">{pct(item.completion)}%</h4> : null}
-                            <h4 className="no-padding-top">{item.name}</h4>
+                            <h4 className="habit no-padding-top">{item.name}</h4>
                             {/* <p>{item.description}</p> */}
                         </div>
                         <div>

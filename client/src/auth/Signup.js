@@ -2,6 +2,7 @@
 
 import React from 'react';
 import makeRequest from '../api/makeRequest';
+import '../static/page.css';
 import { Redirect } from "react-router-dom";
 
 export default class Signup extends React.Component {
@@ -23,12 +24,13 @@ export default class Signup extends React.Component {
     inputPart = (label, name, type) => {
         // mini component
         return (
-            <label> {label}
+            <label style={{paddingRight:"5px"}}> {label}
                 <input
                     name={name}
                     type={type}
                     value={this.state[name]}
                     onChange={this.handleEventChange}
+                    style={{marginLeft: "5px"}}
                 ></input>
             </label>
         )
@@ -48,15 +50,15 @@ export default class Signup extends React.Component {
 
     render() {
         return (
-            <>
+            <div className="dashboard">
                 {this.state.signupFailed && <p>Signup failed.</p>}
-                <form onSubmit={this.handleSubmit}>
+                <form onSubmit={this.handleSubmit} style={{marginRight:"7%"}}>
                     {this.inputPart("Username", "user", "text")}
                     {this.inputPart("Email", "email", "text")}
                     {this.inputPart("Password", "password", "password")}
                     <input type="submit" value="Sign up" />
                 </form>
-            </>
+            </div>
         )
     }
 }

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import * as Icons from "react-icons/fa";
 import { Form, Popover, OverlayTrigger, Button, Modal, Card } from 'react-bootstrap'
-import { Select } from 'evergreen-ui';
+import '../static/page.css'
 
 //options: Cards, Carousel, Hover on Gallery
 
@@ -12,14 +12,15 @@ function ModalBody(props) {
     const [name, setName] = useState("")
     const [cue, setCue] = useState("")
     const [cueVisible, setCueVisible] = useState(false);
-
+    const [imageText, setImageText] = useState("")
+    const [bottomImageText, setBottomImageText] = useState("")
     return (
         <>
             <p>
                 Cues are anything that put you in a certain mood or motivate you to do a certain habit. Add your own cue
                 here through a link to music, text, an imager or a youtube video! Make the cue specific to the habit!
             </p>
-            <Form onSubmit={(e) => props.handleSubmit(e, cue, type, name)}>
+            <Form onSubmit={(e) => props.handleSubmit(e, type=="image" ? `https://api.memegen.link/images/custom/${imageText.replace(" ", "_")}/${bottomImageText.replace(" ", "_")}.png?background=${cue}` : cue, type, name)}>
                 <Form.Group>
                     <select onChange={(e) => setType(e.target.value)}>
                         <option value="" disabled selected>Type of Media</option>
@@ -30,9 +31,14 @@ function ModalBody(props) {
                     </select>
                 </Form.Group>
                 <Form.Group>
-                    <Form.Control type="text" placeholder="Name of Cue" value={name} onChange={(e) => setName(e.target.value)} />
-                    <Form.Control type="text" placeholder="Link to Cue" value={cue} onChange={(e) => setCue(e.target.value)} />
-                    {cueVisible && cue !== "" && type === "image" ? <div className="parent"><img src={cue} alt=""></img></div> : null}
+                    <Form.Control className="text-form" type="text" placeholder="Name of Cue / Call to Action" value={name} onChange={(e) => setName(e.target.value)} />
+                    <Form.Control className="text-form" type="text" placeholder="Link to Cue" value={cue} onChange={(e) => setCue(e.target.value)} />
+                    {type === "image" ? 
+                        <>
+                        <Form.Control className="text-form" type="text" placeholder="Text to Place on Top of Image" value={imageText} onChange={(e) => setImageText(e.target.value)} /> 
+                        <Form.Control className="text-form" type="text" placeholder="Text to Place on Bottom of Image" value={bottomImageText} onChange={(e) => setBottomImageText(e.target.value)} /> 
+                    </>: null}
+                    {cueVisible && cue !== "" && type === "image" ? <div className="parent"><img src={`https://api.memegen.link/images/custom/${imageText.replace(" ", "_")}/${bottomImageText.replace(" ", "_")}.png?background=${cue}`} alt=""></img></div> : null}
                     <Button className="button" variant="primary" type="button" value='preview' onClick={() => setCueVisible(!cueVisible)}>Preview</Button>
                     <Button className="button" variant="success" type="submit" value='change'>Create Cue</Button>
                 </Form.Group>
@@ -62,8 +68,8 @@ function Cue(props) {
             <Popover.Content>
                 <Form onSubmit={e => handleSubmit(e)}>
                     <Form.Group>
-                        <Form.Control type="text" placeholder="Cue Name" value={name} onChange={(e) => setName(e.target.value)} />
-                        <Form.Control type="text" placeholder="Resource URL" value={link} onChange={(e) => setLink(e.target.value)} />
+                        <Form.Control className="text-form" type="text" placeholder="Cue Name" value={name} onChange={(e) => setName(e.target.value)} />
+                        <Form.Control className="text-form" type="text" placeholder="Resource URL" value={link} onChange={(e) => setLink(e.target.value)} />
                         <Button className="button" variant="success" type="submit" value='change'>Change</Button>
                         <Button className="button" variant="danger" type="submit" value='delete' onClick={(e) => setDeleted(true)}>Delete</Button>
                     </Form.Group>
@@ -89,8 +95,8 @@ function Cue(props) {
 
 let blank = (item) => {
     return (
-        <div className="parent blank">
-            <a href={item.resourceUrl}><h3 style={{ color: "white" }}>Link to {item.name}</h3></a>
+        <div className="blank">
+            <a href={item.link}><h3 style={{ color: "white" }}>Link to {item.name}</h3></a>
         </div>
     )
 }
@@ -159,6 +165,9 @@ let renderCueResource = item => {
     if (cueItem.type === "video") {
         return video(cueItem)
     }
+    else {
+        return blank(cueItem)
+    }
 }
 
 function CuesList(props) {
@@ -172,14 +181,6 @@ function CuesList(props) {
     const [cueVisible, setCueVisible] = useState(false);
     const [type, setType] = useState("")
 
-    function handleEdit(event) {
-        event.preventDefault();
-        props.changeData(cue, popoverVisible, del, props.type)
-        setDelete(false)
-        setPopoverVisible(-1)
-        setCue("")
-    }
-
     function handleSubmit(event, cue, type, name) {
         event.preventDefault();
         let link = `${cue} ${type} ${props.habit._id}`
@@ -188,21 +189,6 @@ function CuesList(props) {
         // setCue("")
         // setType("")
     }
-
-    const popover = (index) => (
-        <Popover id="popover-basic">
-            <Popover.Title as="h3">Edit {props.type}</Popover.Title>
-            <Popover.Content>
-                <Form onSubmit={(e) => handleEdit(e, index, false)}>
-                    <Form.Group>
-                        <Form.Control type="text" placeholder={`${props.type} Name`} value={cue} onChange={(e) => setCue(e.target.value)} />
-                        <Button className="button" variant="success" type="submit" value='change'>Change</Button>
-                        <Button className="button" variant="danger" type="submit" value='delete' onClick={(e) => setDelete(true)}>Delete</Button>
-                    </Form.Group>
-                </Form>
-            </Popover.Content>
-        </Popover>
-    );
 
     //spotify structure: https://open.spotify.com/embed/track/2zQl59dZMzwhrmeSBEgiXY
     //url: https://open.spotify.com/track/2zQl59dZMzwhrmeSBEgiXY

@@ -3,6 +3,7 @@
 import React from 'react';
 import { sessionContext } from './sessionContext'
 import { Link } from "react-router-dom";
+import { Button } from "react-bootstrap";
 
 class AuthButtons extends React.Component {
     constructor(props) {
@@ -13,15 +14,15 @@ class AuthButtons extends React.Component {
         if (this.context && this.context.isAuthed) {
             return (
                 <div>
-                    <button onClick={this.props.handleLogout}><Link>Logout</Link></button>
+                    <Button onClick={this.props.handleLogout} style={{marginRight: "5px"}}><Link style={{color:'white'}}>Logout</Link></Button>
                     <p>{this.context.user}</p>
                 </div>
             )
         } else {
             return (
                 <div>
-                    <button><Link to="/login">Login</Link></button>
-                    <button><Link to="/signup">Signup</Link></button>
+                    <Button style={{marginRight: "5px"}}><Link to="/login" style={{color:'white'}}>Login</Link></Button>
+                    <Button style={{marginRight: "5px"}}><Link to="/signup" style={{color:'white'}}>Signup</Link></Button>
                 </div>
             )
         }
