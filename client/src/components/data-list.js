@@ -15,26 +15,13 @@ function HabitList(props) {
     const [cueVisible, setCueVisible] = useState(false);
 
     function pct(items) {
-        let count = 0;
-        let avg;
         try {
-            for (let i = 0; i < items.length; i++) {
-                if (items[i] === true) {
-                    count += 1;
-                }
+            let cnt = 0;
+            for (let key in items) {
+                if (items[key]) ++cnt;
             }
-            if (count === 0) {
-                avg = 0
-            }
-            else {
-                avg = (count / items.length) * 100;
-            }
-        }
-        //if new habit
-        catch (err) {
-            avg = 0;
-        }
-        return Math.floor(avg);
+            return Math.floor(100 * cnt / Object.keys(items).length)
+        } catch (err) { console.log(err); return 0; }
     }
 
 
@@ -74,8 +61,6 @@ function HabitList(props) {
             <img src={props.type === "Habit" ? 'https://drive.google.com/file/d/10be3xLM_uDyIOiusK3Jd36tjL87gOsZI/view?usp=sharing' : null} alt=""></img>
         </div>
     )
-
-
 
     return (
         <>
