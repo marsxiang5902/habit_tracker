@@ -49,8 +49,8 @@ function ModalBody(props) {
 
 function Cue(props) {
     const [previewVisible, setPreviewVisible] = useState(false)
-    const [name, setName] = useState("")
-    const [link, setLink] = useState("")
+    const [name, setName] = useState(props.item.name)
+    const [link, setLink] = useState(props.link)
     const [deleted, setDeleted] = useState(false)
     const [popoverVisible, setPopoverVisible] = useState(false)
 
@@ -246,7 +246,7 @@ function CuesList(props) {
                                 props.changeData(newData, index, deleted, 'Cue')
                             }
                             if (cueItem.habitId === props.habit._id) {
-                                return <Cue changeData={changeData} item={item} index={index} cuePreview={renderCueResource(item)} />
+                                return <Cue changeData={changeData} item={item} link={cueItem.link} index={index} cuePreview={renderCueResource(item)} />
                                 // return(blank(cueItem))
                             }
                         } catch (err) { return null; }
