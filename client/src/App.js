@@ -73,7 +73,7 @@ class App extends React.Component {
 
       this.state.habits.map(async (item, index) => {
         const habitHistoryUrl = `${config.api_domain}events/${item._id}/history`
-        let data = (await makeRequest(habitHistoryUrl, 'get')).data
+        let data = (await makeRequest(habitHistoryUrl, 'get', {}, this.state.session.jwt)).data
         let habits = this.state.habits
         habits[index] = { ...habits[index], completion: data }
         this.setState({ habits: habits })
@@ -92,7 +92,7 @@ class App extends React.Component {
       // habits.push(data)
       // this.setState({ habits: habits })
       const url = 'http://localhost:8080/events/'
-      await makeRequest(url, 'post', data)
+      await makeRequest(url, 'post', data, this.state.session.jwt)
       await this.fetchData()
     }
 
@@ -103,7 +103,7 @@ class App extends React.Component {
       // this.setState(todos)
 
       const url = 'http://localhost:8080/events/'
-      await makeRequest(url, 'post', data)
+      await makeRequest(url, 'post', data, this.state.session.jwt)
       await this.fetchData()
     }
 
@@ -112,7 +112,7 @@ class App extends React.Component {
       // let data = { habitId: habitId, resourceUrl: text, name: type }
       let data = { user: this.state.session.user, name: text, type: type, args: { resourceURL: link } }
       const url = 'http://localhost:8080/events/'
-      await makeRequest(url, 'post', data)
+      await makeRequest(url, 'post', data, this.state.session.jwt)
       await this.fetchData()
 
       let cues = this.state.cues
@@ -128,7 +128,7 @@ class App extends React.Component {
     let habits = this.state.habits
     const url = `http://localhost:8080/events/${this.state.habits[index]._id}/history`
     habits[index].completion[0] = value
-    await makeRequest(url, 'put', { 0: value })
+    await makeRequest(url, 'put', { 0: value }, this.state.session.jwt)
     this.setState({ habits: habits })
   }
 
@@ -138,7 +138,7 @@ class App extends React.Component {
         let habits = this.state.habits
         let id = habits[index]._id
         const url = `http://localhost:8080/events/${id}`
-        await makeRequest(url, 'delete')
+        await makeRequest(url, 'delete', {}, this.state.session.jwt)
         habits.splice(index, 1)
         this.setState({ habits: habits })
       }
@@ -146,7 +146,7 @@ class App extends React.Component {
         let todos = this.state.todos
         let id = todos[index]._id
         const url = `http://localhost:8080/events/${id}`
-        await makeRequest(url, 'delete')
+        await makeRequest(url, 'delete', {}, this.state.session.jwt)
         todos.splice(index, 1)
         this.setState({ todos: todos })
       }
@@ -154,7 +154,7 @@ class App extends React.Component {
         let cues = this.state.cues
         let id = cues[index]._id
         const url = `http://localhost:8080/events/${id}`
-        await makeRequest(url, 'delete')
+        await makeRequest(url, 'delete', {}, this.state.session.jwt)
         cues.splice(index, 1)
         this.setState({ cues: cues })
       }
@@ -164,7 +164,7 @@ class App extends React.Component {
         let habits = this.state.habits
         let id = habits[index]._id
         const url = `http://localhost:8080/events/${id}`
-        await makeRequest(url, 'put', { name: updatedValue })
+        await makeRequest(url, 'put', { name: updatedValue }, this.state.session.jwt)
         habits[index].name = updatedValue
         this.setState({ habits: habits })
       }
@@ -172,7 +172,7 @@ class App extends React.Component {
         let todos = this.state.todos
         let id = todos[index]._id
         const url = `http://localhost:8080/events/${id}`
-        await makeRequest(url, 'put', { name: updatedValue })
+        await makeRequest(url, 'put', { name: updatedValue }, this.state.session.jwt)
         todos[index].name = updatedValue
         this.setState({ todos: todos })
       }
@@ -180,7 +180,7 @@ class App extends React.Component {
         let cues = this.state.cues
         let id = cues[index]._id
         const url = `http://localhost:8080/events/${id}`
-        await makeRequest(url, 'put', updatedValue)
+        await makeRequest(url, 'put', updatedValue, this.state.session.jwt)
         for (let key in updatedValue) {
           cues[index][key] = updatedValue[key]
         }
