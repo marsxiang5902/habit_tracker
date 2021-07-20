@@ -576,4 +576,3 @@ class App extends React.Component {
   }
 }
 export default withRouter(App);
->>>>>>> 6a1af5755ed973c9e24ce8bed8673bfb1d45c735
