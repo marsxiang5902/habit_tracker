@@ -24,9 +24,9 @@ npm install
 npm install
 ```
 
-* Place the `sample_server_config.json` file in the `server` folder and rename it `config.json`.
+* Place the `tester_server_config.json` file in the `server` folder and rename it `config.json`.
 
-* Place the `sample_client_config.js` file in the `client/src` folder and rename it `config.js`.
+* Place the `tester_client_config.js` file in the `client/src` folder and rename it `config.js`.
 
 
 ## Running
