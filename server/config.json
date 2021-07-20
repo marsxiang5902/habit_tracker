@@ -1,0 +1,8 @@
+{
+    "db_username": "admin",
+    "db_password": "lHwvGYNuvD48hpPx",
+    "db_cluster": "cluster0",
+    "db_name": "habit_database",
+    "jwt_secret": "if_you_mess_with_this_and_the_app_breaks_*shrug*",
+    "jwt_alg": "HS256"
+}
