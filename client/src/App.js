@@ -235,7 +235,7 @@ class App extends React.Component {
             <Route path="/editor" render={(props) => {
               return (
                 <>
-                  <Layout name="🗺 THE PLAN">
+                  <Layout name="🗺 THE PLAN" handleLogout={this.handleLogout}>
                   </Layout>
                   <All habits={!this.state.loading ? this.state.habits : this.state.default}
                     cues={this.state.cues}
@@ -248,10 +248,9 @@ class App extends React.Component {
                 </>
               )
             }} />
-            <Route path="/test" component={MyForm} />
             <Route path="/habits" render={(props) => (
               <>
-                <Layout name="🗺 THE LITTLE THINGS">
+                <Layout name="🗺 THE LITTLE THINGS" handleLogout={this.handleLogout}>
                 </Layout>
                 <Habits habits={this.state.habits} checkHabit={this.checkHabit} />
               </>
@@ -269,7 +268,7 @@ class App extends React.Component {
 
             <Route path="/cues" render={(props) => (
               <>
-                <Layout name="🗺 THE TRIGGERS">
+                <Layout name="🗺 THE TRIGGERS" handleLogout={this.handleLogout}>
                 </Layout>
                 <Cues habits={!this.state.loading ? this.state.habits : this.state.default}
                   cues={this.state.cues}

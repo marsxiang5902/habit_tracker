@@ -22,18 +22,19 @@ export const SidebarData = [
     icon: <Icons.FaBullhorn />,
     cName: 'nav-text'
   },
-  {
-    title: 'Updates',
-    path: '/updates',
-    icon: <Icons.FaClipboardList />,
-    cName: 'nav-text'
-  },
-  {
-    title: 'Data Room',
-    path: '/data',
-    icon: <Icons.FaDatabase />,
-    cName: 'nav-text'
-  },
+  // {
+  //   title: 'Updates',
+  //   path: '/updates',
+  //   icon: <Icons.FaClipboardList />,
+  //   cName: 'nav-text'
+  // },
+  // {
+  //   title: 'Data Room',
+  //   path: '/data',
+  //   icon: <Icons.FaDatabase />,
+  //   cName: 'nav-text'
+  // },
+  // nothing to see here
   {
     title: 'Editor',
     path: '/editor',

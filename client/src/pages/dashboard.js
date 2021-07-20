@@ -19,16 +19,18 @@ function DashboardContent(props) {
         let curCue = null, curEvent = null;
         if (props.cues) {
             props.cues.forEach((cue) => {
-                let [link, type, eventId] = cue.resourceURL.split(' ')
-                if (eventId && eventId in id2habit) {
-                    let event = id2habit[eventId]
-                    if (event.completion && '0' in event.completion) {
-                        if (!event.completion[0] && (!curCue || Math.random() < 0.5)) {
-                            curCue = cue
-                            curEvent = event
+                try {
+                    let [link, type, eventId] = cue.resourceURL.split(' ')
+                    if (eventId && eventId in id2habit) {
+                        let event = id2habit[eventId]
+                        if (event.completion && '0' in event.completion) {
+                            if (!event.completion[0] && (!curCue || Math.random() < 0.5)) {
+                                curCue = cue
+                                curEvent = event
+                            }
                         }
                     }
-                }
+                } catch (err) { }
             })
         }
         return [curCue, curEvent];
