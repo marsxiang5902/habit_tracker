@@ -14,6 +14,29 @@ function HabitList(props) {
     const [modalShow, setModalShow] = useState(false);
     const [cueVisible, setCueVisible] = useState(false);
 
+    function pct(items){
+        let count = 0;
+        let avg;
+        try {
+            for (let i = 0; i < items.length; i++) {
+                if (items[i] === true) {
+                    count += 1;
+                }
+            }
+            if (count === 0){
+                avg = 0
+            }
+            else{
+                avg = (count / items.length) * 100;
+            }
+        }
+        //if new habit
+        catch (err) {
+            avg = 0;
+        }
+        return Math.floor(avg);
+    }
+
 
 
     function handleEdit(event) {
@@ -64,12 +87,13 @@ function HabitList(props) {
                     <Icons.FaRegWindowClose onClick={() => { setFormVisible(false) }} className="hover"></Icons.FaRegWindowClose>}
             </div>
             {props.data.map((item, index) => {
+                console.log(item)
                 return (
                     <div className="card-2 border-2" key={index}>
 
-                        {/* <h4 className="habit">{pct(item.done)}%</h4> */}
-                        <div className="habit habit-2">
-                            <h5>{item.name}</h5>
+                        <div className="habit habit-2 inline">
+                        {item.type === 'habit' ? <h4 className="habit no-padding-top">{pct(item.completion)}%</h4> : null}
+                            <h4 className="no-padding-top">{item.name}</h4>
                             {/* <p>{item.description}</p> */}
                         </div>
                         <div>
