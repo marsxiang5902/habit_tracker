@@ -14,11 +14,10 @@ export default async function makeRequest(url, verb = 'get', data = {}, bearer =
         },
         data: data,
     })
-    let ret =  {
+    let ret = {
         ...res.data,
         status: res.status,
         statusText: res.statusText,
     }
-    console.log(ret)
     return ret;
 }

@@ -7,7 +7,6 @@ import { Route, Switch, withRouter } from 'react-router-dom';
 import All from './pages/all';
 import Dashboard from './pages/dashboard';
 import MyForm from './components/form';
-import axios from 'axios';
 import Habits from './pages/habits'
 import Cues from './pages/cues';
 import Signup from './auth/Signup';
@@ -64,8 +63,6 @@ class App extends React.Component {
   }
 
   async fetchData() {
-
-
     try {
       let data = (await makeRequest(`${config.api_domain}users/${this.state.session.user}/events`,
         'get', {}, this.state.session.jwt)).data
@@ -83,9 +80,7 @@ class App extends React.Component {
       })
       this.setState({ loading: false })
     } catch (err) {
-      console.log(err)
     }
-    console.log(this.state.todos)
 
   }
 
@@ -116,7 +111,6 @@ class App extends React.Component {
     else {
       // let data = { habitId: habitId, resourceUrl: text, name: type }
       let data = { user: this.state.session.user, name: text, type: type, args: { resourceURL: link } }
-      console.log(data)
       const url = 'http://localhost:8080/events/'
       await makeRequest(url, 'post', data)
       await this.fetchData()
@@ -124,7 +118,6 @@ class App extends React.Component {
       let cues = this.state.cues
       cues.push(data)
       this.setState(cues)
-      console.log(this.state.cues)
     }
 
   }
@@ -133,12 +126,9 @@ class App extends React.Component {
   //checkbox of habit
   checkHabit = async (value, index) => {
     let habits = this.state.habits
-    const url = `http://localhost:8080/events/${this.state.habits[index]._id}`
+    const url = `http://localhost:8080/events/${this.state.habits[index]._id}/history`
     habits[index].completion[0] = value
-    // let data = habits[index].completion
-    // console.log(data)
-    // await makeRequest(url,'put', data)
-    // await this.fetchData()
+    await makeRequest(url, 'put', { 0: value })
     this.setState({ habits: habits })
   }
 
@@ -223,7 +213,6 @@ class App extends React.Component {
   }
 
   handleLogout = () => {
-    console.log('here')
     this.setState({ session: defaultSessionContext })
     this.props.history.push('/login')
   }
@@ -238,7 +227,7 @@ class App extends React.Component {
               return (
                 <>
                   <Dashboard habits={!this.state.loading ? this.state.habits : this.state.default}
-                    cues={this.state.cues} handleLogout={this.handleLogout}
+                    cues={this.state.cues} handleLogout={this.handleLogout} generateCue={this.generateRandomCue}
                   />
                 </>
               )

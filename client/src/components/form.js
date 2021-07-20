@@ -9,7 +9,6 @@ function AddHabitForm(props) {
 
     function handleSubmit(event) {
         event.preventDefault();
-        console.log(props.habitName)
         props.visible(false)
         props.addHabit(props.habitName)
         props.setName("")

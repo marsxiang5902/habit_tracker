@@ -87,6 +87,80 @@ function Cue(props) {
     )
 }
 
+let blank = (item) => {
+    return (
+        <div className="parent blank">
+            <a href={item.resourceUrl}><h3 style={{ color: "white" }}>Link to {item.name}</h3></a>
+        </div>
+    )
+}
+
+let video = (item) => {
+    if (item.link.includes('youtube')) {
+        let request = item.link;
+        if (!request.includes('embed')) {
+            request = `https://youtube.com/embed/${request.replace('https://www.youtube.com/watch?v=', '')}?theme=0`;
+        }
+        return (
+            <div className="parent">
+                <iframe width="100%" height="200" src={request} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+            </div>
+        )
+    }
+    return (
+        <div className="parent">
+            <iframe width="100%" height="200" src={item.link} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+        </div>
+    )
+}
+
+let music = (item) => {
+    if (item.link.includes('spotify')) {
+        let request;
+        if (!item.link.includes('embed')) {
+            request = `https://open.spotify.com/embed/track/${item.link.replace('https://open.spotify.com/track/', '')}?theme=0`;
+        }
+        return (
+            <div className="parent">
+                <iframe src={request} width="100%" height="80" frameBorder="0" allowtransparency="true" allow="encrypted-media" title="spotify"></iframe>
+            </div>
+        )
+    }
+    if (item.link.includes('w.soundcloud')) {
+        return (
+            <div className="parent">
+                <iframe src={item.link} width="100%" height="200" frameBorder="0" allowtransparency="true" allow="encrypted-media" title="spotify"></iframe>
+            </div>
+        )
+    }
+    return (
+        blank(item)
+    )
+}
+
+let image = (item) => {
+    return (
+        <div className="parent">
+            <img src={item.link} alt=""></img>
+        </div>
+    )
+}
+
+let renderCueResource = item => {
+    const temp = item.resourceURL.split(" ")
+    let cueItem = { link: temp[0], type: temp[1], habitId: temp[2] }
+
+    if (cueItem.type === "music") {
+        return music(cueItem)
+    }
+    if (cueItem.type === "image") {
+        return image(cueItem)
+    }
+    if (cueItem.type === "video") {
+        return video(cueItem)
+    }
+}
+
 function CuesList(props) {
 
     const [formVisible, setFormVisible] = useState(-1)
@@ -129,65 +203,6 @@ function CuesList(props) {
             </Popover.Content>
         </Popover>
     );
-
-    const blank = (item) => {
-        return (
-            <div className="parent blank">
-                <a href={item.resourceUrl}><h3 style={{ color: "white" }}>Link to {item.name}</h3></a>
-            </div>
-        )
-    }
-
-    const video = (item) => {
-        if (item.link.includes('youtube')) {
-            let request = item.link;
-            if (!request.includes('embed')) {
-                request = `https://youtube.com/embed/${request.replace('https://www.youtube.com/watch?v=', '')}?theme=0`;
-            }
-            return (
-                <div className="parent">
-                    <iframe width="100%" height="200" src={request} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
-                </div>
-            )
-        }
-        return (
-            <div className="parent">
-                <iframe width="100%" height="200" src={item.link} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
-            </div>
-        )
-    }
-
-    const music = (item) => {
-        if (item.link.includes('spotify')) {
-            let request;
-            if (!item.link.includes('embed')) {
-                request = `https://open.spotify.com/embed/track/${item.link.replace('https://open.spotify.com/track/', '')}?theme=0`;
-            }
-            return (
-                <div className="parent">
-                    <iframe src={request} width="100%" height="80" frameBorder="0" allowtransparency="true" allow="encrypted-media" title="spotify"></iframe>
-                </div>
-            )
-        }
-        if (item.link.includes('w.soundcloud')) {
-            return (
-                <div className="parent">
-                    <iframe src={item.link} width="100%" height="200" frameBorder="0" allowtransparency="true" allow="encrypted-media" title="spotify"></iframe>
-                </div>
-            )
-        }
-        return (
-            blank(item)
-        )
-    }
-
-    const image = (item) => {
-        return (
-            <div className="parent">
-                <img src={item.link} alt=""></img>
-            </div>
-        )
-    }
 
     //spotify structure: https://open.spotify.com/embed/track/2zQl59dZMzwhrmeSBEgiXY
     //url: https://open.spotify.com/track/2zQl59dZMzwhrmeSBEgiXY
@@ -232,6 +247,7 @@ function CuesList(props) {
                             if (item.type != 'cue') return null;
                             const temp = item.resourceURL.split(" ")
                             let cueItem = { link: temp[0], type: temp[1], habitId: temp[2] }
+
                             let changeData = (data, index, deleted) => {
                                 let newData = {}
                                 for (let key in data) {
@@ -244,15 +260,7 @@ function CuesList(props) {
                                 props.changeData(newData, index, deleted, 'Cue')
                             }
                             if (cueItem.habitId === props.habit._id) {
-                                if (cueItem.type === "music") {
-                                    return <Cue changeData={changeData} item={item} index={index} cuePreview={music(cueItem)} />
-                                }
-                                if (cueItem.type === "image") {
-                                    return <Cue changeData={changeData} item={item} index={index} cuePreview={image(cueItem)} />
-                                }
-                                if (cueItem.type === "video") {
-                                    return <Cue changeData={changeData} item={item} index={index} cuePreview={video(cueItem)} />
-                                }
+                                return <Cue changeData={changeData} item={item} index={index} cuePreview={renderCueResource(item)} />
                                 // return(blank(cueItem))
                             }
                         } catch (err) { return null; }
@@ -266,4 +274,6 @@ function CuesList(props) {
 
 }
 
-export default CuesList;
+export {
+    CuesList, renderCueResource
+}

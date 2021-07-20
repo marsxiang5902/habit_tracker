@@ -23,14 +23,12 @@ const Profile = () => {
     const [userMetadata, setUserMetadata] = useState(null)
 
     useEffect(() => {
-        console.log('hook');
         (async () => {
             try {
                 const accessToken = await getAccessTokenSilently({
                     audience: `https://${config.auth0_domain}/api/v2/`,
                     scope: 'read:current_user'
                 })
-                console.log(user)
                 const userDetailsByIdUrl = `https://${config.auth0_domain}/api/v2/users/${user.sub}`
                 const metadataResponse = await fetch(userDetailsByIdUrl, {
                     headers: {
@@ -39,15 +37,11 @@ const Profile = () => {
                 })
                 const { userMetadata } = await metadataResponse.json()
                 setUserMetadata(userMetadata)
-                console.log(userMetadata)
             } catch (err) {
-                console.log(err)
             }
         })()
     }, [])
 
-    console.log('first render')
-    console.log(user)
     return (
         isAuthenticated ? (
             <div>
