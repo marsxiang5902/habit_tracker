@@ -13,8 +13,8 @@ function DashboardContent(props) {
     let generateCue = () => {
         let id2habit = {}
         if (props.habits) {
-            props.habits.forEach(habit => {
-                id2habit[habit._id] = habit
+            props.habits.forEach(event => {
+                id2habit[event._id] = event
             })
         }
         let curCue = null, curEvent = null;
@@ -24,6 +24,7 @@ function DashboardContent(props) {
                     let [link, type, eventId] = cue.resourceURL.split(' ')
                     if (eventId && eventId in id2habit) {
                         let event = id2habit[eventId]
+                        console.log(event)
                         if (event.completion && '0' in event.completion) {
                             if (!event.completion[0] && (!curCue || Math.random() < 0.5)) {
                                 curCue = cue
@@ -38,10 +39,11 @@ function DashboardContent(props) {
     }
 
     useEffect(() => {
+        console.log(props)
         let [newCue, newEvent] = generateCue()
         setCue(newCue)
         setEvent(newEvent)
-    }, [cue, event])
+    }, [props])
 
     return (
         cue ? (
@@ -49,8 +51,7 @@ function DashboardContent(props) {
                 <h3>Habit: {event.name}</h3>
                 <h1>Cue: {cue.name}</h1>
                 <div className="parent">
-                {renderCueResource(cue)}
-                {console.log(cue)}
+                    {renderCueResource(cue)}
                 </div>
             </div>
         ) : (
