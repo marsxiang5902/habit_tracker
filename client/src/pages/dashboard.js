@@ -43,7 +43,7 @@ function DashboardContent(props) {
         let [newCue, newEvent] = generateCue()
         setCue(newCue)
         setEvent(newEvent)
-    }, [props])
+    }, [JSON.stringify(props)])
 
     return (
         cue ? (
