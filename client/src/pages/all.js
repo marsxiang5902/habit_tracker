@@ -4,8 +4,6 @@ import React, { useState, useEffect } from "react";
 import '../static/page.css'
 import { Form } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import * as Icons from "react-icons/fa";
-import MyHabitForm from '../components/form'
 import DataList from '../components/data-list'
 
 
@@ -15,7 +13,7 @@ function All(props) {
         <>
             <div className="formatter">
                 <div className="container" id="habits">
-                    <DataList addedData={props.addedData} data={props.habits} addData={props.addData} changeData={props.changeData} cues={props.cues} title="Daily Habits" type="Habit"/>
+                    <DataList addedData={props.addedData} data={props.habits} addData={props.addData} changeData={props.changeData} cues={props.cues} title="Daily Habits" type="Habit" />
                 </div>
                 <div className="container" id="todos">
                     <DataList addedData={props.addedData} data={props.todos} addData={props.addData} changeData={props.changeData} title="Todos" type="Todo" />

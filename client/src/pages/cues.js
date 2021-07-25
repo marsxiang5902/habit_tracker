@@ -1,8 +1,6 @@
 'use strict'
 
-import React, { useState } from 'react';
-import * as Icons from "react-icons/fa";
-import { Form, Popover, OverlayTrigger, Button, Modal } from 'react-bootstrap'
+import React from 'react';
 import '../static/page.css'
 import { CuesList } from '../components/cue-list';
 

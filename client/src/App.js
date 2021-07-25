@@ -6,7 +6,6 @@ import Layout from './components/layout';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import All from './pages/all';
 import Dashboard from './pages/dashboard';
-import MyForm from './components/form';
 import Habits from './pages/habits'
 import Cues from './pages/cues';
 import Signup from './auth/Signup';
@@ -31,24 +30,6 @@ class App extends React.Component {
       session: defaultSessionContext
     })
   }
-
-  // config = { headers: { "Access-Control-Allow-Origin": "*" } }
-  // async componentDidMount() {
-  //   this.setState({
-  //     habitsTest: await ((await fetch('http://localhost:8080/users/events/mars', this.config)).json())
-  //   });
-  //   console.log(this.state.habitsTest)
-  // }
-
-  // async componentDidMount(){
-  //   const data = await axios.get('http://localhost:8080/users/events/mars').then(res => {
-  //     return res.data
-  //   })
-  //   this.setState({
-  //     test: await data
-  //   })
-  //   console.log(this.state.test.habit)
-  // }
 
   async componentDidMount() {
     const user = this.state.session.user
