@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import { SidebarData } from "./menu-options";
 import { IconContext } from "react-icons";
 import "../static/layout.css";
-import '../auth/auth'
 import AuthButtons from "../auth/AuthButtons";
 
 function Layout(props) {
