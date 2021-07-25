@@ -1,7 +1,6 @@
 'use strict'
 
 const TimedEvent = require('./TimedEvent')
-const { subclasses } = require('../HistoryManager/HistoryManagerClasses')
 const httpAssert = require('../errors/httpAssert')
 
 const DEFAULT_ARGS = {

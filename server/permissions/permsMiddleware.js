@@ -2,8 +2,6 @@
 
 const httpStatusErrors = require('../errors/httpStatusErrors')
 const { jwt_secret, jwt_alg } = require('../config.json')
-const ALL_PERMS = require('./perms')
-const { ALL_ROLES, ROLES_ORDER, getPerms, getHighestRole, cmpRoles } = require('./roles')
 const jwt = require('jsonwebtoken')
 const assert = require('assert')
 
