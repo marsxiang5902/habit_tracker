@@ -1,5 +1,3 @@
-'use strict'
-
 import React, { useState } from 'react';
 import * as Icons from "react-icons/fa";
 import { Form, Popover, OverlayTrigger, Button, Modal, Card } from 'react-bootstrap'
@@ -20,7 +18,7 @@ function ModalBody(props) {
                 Cues are anything that put you in a certain mood or motivate you to do a certain habit. Add your own cue
                 here through a link to music, text, an imager or a youtube video! Make the cue specific to the habit!
             </p>
-            <Form onSubmit={(e) => props.handleSubmit(e, type=="image" ? `https://api.memegen.link/images/custom/${imageText.replace(" ", "_")}/${bottomImageText.replace(" ", "_")}.png?background=${cue}` : cue, type, name)}>
+            <Form onSubmit={(e) => props.handleSubmit(e, type == "image" ? `https://api.memegen.link/images/custom/${imageText.replace(" ", "_")}/${bottomImageText.replace(" ", "_")}.png?background=${cue}` : cue, type, name)}>
                 <Form.Group>
                     <select onChange={(e) => setType(e.target.value)}>
                         <option value="" disabled selected>Type of Media</option>
@@ -33,11 +31,11 @@ function ModalBody(props) {
                 <Form.Group>
                     <Form.Control className="text-form" type="text" placeholder="Name of Cue / Call to Action" value={name} onChange={(e) => setName(e.target.value)} />
                     <Form.Control className="text-form" type="text" placeholder="Link to Cue" value={cue} onChange={(e) => setCue(e.target.value)} />
-                    {type === "image" ? 
+                    {type === "image" ?
                         <>
-                        <Form.Control className="text-form" type="text" placeholder="Text to Place on Top of Image" value={imageText} onChange={(e) => setImageText(e.target.value)} /> 
-                        <Form.Control className="text-form" type="text" placeholder="Text to Place on Bottom of Image" value={bottomImageText} onChange={(e) => setBottomImageText(e.target.value)} /> 
-                    </>: null}
+                            <Form.Control className="text-form" type="text" placeholder="Text to Place on Top of Image" value={imageText} onChange={(e) => setImageText(e.target.value)} />
+                            <Form.Control className="text-form" type="text" placeholder="Text to Place on Bottom of Image" value={bottomImageText} onChange={(e) => setBottomImageText(e.target.value)} />
+                        </> : null}
                     {cueVisible && cue !== "" && type === "image" ? <div className="parent"><img src={`https://api.memegen.link/images/custom/${imageText.replace(" ", "_")}/${bottomImageText.replace(" ", "_")}.png?background=${cue}`} alt=""></img></div> : null}
                     <Button className="button" variant="primary" type="button" value='preview' onClick={() => setCueVisible(!cueVisible)}>Preview</Button>
                     <Button className="button" variant="success" type="submit" value='change'>Create Cue</Button>

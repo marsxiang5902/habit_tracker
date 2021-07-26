@@ -1,5 +1,3 @@
-'use strict'
-
 import React from 'react';
 import '../static/page.css'
 import { CuesList } from '../components/cue-list';

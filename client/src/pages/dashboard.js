@@ -1,5 +1,3 @@
-'use strict'
-
 import React, { useEffect, useState } from 'react';
 import { renderCueResource } from '../components/cue-list';
 import Layout from '../components/layout';

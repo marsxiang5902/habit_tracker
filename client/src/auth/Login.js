@@ -1,8 +1,7 @@
-'use strict'
-
 import React from 'react';
 import makeRequest from '../api/makeRequest';
 import '../static/page.css'
+
 
 export default class Login extends React.Component {
     // if we have to write another one, generalize
@@ -51,10 +50,10 @@ export default class Login extends React.Component {
         return (
             <div className="dashboard">
                 {this.state.loginFailed && <p>Login failed.</p>}
-                <form onSubmit={this.handleSubmit} style={{marginRight:"10%"}}>
+                <form onSubmit={this.handleSubmit} style={{ marginRight: "10%" }}>
                     {this.inputPart("Username", "user", "text")}
                     {this.inputPart("Password", "password", "password")}
-                    <input type="submit" value="Log in"/>
+                    <input type="submit" value="Log in" />
                 </form>
             </div>
         )

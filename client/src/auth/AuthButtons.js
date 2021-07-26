@@ -1,5 +1,3 @@
-'use strict'
-
 import React from 'react';
 import { sessionContext } from './sessionContext'
 import { Link } from "react-router-dom";
@@ -14,15 +12,15 @@ class AuthButtons extends React.Component {
         if (this.context && this.context.isAuthed) {
             return (
                 <div>
-                    <Button onClick={this.props.handleLogout} style={{marginRight: "5px"}}><Link style={{color:'white'}}>Logout</Link></Button>
+                    <Button onClick={this.props.handleLogout} style={{ marginRight: "5px" }}><Link style={{ color: 'white' }}>Logout</Link></Button>
                     <p>{this.context.user}</p>
                 </div>
             )
         } else {
             return (
                 <div>
-                    <Button style={{marginRight: "5px"}}><Link to="/login" style={{color:'white'}}>Login</Link></Button>
-                    <Button style={{marginRight: "5px"}}><Link to="/signup" style={{color:'white'}}>Signup</Link></Button>
+                    <Button style={{ marginRight: "5px" }}><Link to="/login" style={{ color: 'white' }}>Login</Link></Button>
+                    <Button style={{ marginRight: "5px" }}><Link to="/signup" style={{ color: 'white' }}>Signup</Link></Button>
                 </div>
             )
         }
