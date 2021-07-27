@@ -153,22 +153,6 @@ Omitted fields are blank.
 ```
 * Refer to the [events](#events) for `args`. All of them are optional.
 
-#### Get an Event
-
-* Verb: **GET**
-* URL: `/:_id`
-* Perms: {`read:event`}
-* Returned Data:
-```
-{
-  "_id": "<the id>",
-  "user": "<the user it belongs to>",
-  "type": "<the event type>",
-  "name": "<the name>",
-  *"resourceURL": <the history manager>
-}
-```
-
 #### Get an Event's History
 
 * Verb: **GET**
@@ -182,6 +166,24 @@ Omitted fields are blank.
   ...
 }
 ```
+
+#### Get an Event
+
+* Verb: **GET**
+* URL: `/:_id`
+* Perms: {`read:event`}
+* Returned Data:
+```
+{
+  "_id": "<the id>",
+  "user": "<the user it belongs to>",
+  "type": "<the event type>",
+  "name": "<the name>",
+  "history": <the history>
+  *"resourceURL": <the history manager>
+}
+```
+* The `history` object is the same as the one returned from [Get an Event's History](#get-an-events-history)
 
 #### Update an Event
 

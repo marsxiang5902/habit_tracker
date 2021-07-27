@@ -11,11 +11,13 @@ async function addEvent(config) {
     await db_addEvent(config.user, config.name, config.type, config.args || {})
 }
 const EVENT_SLICES = ['_id', 'user', 'name', 'type', 'resourceURL']
-async function getEvent(_id, eventRecord) {
+function getEvent(_id, eventRecord) {
     httpAssert.NOT_FOUND(eventRecord, `Event with id ${_id} not found.`)
-    return sliceObject(eventRecord, EVENT_SLICES)
+    let ret = sliceObject(eventRecord, EVENT_SLICES)
+    ret.history = getEventHistory(_id, eventRecord)
+    return ret;
 }
-async function getEventHistory(_id, eventRecord) {
+function getEventHistory(_id, eventRecord) {
     httpAssert.NOT_FOUND(eventRecord, `Event with id ${_id} not found.`)
     let hm = eventRecord.historyManager
     return historyManagerSubclasses[hm.type].getHistory(hm.data)
