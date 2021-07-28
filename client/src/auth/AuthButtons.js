@@ -1,5 +1,5 @@
 import React from 'react';
-import { sessionContext } from './sessionContext'
+import { appContext } from '../context/appContext';
 import { Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
 
@@ -9,11 +9,12 @@ class AuthButtons extends React.Component {
     }
 
     render() {
-        if (this.context && this.context.isAuthed) {
+        let session = this.context.session
+        if (session && session.isAuthed) {
             return (
                 <div>
                     <Button onClick={this.props.handleLogout} style={{ marginRight: "5px" }}><Link style={{ color: 'white' }}>Logout</Link></Button>
-                    <p>{this.context.user}</p>
+                    <p>{session.user}</p>
                 </div>
             )
         } else {
@@ -26,5 +27,5 @@ class AuthButtons extends React.Component {
         }
     }
 }
-AuthButtons.contextType = sessionContext
+AuthButtons.contextType = appContext
 export default AuthButtons

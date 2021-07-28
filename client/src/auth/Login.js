@@ -1,6 +1,7 @@
 import React from 'react';
 import makeRequest from '../api/makeRequest';
 import '../static/page.css'
+import Layout from '../components/layout';
 
 
 export default class Login extends React.Component {
@@ -48,6 +49,8 @@ export default class Login extends React.Component {
 
     render() {
         return (
+            <>
+            <Layout name="THE LOGIN"></Layout>
             <div className="dashboard">
                 {this.state.loginFailed && <p>Login failed.</p>}
                 <form onSubmit={this.handleSubmit} style={{ marginRight: "10%" }}>
@@ -56,6 +59,7 @@ export default class Login extends React.Component {
                     <input type="submit" value="Log in" />
                 </form>
             </div>
+            </>
         )
     }
 }

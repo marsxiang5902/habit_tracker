@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { renderCueResource } from '../components/cue-list';
 import Layout from '../components/layout';
 import '../static/page.css'
+import { defaultAppContext, appContext } from '../context/appContext';
 
 
 function DashboardContent(props) {
@@ -23,8 +24,8 @@ function DashboardContent(props) {
                     if (eventId && eventId in id2habit) {
                         let event = id2habit[eventId]
                         console.log(event)
-                        if (event.completion && '0' in event.completion) {
-                            if (!event.completion[0] && (!curCue || Math.random() < 0.5)) {
+                        if (event.history && '0' in event.history) {
+                            if (!event.history[0] && (!curCue || Math.random() < 0.5)) {
                                 curCue = cue
                                 curEvent = event
                             }
@@ -60,10 +61,12 @@ function DashboardContent(props) {
 }
 
 function Dashboard(props) {
+    let cues = useContext(appContext).timedEvents.cue
+    let habits = useContext(appContext).timedEvents.habit
     return (
         <>
             <Layout name="Home" handleLogout={props.handleLogout} />
-            <DashboardContent cues={props.cues} habits={props.habits} />
+            <DashboardContent cues={cues} habits={habits} />
         </>
     )
 }

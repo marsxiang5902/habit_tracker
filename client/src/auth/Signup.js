@@ -2,6 +2,7 @@ import React from 'react';
 import makeRequest from '../api/makeRequest';
 import '../static/page.css';
 import { Redirect } from "react-router-dom";
+import Layout from '../components/layout';
 
 export default class Signup extends React.Component {
     constructor(props) {
@@ -48,15 +49,18 @@ export default class Signup extends React.Component {
 
     render() {
         return (
-            <div className="dashboard">
-                {this.state.signupFailed && <p>Signup failed.</p>}
-                <form onSubmit={this.handleSubmit} style={{ marginRight: "7%" }}>
-                    {this.inputPart("Username", "user", "text")}
-                    {this.inputPart("Email", "email", "text")}
-                    {this.inputPart("Password", "password", "password")}
-                    <input type="submit" value="Sign up" />
-                </form>
-            </div>
+            <>
+                <Layout name="🗺 THE BEGINNING"></Layout>
+                <div className="dashboard">
+                    {this.state.signupFailed && <p>Signup failed.</p>}
+                    <form onSubmit={this.handleSubmit} style={{ marginRight: "7%" }}>
+                        {this.inputPart("Username", "user", "text")}
+                        {this.inputPart("Email", "email", "text")}
+                        {this.inputPart("Password", "password", "password")}
+                        <input type="submit" value="Sign up" />
+                    </form>
+                </div>
+            </>
         )
     }
 }

@@ -1,7 +1,17 @@
 import React, { useState } from 'react';
 import * as Icons from "react-icons/fa";
 import { Form, Popover, OverlayTrigger, Button, Modal } from 'react-bootstrap'
+import { deleteData, addData, changeData } from './helperFunctions';
 
+function pct(items) {
+    try {
+        let cnt = 0;
+        for (let key in items) {
+            if (items[key]) ++cnt;
+        }
+        return Math.floor(100 * cnt / Object.keys(items).length)
+    } catch (err) { console.log(err); return 0; }
+}
 
 function HabitList(props) {
 
@@ -9,32 +19,20 @@ function HabitList(props) {
     const [name, setName] = useState("")
     const [popoverVisible, setPopoverVisible] = useState(-1)
     const [del, setDelete] = useState(false)
-    const [modalShow, setModalShow] = useState(false);
-    const [cueVisible, setCueVisible] = useState(false);
-
-    function pct(items) {
-        try {
-            let cnt = 0;
-            for (let key in items) {
-                if (items[key]) ++cnt;
-            }
-            return Math.floor(100 * cnt / Object.keys(items).length)
-        } catch (err) { console.log(err); return 0; }
-    }
 
 
-
-    function handleEdit(event) {
+    async function handleEdit(event) {
         event.preventDefault();
-        props.changeData(name, popoverVisible, del, props.type)
+        del ? props.setContext(await deleteData(props.context, popoverVisible, props.type==="Habit" ? "habit":"todo")) : 
+            props.setContext(await changeData(props.context, { name: name }, popoverVisible, props.type==="Habit" ? "habit":"todo"))
         setDelete(false)
         setPopoverVisible(-1)
         setName("")
     }
 
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
-        props.addData(name, props.type)
+        props.setContext(await addData(props.context, name, props.type==="Habit" ? "habit":"todo"))
         setFormVisible(false)
         setName("")
     }
@@ -54,12 +52,6 @@ function HabitList(props) {
         </Popover>
     );
 
-    const test = () => (
-        <div className="parent">
-            <img src={props.type === "Habit" ? 'https://drive.google.com/file/d/10be3xLM_uDyIOiusK3Jd36tjL87gOsZI/view?usp=sharing' : null} alt=""></img>
-        </div>
-    )
-
     return (
         <>
             <div className="subheader">
@@ -73,7 +65,7 @@ function HabitList(props) {
                     <div className="card-2 border-2" key={index}>
 
                         <div className="habit habit-2 inline">
-                            {item.type === 'habit' ? <h4 className="habit no-padding-top">{pct(item.completion)}%</h4> : null}
+                            {item.type === 'habit' ? <h4 className="habit no-padding-top">{pct(item.history)}%</h4> : null}
                             <h4 className="habit no-padding-top">{item.name}</h4>
                             {/* <p>{item.description}</p> */}
                         </div>
@@ -81,7 +73,6 @@ function HabitList(props) {
                             <OverlayTrigger trigger="click" placement="left" overlay={popover(index)} show={popoverVisible === index ? true : false}>
                                 <Icons.FaPencilAlt className="hover" style={{ marginRight: '20px' }} onClick={(e) => { setPopoverVisible(popoverVisible === index ? -1 : index) }}></Icons.FaPencilAlt>
                             </OverlayTrigger>
-                            {/* <Icons.FaPlusCircle className="hover" style={{marginRight:'20px'}} onClick={() => setModalShow(true)}></Icons.FaPlusCircle> */}
                         </div>
                     </div>
                 );
@@ -90,7 +81,6 @@ function HabitList(props) {
             {formVisible ?
                 <div className="card-2 border-2">
                     <div className="form-padding">
-                        {/* <MyHabitForm name={name} setName={setName} visible={setFormVisible} updateHabits={props.addHabit}/> */}
                         <Form onSubmit={handleSubmit}>
                             <Form.Group>
                                 <Form.Label>Add a New {props.type}</Form.Label>
@@ -102,7 +92,6 @@ function HabitList(props) {
                         </Form>
                     </div>
                 </div> : null}
-
 
         </>
     );

@@ -1,28 +1,30 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import '../static/page.css'
 import { Form } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import DataList from '../components/data-list'
+import { appContext } from "../context/appContext";
+import Layout from "../components/layout";
 
 
 
 function All(props) {
+    let context = useContext(appContext)
+    let todos = context.timedEvents.todo
+    let habits = context.timedEvents.habit
+    console.log(todos)
+
     return (
         <>
+            <Layout name="🗺 THE PLAN" handleLogout={props.handleLogout}>
+            </Layout>
             <div className="formatter">
                 <div className="container" id="habits">
-                    <DataList addedData={props.addedData} data={props.habits} addData={props.addData} changeData={props.changeData} cues={props.cues} title="Daily Habits" type="Habit" />
+                    <DataList data={habits} context={context} setContext={props.setContext} title="Daily Habits" type="Habit" />
                 </div>
                 <div className="container" id="todos">
-                    <DataList addedData={props.addedData} data={props.todos} addData={props.addData} changeData={props.changeData} title="Todos" type="Todo" />
+                    <DataList data={todos} context={context} setContext={props.setContext} title="Todos" type="Todo" />
                 </div>
-                {/* <div className="container" id="weeklygoal">
-                    <DataList addedData={props.addedData} data={props.weeklyGoals} addData={props.addData} changeData={props.changeData} title="Weekly Goals" type="Weekly Goal" />
-                </div>
-                propbably limit this to three for helping people focus (no add button)
-                <div className="container" id="priorities">
-                    <DataList addedData={props.addedData} data={props.priorities} addData={props.addData} changeData={props.changeData} title="Priorities" type="Priority" />
-                </div> */}
             </div>
         </>
     );

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import * as Icons from "react-icons/fa";
 import { Form, Popover, OverlayTrigger, Button, Modal, Card } from 'react-bootstrap'
 import '../static/page.css'
+import { addData, deleteData, changeData } from './helperFunctions';
 
 //options: Cards, Carousel, Hover on Gallery
 
@@ -52,9 +53,9 @@ function Cue(props) {
     const [deleted, setDeleted] = useState(false)
     const [popoverVisible, setPopoverVisible] = useState(false)
 
-    let handleSubmit = e => {
+    let handleSubmit = async(e) => {
         e.preventDefault()
-        props.changeData({ name: name, link: link }, props.index, deleted, 'Cue')
+        deleted ? props.setContext( await deleteData(props.context, props.index, 'cue')): props.editData({ name: name, link: link }, props.index)
         setDeleted(false)
         setName("")
         setLink("")
@@ -170,28 +171,15 @@ let renderCueResource = item => {
 
 function CuesList(props) {
 
-    const [formVisible, setFormVisible] = useState(-1)
-    const [cue, setCue] = useState("")
-    const [name, setName] = useState("")
-    const [popoverVisible, setPopoverVisible] = useState(-1)
-    const [del, setDelete] = useState(false)
     const [modalShow, setModalShow] = useState(-1);
     const [cueVisible, setCueVisible] = useState(false);
-    const [type, setType] = useState("")
 
-    function handleSubmit(event, cue, type, name) {
+    async function handleSubmit(event, cue, type, name) {
         event.preventDefault();
         let link = `${cue} ${type} ${props.habit._id}`
-        props.addData(name, "cue", link)
+        props.setContext(await addData(props.context, name, "cue", link))
         setModalShow(-1)
-        // setCue("")
-        // setType("")
     }
-
-    //spotify structure: https://open.spotify.com/embed/track/2zQl59dZMzwhrmeSBEgiXY
-    //url: https://open.spotify.com/track/2zQl59dZMzwhrmeSBEgiXY
-    //soundcloud: https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/662143949&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true
-    //url: https://soundcloud.com/seratostudio/doms-demise?in=seratostudio/sets/concert-hall-vol-1
 
     const addModal = () =>
         <Modal
@@ -232,7 +220,7 @@ function CuesList(props) {
                             const temp = item.resourceURL.split(" ")
                             let cueItem = { link: temp[0], type: temp[1], habitId: temp[2] }
 
-                            let changeData = (data, index, deleted) => {
+                            let editData = async(data, index) => {
                                 let newData = {}
                                 for (let key in data) {
                                     if (key == 'link') {
@@ -241,10 +229,10 @@ function CuesList(props) {
                                         newData[key] = data[key]
                                     }
                                 }
-                                props.changeData(newData, index, deleted, 'Cue')
+                                props.setContext( await changeData(props.context, newData, index, 'cue'))
                             }
                             if (cueItem.habitId === props.habit._id) {
-                                return <Cue changeData={changeData} item={item} link={cueItem.link} index={index} cuePreview={renderCueResource(item)} />
+                                return <Cue editData={editData} item={item} link={cueItem.link} index={index} cuePreview={renderCueResource(item)} context={props.context} setContext={props.setContext}/>
                                 // return(blank(cueItem))
                             }
                         } catch (err) { return null; }
