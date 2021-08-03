@@ -15,6 +15,7 @@ function updateTimedEvents(context, type, data){
 }
 
 async function deleteData(context, index, type){
+  console.log(context)
   let data = context.timedEvents[type]
     let id = data[index]._id
     const url = `events/${id}`
@@ -26,6 +27,7 @@ async function deleteData(context, index, type){
   }
 
 async function changeData(context, updatedValue, index, type){
+  console.log(context)
   let data = context.timedEvents[type]
   let id = data[index]._id
   const url = `events/${id}`
@@ -47,6 +49,7 @@ async function changeData(context, updatedValue, index, type){
 
 
 async function addData(context, text, type, link){
+  console.log(context)
   let newData;
   let data = context.timedEvents[type]
   if (type === 'cue') {
@@ -56,11 +59,11 @@ async function addData(context, text, type, link){
     newData = ({ user: context.session.user, name: text, type: type})
   }
   const url = `events/`
-  await makeRequest(url, 'post', newData, context.session.jwt)
+  let newEvent = await makeRequest(url, 'post', newData, context.session.jwt)
 
-  data.push(newData)
+  data.push(newEvent.data)
 
-  let newContext = (updateTimedEvents(context, type, data))
+  let newContext = updateTimedEvents(context, type, data)
 
   return newContext
 }

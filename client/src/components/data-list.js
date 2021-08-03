@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import * as Icons from "react-icons/fa";
 import { Form, Popover, OverlayTrigger, Button, Modal } from 'react-bootstrap'
 import { deleteData, addData, changeData } from './helperFunctions';
+import { appContext } from '../context/appContext';
 
 function pct(items) {
     try {
@@ -20,11 +21,17 @@ function HabitList(props) {
     const [popoverVisible, setPopoverVisible] = useState(-1)
     const [del, setDelete] = useState(false)
 
+    let context = useContext(appContext)
+
 
     async function handleEdit(event) {
         event.preventDefault();
-        del ? props.setContext(await deleteData(props.context, popoverVisible, props.type==="Habit" ? "habit":"todo")) : 
-            props.setContext(await changeData(props.context, { name: name }, popoverVisible, props.type==="Habit" ? "habit":"todo"))
+        if(del) {
+            props.setContext(await deleteData(context, popoverVisible, props.type==="Habit" ? "habit":"todo"))
+        }
+        else { 
+            props.setContext(await changeData(context, { name: name }, popoverVisible, props.type==="Habit" ? "habit":"todo"))
+        }
         setDelete(false)
         setPopoverVisible(-1)
         setName("")
@@ -32,7 +39,7 @@ function HabitList(props) {
 
     async function handleSubmit(event) {
         event.preventDefault();
-        props.setContext(await addData(props.context, name, props.type==="Habit" ? "habit":"todo"))
+        props.setContext(await addData(context, name, props.type==="Habit" ? "habit":"todo"))
         setFormVisible(false)
         setName("")
     }

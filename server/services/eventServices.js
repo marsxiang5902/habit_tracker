@@ -8,7 +8,7 @@ const httpAssert = require('../errors/httpAssert')
 // CAN ONLY TAKE <= 1 PARAMETER AFTER _ID AND EVENTRECORD
 
 async function addEvent(config) {
-    await db_addEvent(config.user, config.name, config.type, config.args || {})
+    return await db_addEvent(config.user, config.name, config.type, config.args || {})
 }
 const EVENT_SLICES = ['_id', 'user', 'name', 'type', 'resourceURL']
 function getEvent(_id, eventRecord) {

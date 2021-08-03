@@ -12,8 +12,6 @@ function All(props) {
     let context = useContext(appContext)
     let todos = context.timedEvents.todo
     let habits = context.timedEvents.habit
-    console.log(todos)
-
     return (
         <>
             <Layout name="🗺 THE PLAN" handleLogout={props.handleLogout}>

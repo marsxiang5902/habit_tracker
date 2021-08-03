@@ -19,6 +19,7 @@ async function addEvent(user, name, type, args) {
         { user: user },
         { "$push": { [`eventLists.${type}`]: _id } }
     )
+    return newEvent
 }
 async function getEvents(_ids) {
     httpAssert.BAD_REQUEST(Array.isArray(_ids), `Data is invalid.`)
