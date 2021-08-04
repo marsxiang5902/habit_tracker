@@ -2,9 +2,10 @@
 
 const assert = require('assert')
 const MILLS_IN_MIN = 1000 * 60, MILLS_IN_DAY = MILLS_IN_MIN * 60 * 24
+const EDT_OFFSET = 240
 const getDay = function (date = new Date()) {
     // HARDCODE: USE LOCAL TIMEZONE OFFSET
-    return Math.floor((date.getTime() - date.getTimezoneOffset() * MILLS_IN_MIN) / MILLS_IN_DAY)
+    return Math.floor((date.getTime() - EDT_OFFSET * MILLS_IN_MIN) / MILLS_IN_DAY)
 }
 const checkData = function (data, maxDaysBefore = getDay(), minDaysBefore = 0) {
     // check if data is in the form of a object: {daysbefore: data}

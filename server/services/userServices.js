@@ -5,7 +5,7 @@ const httpStatusErrors = require('../errors/httpStatusErrors')
 const { removeUser: db_removeUser } = require('../database/interactUser')
 const { getEvents: db_getEvents } = require('../database/interactEvent')
 const { ObjectId } = require('mongodb')
-const { sliceObject } = require('./wrapSliceObject')
+const { sliceObject } = require('../lib/wrapSliceObject')
 const { getPerms } = require('../permissions/roles')
 const { getEvent } = require('./eventServices')
 // CAN ONLY TAKE <= 1 PARAMETER AFTER USER AND USERRECORD
@@ -27,7 +27,7 @@ async function getUserEvents(user, userRecord) {
     for (let type in eventLists) {
         try {
             let ar = await db_getEvents(eventLists[type].map(_id => ObjectId(_id)))
-            ret[type] = ar.map(eventRecord => getEvent(eventRecord._id, eventRecord))
+            ret[type] = await Promise.all(ar.map(eventRecord => getEvent(eventRecord._id, eventRecord)))
         } catch (err) {
             throw new httpStatusErrors.BAD_REQUEST(`Data is invalid.`)
         }

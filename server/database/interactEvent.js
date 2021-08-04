@@ -1,24 +1,24 @@
 "use strict";
 const assert = require('assert')
-const { get_users_col, get_events_col } = require('./db_setup')
-const { subclasses: eventSubclasses } = require('../TimedEvents/TimedEventClasses')
+const { get_users_col, get_events_col, get_triggers_col } = require('./db_setup')
+const { subclasses: eventSubclasses } = require('../TimedEvent/TimedEventClasses')
 const httpAssert = require('../errors/httpAssert')
-
+const { getUser } = require('./interactUser')
 
 async function addEvent(user, name, type, args) {
     // also adds to user's event list
     // args are given to events to handle
     httpAssert.BAD_REQUEST(type in eventSubclasses, `Type ${type} not valid.`)
-    let userRecord = await get_users_col().findOne({ user: user })
+    let userRecord = await getUser(user)
     httpAssert.NOT_FOUND(userRecord, `User ${user} not found.`)
     let newEvent = new eventSubclasses[type](user, name, args)
     let insertResult = await get_events_col().insertOne(newEvent)
     httpAssert.INTERNAL_SERVER(insertResult.insertedCount, `Could not insert.`)
     let _id = insertResult.insertedId
-    await get_users_col().updateOne(
-        { user: user },
-        { "$push": { [`eventLists.${type}`]: _id } }
-    )
+    await get_users_col().updateOne({ user: user }, { "$push": { [`eventLists.${type}`]: _id } })
+}
+function getEvent(_id) {
+    return get_events_col().findOne({ _id: _id })
 }
 async function getEvents(_ids) {
     httpAssert.BAD_REQUEST(Array.isArray(_ids), `Data is invalid.`)
@@ -35,10 +35,11 @@ async function updateEvent(_id, eventRecord, updObj) {
 async function removeEvent(_id, eventRecord) {
     httpAssert.NOT_FOUND(eventRecord, `Event with id ${_id} not found.`)
     let user = eventRecord.user, type = eventRecord.type
-    get_events_col().deleteOne({ _id: _id })
-    get_users_col().updateOne({ user: user }, { '$pull': { [`eventLists.${type}`]: _id } })
+    await get_users_col().updateOne({ user: user }, { '$pull': { [`eventLists.${type}`]: _id } })
+    await get_events_col().deleteOne({ _id: _id })
+    await get_triggers_col().deleteMany({ event_id: _id })
 }
 
 module.exports = {
-    addEvent, getEvents, updateEvent, removeEvent
+    addEvent, getEvent, getEvents, updateEvent, removeEvent
 }

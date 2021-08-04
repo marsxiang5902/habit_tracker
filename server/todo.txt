@@ -1,1 +1,3 @@
+extract cues
+make next
 salt
