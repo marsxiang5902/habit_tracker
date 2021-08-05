@@ -19,8 +19,12 @@ async function getEvent(_id, eventRecord) {
     let ret = sliceObject(eventRecord, EVENT_SLICES)
     ret.history = getEventHistory(_id, eventRecord)
     let triggerList = eventRecord.triggerList
-    let triggerRecords = await db_getTriggers(triggerList.map(_id => ObjectId(_id)))
-    ret.triggers = triggerRecords.map(triggerRecord => getTrigger(triggerRecord._id, triggerRecord))
+    let ar = await db_getTriggers(triggerList.map(_id => ObjectId(_id)))
+    let records = ar.map(triggerRecord => getTrigger(triggerRecord._id, triggerRecord))
+    ret.triggers = {}
+    records.forEach(record => {
+        ret.triggers[record._id] = record
+    })
     return ret;
 }
 function getEventHistory(_id, eventRecord) {
@@ -30,14 +34,13 @@ function getEventHistory(_id, eventRecord) {
 }
 async function updateEvent(_id, eventRecord, updObj) {
     httpAssert.NOT_FOUND(eventRecord, `Event with id ${_id} not found.`)
-    sliceObject(updObj, ['name'])
-    await db_updateEvent(_id, eventRecord, updObj)
+    return await db_updateEvent(_id, eventRecord, sliceObject(updObj, ['name']))
 }
 async function updateEventHistory(_id, eventRecord, updObj) {
     httpAssert.NOT_FOUND(eventRecord, `Event with id ${_id} not found.`)
     let hm = eventRecord.historyManager
     historyManagerSubclasses[hm.type].setHistory(hm.data, updObj)
-    await db_updateEvent(_id, eventRecord, { historyManager: hm })
+    return await db_updateEvent(_id, eventRecord, { historyManager: hm })
 }
 async function removeEvent(_id, eventRecord) {
     httpAssert.NOT_FOUND(eventRecord, `Event with id ${_id} not found.`)

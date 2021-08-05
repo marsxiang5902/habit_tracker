@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { appContext } from '../context/appContext';
 import '../static/page.css'
 import Layout from '../components/layout';
-import { checkHabit } from '../components/helperFunctions';
+import { checkHabit } from '../services/eventServices';
 
 function Habits(props) {
     let context = useContext(appContext)
@@ -16,7 +16,7 @@ function Habits(props) {
                     <div className="habit-card" key={index}>
                         <input type="checkbox" className="checkbox"
                             checked={item.history[0]}
-                            onChange={async(e) => (props.setContext(await checkHabit(context, e.target.checked, index)))}>
+                            onChange={async (e) => (props.setContext(await checkHabit(context, e.target.checked, index)))}>
                         </input>
 
                         <div className="habit">

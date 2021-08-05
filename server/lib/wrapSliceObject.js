@@ -13,9 +13,10 @@ function wrapObject(obj, wrap, check = false) {
     }
 }
 function sliceObject(obj, subset) {
-    assert(typeof obj == 'object' && Array.isArray(subset))
-    let ret = {}
-    subset.forEach(field => {
+    assert(typeof obj == 'object' && (Array.isArray(subset) ||
+        (typeof yourVariable === 'object' && yourVariable !== null)))
+    let ret = {};
+    (Array.isArray(subset) ? subset : Object.keys(subset)).forEach(field => {
         if (field in obj) {
             ret[field] = obj[field]
         }

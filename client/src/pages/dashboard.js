@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { renderCueResource } from '../components/cue-list';
+import { renderTriggerResource } from '../components/TriggerList';
 import Layout from '../components/layout';
 import '../static/page.css'
 import { defaultAppContext, appContext } from '../context/appContext';
@@ -14,7 +14,7 @@ function DashboardContent(props) {
         let uncompleted = []
         habits.forEach(eventRecord => {
             if (!eventRecord.history[0]) {
-                uncompleted.append(eventRecord)
+                uncompleted.push(eventRecord)
             }
         })
         return uncompleted.length > 0 ? uncompleted[Math.floor(Math.random() * uncompleted.length)] :
@@ -24,11 +24,12 @@ function DashboardContent(props) {
     let generateTrigger = () => {
         let curEvent = generateEvent()
         if (curEvent === null) {
-            return null
+            return [null, null]
         }
         let curTrigger = { name: "Add a trigger to this event!" }
-        if (Array.isArray(curEvent.triggers) && curEvent.triggers.length > 0) {
-            curTrigger = curEvent.triggers[Math.floor(Math.random() * curEvent.trigger.length)]
+        let triggers = curEvent.triggers
+        if (Array.isArray(triggers) && triggers.length > 0) {
+            curTrigger = triggers[Math.floor(Math.random() * triggers.length)]
         }
         return [curTrigger, curEvent];
     }
@@ -45,7 +46,7 @@ function DashboardContent(props) {
                 <h3>Habit: {event.name}</h3>
                 <h1>Trigger: {trigger.name}</h1>
                 <div className="parent">
-                    {renderCueResource(trigger)}
+                    {renderTriggerResource(trigger)}
                 </div>
             </div>
         ) : (

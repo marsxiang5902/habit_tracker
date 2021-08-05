@@ -26,8 +26,12 @@ async function getUserEvents(user, userRecord) {
     let ret = {}
     for (let type in eventLists) {
         try {
+            ret[type] = {}
             let ar = await db_getEvents(eventLists[type].map(_id => ObjectId(_id)))
-            ret[type] = await Promise.all(ar.map(eventRecord => getEvent(eventRecord._id, eventRecord)))
+            let records = await Promise.all(ar.map(eventRecord => getEvent(eventRecord._id, eventRecord)))
+            records.forEach(record => {
+                ret[type][record._id] = record
+            })
         } catch (err) {
             throw new httpStatusErrors.BAD_REQUEST(`Data is invalid.`)
         }

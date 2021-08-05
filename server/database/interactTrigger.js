@@ -30,6 +30,10 @@ async function updateTrigger(_id, triggerRecord, updObj) {
     httpAssert.NOT_FOUND(triggerRecord, `Trigger with id ${_id} not found.`)
     httpAssert.BAD_REQUEST(typeof updObj == 'object' && !('_id' in updObj), `Data is invalid.`)
     await get_triggers_col().updateOne({ _id: _id }, { "$set": updObj })
+    for (let key in updObj) {
+        triggerRecord[key] = updObj[key]
+    }
+    return triggerRecord
 }
 async function removeTrigger(_id, triggerRecord) {
     httpAssert.NOT_FOUND(triggerRecord, `Trigger with id ${_id} not found.`)

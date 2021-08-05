@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import '../static/page.css'
-import { CuesList } from '../components/cue-list';
+import { CuesList } from '../components/TriggerList';
 import { appContext } from '../context/appContext';
 import Layout from '../components/layout';
 

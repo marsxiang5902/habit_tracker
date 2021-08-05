@@ -31,6 +31,10 @@ async function updateEvent(_id, eventRecord, updObj) {
     httpAssert.NOT_FOUND(eventRecord, `Event with id ${_id} not found.`)
     httpAssert.BAD_REQUEST(typeof updObj == 'object' && !('_id' in updObj), `Data is invalid.`)
     await get_events_col().updateOne({ _id: _id }, { "$set": updObj })
+    for (let key in updObj) {
+        eventRecord[key] = updObj[key]
+    }
+    return eventRecord
 }
 async function removeEvent(_id, eventRecord) {
     httpAssert.NOT_FOUND(eventRecord, `Event with id ${_id} not found.`)

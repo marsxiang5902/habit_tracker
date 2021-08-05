@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as Icons from "react-icons/fa";
 import { Form, Popover, OverlayTrigger, Button, Modal } from 'react-bootstrap'
-import { deleteData, addData, changeData } from './helperFunctions';
+import { deleteData, addData, changeData } from '../services/eventServices';
 
 function pct(items) {
     try {
@@ -23,8 +23,8 @@ function HabitList(props) {
 
     async function handleEdit(event) {
         event.preventDefault();
-        del ? props.setContext(await deleteData(props.context, popoverVisible, props.type==="Habit" ? "habit":"todo")) : 
-            props.setContext(await changeData(props.context, { name: name }, popoverVisible, props.type==="Habit" ? "habit":"todo"))
+        del ? props.setContext(await deleteData(props.context, popoverVisible, props.type === "Habit" ? "habit" : "todo")) :
+            props.setContext(await changeData(props.context, { name: name }, popoverVisible, props.type === "Habit" ? "habit" : "todo"))
         setDelete(false)
         setPopoverVisible(-1)
         setName("")
@@ -32,7 +32,7 @@ function HabitList(props) {
 
     async function handleSubmit(event) {
         event.preventDefault();
-        props.setContext(await addData(props.context, name, props.type==="Habit" ? "habit":"todo"))
+        props.setContext(await addData(props.context, name, props.type === "Habit" ? "habit" : "todo"))
         setFormVisible(false)
         setName("")
     }

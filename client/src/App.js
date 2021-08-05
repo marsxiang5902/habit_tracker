@@ -12,7 +12,7 @@ import { defaultAppContext, appContext } from './context/appContext'
 import jwt from 'jsonwebtoken';
 import makeRequest from './api/makeRequest';
 import FetchData from './api/fetchData';
-
+import { getEventTypes } from './services/triggerServices'
 
 class App extends React.Component {
   constructor(props) {
@@ -37,7 +37,6 @@ class App extends React.Component {
     })
   }
 
-
   handleLogin = async token => {
     if (token) {
       let decoded = jwt.decode(token)
@@ -52,7 +51,8 @@ class App extends React.Component {
         this.setState({
           context: {
             session: session,
-            timedEvents: timedEvents
+            timedEvents: timedEvents,
+            eventIds2Type: getEventTypes(timedEvents)
           }
         })
         this.props.history.push('/')
@@ -91,9 +91,9 @@ class App extends React.Component {
               <Login handleLogin={this.handleLogin} />
             </Route>
 
-            <Route path="/triggers" render={(props) => (
+            {/* <Route path="/triggers" render={(props) => (
               <Triggers setContext={this.setContext} handleLogout={this.handleLogout} />
-            )} />
+            )} /> */}
 
           </Switch>
         </div>

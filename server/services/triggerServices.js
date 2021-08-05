@@ -13,15 +13,14 @@ async function addTrigger(config) {
         await db_addTrigger(config.user, config.name, config.type, event_id, config.args || {})
     }
 }
-const TRIGGER_SLICES = ['_id', 'user', 'name', 'type', 'event_id', 'resourceURL']
+const TRIGGER_SLICES = ['_id', 'user', 'name', 'type', 'event_id', 'resourceURL', 'topText', 'bottomText']
 function getTrigger(_id, triggerRecord) {
     httpAssert.NOT_FOUND(triggerRecord, `Trigger with id ${_id} not found.`)
     return sliceObject(triggerRecord, TRIGGER_SLICES);
 }
 async function updateTrigger(_id, triggerRecord, updObj) {
     httpAssert.NOT_FOUND(triggerRecord, `Trigger with id ${_id} not found.`)
-    sliceObject(updObj, ['name', 'resourceURL'])
-    await db_updateTrigger(_id, triggerRecord, updObj)
+    return await db_updateTrigger(_id, triggerRecord, sliceObject(updObj, ['name', 'resourceURL']))
 }
 async function removeTrigger(_id, triggerRecord) {
     httpAssert.NOT_FOUND(triggerRecord, `Trigger with id ${_id} not found.`)
