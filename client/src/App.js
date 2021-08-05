@@ -5,7 +5,7 @@ import { Route, Switch, withRouter } from 'react-router-dom';
 import All from './pages/all';
 import Dashboard from './pages/dashboard';
 import Habits from './pages/habits'
-import Cues from './pages/cues';
+import Triggers from './pages/triggers';
 import Signup from './auth/Signup';
 import Login from './auth/Login';
 import { defaultAppContext, appContext } from './context/appContext'
@@ -91,9 +91,9 @@ class App extends React.Component {
               <Login handleLogin={this.handleLogin} />
             </Route>
 
-            {/* <Route path="/triggers" render={(props) => (
+            <Route path="/triggers" render={(props) => (
               <Triggers setContext={this.setContext} handleLogout={this.handleLogout} />
-            )} /> */}
+            )} />
 
           </Switch>
         </div>

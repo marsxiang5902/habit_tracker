@@ -1,3 +1,4 @@
+import assert from 'assert'
 function wrapObject(obj, wrap) {
     assert(typeof obj == 'object' && typeof wrap == 'object')
     for (let field in wrap) {
@@ -6,7 +7,7 @@ function wrapObject(obj, wrap) {
 }
 function sliceObject(obj, subset) {
     assert(typeof obj == 'object' && (Array.isArray(subset) ||
-        (typeof yourVariable === 'object' && yourVariable !== null)))
+        (typeof subset === 'object' && subset !== null)))
     let ret = {};
     (Array.isArray(subset) ? subset : Object.keys(subset)).forEach(field => {
         if (field in obj) {

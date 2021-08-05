@@ -11,7 +11,8 @@ const { ObjectId } = require('mongodb')
 // CAN ONLY TAKE <= 1 PARAMETER AFTER _ID AND EVENTRECORD
 
 async function addEvent(config) {
-    await db_addEvent(config.user, config.name, config.type, config.args || {})
+    let res = await db_addEvent(config.user, config.name, config.type, config.args || {})
+    return await getEvent(res._id, res)
 }
 const EVENT_SLICES = ['_id', 'user', 'name', 'type']
 async function getEvent(_id, eventRecord) {
@@ -34,13 +35,13 @@ function getEventHistory(_id, eventRecord) {
 }
 async function updateEvent(_id, eventRecord, updObj) {
     httpAssert.NOT_FOUND(eventRecord, `Event with id ${_id} not found.`)
-    return await db_updateEvent(_id, eventRecord, sliceObject(updObj, ['name']))
+    return await getEvent(_id, await db_updateEvent(_id, eventRecord, sliceObject(updObj, ['name'])))
 }
 async function updateEventHistory(_id, eventRecord, updObj) {
     httpAssert.NOT_FOUND(eventRecord, `Event with id ${_id} not found.`)
     let hm = eventRecord.historyManager
     historyManagerSubclasses[hm.type].setHistory(hm.data, updObj)
-    return await db_updateEvent(_id, eventRecord, { historyManager: hm })
+    return await getEvent(_id, await db_updateEvent(_id, eventRecord, { historyManager: hm }))
 }
 async function removeEvent(_id, eventRecord) {
     httpAssert.NOT_FOUND(eventRecord, `Event with id ${_id} not found.`)

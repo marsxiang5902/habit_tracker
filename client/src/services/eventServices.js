@@ -1,12 +1,13 @@
 import makeRequest from "../api/makeRequest"
 import update from 'immutability-helper'
 
-async function addEvent(context, name, type, args) {
+async function addEvent(context, name, type, args = {}) {
     let res = await makeRequest('events', 'POST', {
         user: context.session.user, name, type, args
     }, context.session.jwt)
     if (!res.error) {
-        update(update(context, { timedEvents: { [`${type}`]: { [`${res.data._id}`]: { "$set": res.data } } } }),
+        console.log(res.data)
+        return update(update(context, { timedEvents: { [`${type}`]: { [`${res.data._id}`]: { "$set": res.data } } } }),
             { eventIds2Type: { [`${res.data._id}`]: { "$set": type } } }
         )
     } return context

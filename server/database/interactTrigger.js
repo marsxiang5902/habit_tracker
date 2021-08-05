@@ -15,6 +15,7 @@ async function addTrigger(user, name, type, event_id, args) {
     httpAssert.INTERNAL_SERVER(insertResult.insertedCount, `Could not insert.`)
     let _id = insertResult.insertedId
     await get_events_col().updateOne({ _id: event_id }, { "$push": { triggerList: _id } })
+    return newTrigger
 }
 function getTrigger(_id) {
     return get_triggers_col().findOne({ _id: _id })

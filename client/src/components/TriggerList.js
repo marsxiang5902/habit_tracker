@@ -1,184 +1,180 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { appContext } from "../context/appContext";
 import * as Icons from "react-icons/fa";
 import { Form, Popover, OverlayTrigger, Button, Modal, Card } from 'react-bootstrap'
-import '../static/page.css'
-import { addData, deleteData, changeData } from '../services/eventServices';
-import renderTrigger from '../lib/renderTrigger';
-import update from 'immutability-helper'
-import { deleteTrigger } from '../services/triggerServices';
+import renderTrigger from "../lib/renderTrigger";
+import { updateTrigger, deleteTrigger, addTrigger } from "../services/triggerServices";
+import { wrapObject, sliceObject } from "../lib/wrapSliceObject";
 
-//options: Cards, Carousel, Hover on Gallery
 
-function ModalBody(props) {
-    const [type, setType] = useState("")
-    const [name, setName] = useState("")
-    const [trigger, setTrigger] = useState("")
-    const [triggerVisible, setTriggerVisible] = useState(false);
-    const [imageText, setImageText] = useState("")
-    const [bottomImageText, setBottomImageText] = useState("")
-    return (
-        <>
-            <p>
-                Triggers are anything that put you in a certain mood or motivate you to do a certain habit. Add your own trigger
-                here through a link to music, text, an imager or a youtube video! Make the trigger specific to the habit!
-            </p>
-            <Form onSubmit={(e) => props.handleSubmit(e, type == "image" && bottomImageText && imageText ?
-                `https://api.memegen.link/images/custom/${imageText.replace(" ", "_")}/${bottomImageText.replace(" ", "_")}.png?background=${trigger}` :
-                trigger, type, name)}>
-                <Form.Group>
-                    <select onChange={(e) => setType(e.target.value)}>
-                        <option value="" disabled selected>Type of Media</option>
-                        <option value="video">Youtube Video</option>
-                        <option value="music">Music</option>
-                        <option value="image">Image</option>
-                        <option value="call">Call to Action</option>
-                    </select>
-                </Form.Group>
-                <Form.Group>
-                    <Form.Control className="text-form" type="text" placeholder="Name of Trigger / Call to Action" value={name} onChange={(e) => setName(e.target.value)} />
-                    <Form.Control className="text-form" type="text" placeholder="Link to Trigger" value={trigger} onChange={(e) => setTrigger(e.target.value)} />
-                    {type === "image" ?
-                        <>
-                            <Form.Control className="text-form" type="text" placeholder="Text to Place on Top of Image" value={imageText} onChange={(e) => setImageText(e.target.value)} />
-                            <Form.Control className="text-form" type="text" placeholder="Text to Place on Bottom of Image" value={bottomImageText} onChange={(e) => setBottomImageText(e.target.value)} />
-                        </> : null}
-                    {triggerVisible && trigger !== "" && type === "image" ? <div className="parent"><img src={`https://api.memegen.link/images/custom/${imageText.replace(" ", "_")}/${bottomImageText.replace(" ", "_")}.png?background=${trigger}`} alt=""></img></div> : null}
-                    <Button className="button" variant="primary" type="button" value='preview' onClick={() => setTriggerVisible(!triggerVisible)}>Preview</Button>
-                    <Button className="button" variant="success" type="submit" value='change'>Create Trigger</Button>
-                </Form.Group>
-            </Form>
-        </>
-    );
-}
-
-function Trigger(props) {
-    const [previewVisible, setPreviewVisible] = useState(false)
-    const [name, setName] = useState(props.item.name)
-    const [link, setLink] = useState(props.link)
-    const [deleted, setDeleted] = useState(false)
-    const [popoverVisible, setPopoverVisible] = useState(false)
-
-    let handleDelete = async (e) => {
+const UPDATABLE_FIELDS = ['name', 'resourceURL', 'topText', 'bottomText']
+class EditPopover extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = sliceObject(this.props.record, UPDATABLE_FIELDS)
+    }
+    handleDelete = async (e) => {
         e.preventDefault()
-        props.setContext(await deleteTrigger(props.context,))
+        this.props.setContext(await deleteTrigger(this.context, this.props.record))
+    }
+    handleSubmit = async (e) => {
+        e.preventDefault()
+        this.props.setContext(await updateTrigger(this.context, this.props.record, this.state))
     }
 
-    let handleSubmit = async (e) => {
-        e.preventDefault()
-        deleted ? props.setContext(await deleteData(props.context, props.index, 'trigger')) : props.editData({ name: name, link: link }, props.index)
-        setDeleted(false)
-        setName("")
-        setLink("")
-        setPopoverVisible(-1)
-    }
-    const popover = index => (
-        <Popover id="popover-basic">
+    render() {
+        let renderedFields = {
+            'name': 'Name', 'resourceURL': 'Resource URL',
+            ...(this.props.record.type === 'image' ? { 'topText': 'Top Text', 'bottomText': 'Bottom Text' } : {})
+        }
+        return <Popover {...this.props} id="popover-basic">
             <Popover.Title as="h3">Edit Trigger</Popover.Title>
             <Popover.Content>
-                <Form onSubmit={e => handleSubmit(e)}>
+                <Form onSubmit={(e) => { e.preventDefault() }}>
                     <Form.Group>
-                        <Form.Control className="text-form" type="text" placeholder="Trigger Name" value={name} onChange={(e) => setName(e.target.value)} />
-                        <Form.Control className="text-form" type="text" placeholder="Resource URL" value={link} onChange={(e) => setLink(e.target.value)} />
-                        <Button className="button" variant="success" type="submit" value='change'>Change</Button>
-                        <Button className="button" variant="danger" type="submit" value='delete' onClick={(e) => setDeleted(true)}>Delete</Button>
+                        {Object.keys(renderedFields).map(key => (
+                            <Form.Control className="text-form" type="text" placeholder={renderedFields[key]}
+                                value={this.state[key]} onChange={(e) => this.setState({ key: e.target.value })} />
+                            // HARDCODE: ASSUMED ALL VALUES ARE STRINGS
+                        ))}
+                        <Button className="button" variant="success" value='change' onClick={this.handleSubmit}>Change</Button>
+                        <Button className="button" variant="danger" value='delete' onClick={this.handleDelete}>Delete</Button>
                     </Form.Group>
                 </Form>
             </Popover.Content>
         </Popover>
-    );
-    return (
-        <div className="card-2 border-2" key={props.index}>
-            <div className="habit habit-2">
-                <h5>{props.item.name}</h5>
-            </div>
-            <div>
-                <OverlayTrigger trigger="click" placement="left" overlay={popover(props.index)} show={popoverVisible === props.index ? true : false}>
-                    <Icons.FaPencilAlt className="hover" style={{ marginRight: '20px' }} onClick={(e) => { setPopoverVisible(popoverVisible === props.index ? -1 : props.index) }}></Icons.FaPencilAlt>
-                </OverlayTrigger>
-                <Icons.FaEye className="hover" style={{ marginRight: '20px' }} onClick={(e) => { setPreviewVisible(!previewVisible) }}></Icons.FaEye>
-            </div>
-            {previewVisible && props.triggerPreview}
-        </div>
-    )
-}
-
-function TriggerList(props) {
-
-    const [modalShow, setModalShow] = useState(-1);
-    const [triggerVisible, setTriggerVisible] = useState(false);
-
-    async function handleSubmit(event, trigger, type, name) {
-        event.preventDefault();
-        let link = `${trigger} ${type} ${props.habit._id}`
-        props.setContext(await addData(props.context, name, "trigger", link))
-        setModalShow(-1)
     }
+}
+EditPopover.contextType = appContext
 
-    const addModal = () =>
-        <Modal
-            size="lg"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-            show={true}
-            onHide={() => setModalShow(-1)}
-        >
-            <Modal.Header closeButton>
-                <Modal.Title id="contained-modal-title-vcenter">
-                    Add a Trigger
-                </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <ModalBody handleSubmit={handleSubmit} />
-            </Modal.Body>
-        </Modal>
+function Trigger(props) {
+    const [popoverShown, setPopoverShown] = useState(false)
+    const [previewShown, setPreviewShown] = useState(false)
 
-    return (
-        <>
-            <div className="subheader triggers-head">
-                <h2>{props.habit.name}</h2>
-                {modalShow !== props.index ?
-                    <Icons.FaRegPlusSquare onClick={() => { setModalShow(props.index) }} className="hover"></Icons.FaRegPlusSquare> :
-                    <>
-                        <Icons.FaRegWindowClose onClick={() => { setModalShow(-1); setTriggerVisible(false) }} className="hover"></Icons.FaRegWindowClose>
-                        {addModal()}
-                    </>
-                }
-            </div>
-            <hr className="triggers-hr" />
-            <div className="formatter">
-                {
-                    props.triggers.map((item, index) => {
-                        try {
-                            if (item.type != 'trigger') return null;
-                            const temp = item.resourceURL.split(" ")
-                            let triggerItem = { link: temp[0], type: temp[1], habitId: temp[2] }
+    let record = props.record
 
-                            let editData = async (data, index) => {
-                                let newData = {}
-                                for (let key in data) {
-                                    if (key == 'link') {
-                                        newData.resourceURL = `${data[key]} ${triggerItem.type} ${triggerItem.habitId}`
-                                    } else {
-                                        newData[key] = data[key]
-                                    }
-                                }
-                                props.setContext(await changeData(props.context, newData, index, 'trigger'))
-                            }
-                            if (triggerItem.habitId === props.habit._id) {
-                                return <Trigger editData={editData} item={item} link={triggerItem.link} index={index} triggerPreview={renderTriggerResource(item)} context={props.context} setContext={props.setContext} />
-                                // return(blank(triggerItem))
-                            }
-                        } catch (err) { return null; }
+    let name = <div className="habit habit-2">
+        <h5>{record.name}</h5>
+    </div>
 
-                    })}
-            </div>
+    let overlay = <div>
+        <OverlayTrigger trigger="click" placement="left"
+            overlay={<EditPopover record={record} setContext={props.setContext} />}
+            show={popoverShown}>
+            <Icons.FaPencilAlt className="hover" style={{ marginRight: '20px' }}
+                onClick={() => { setPopoverShown(!popoverShown) }} />
+        </OverlayTrigger>
+        <Icons.FaEye className="hover" style={{ marginRight: '20px' }}
+            onClick={() => { setPreviewShown(!previewShown) }}></Icons.FaEye>
+    </div >
 
-        </>
-    )
-
-
+    return <div className="card-2 border-2">
+        {name}
+        {overlay}
+        {previewShown && renderTrigger(record)}
+    </div>
 }
 
-export {
-    TriggerList, renderTriggerResource
+function ModalBody(props) {
+    const context = useContext(appContext)
+    const [name, setName] = useState('')
+    const [type, setType] = useState('')
+    const [resourceURL, setResourceURL] = useState('')
+    const [topText, setTopText] = useState('')
+    const [bottomText, setBottomText] = useState('')
+    const [previewShown, setPreviewShown] = useState(false)
+
+    let option = (val, change, placeholder) => (
+        <Form.Control className="text-form" type="text" placeholder={placeholder} value={val} onChange={(e) => change(e.target.value)} />
+    )
+
+    return <>
+        <p>
+            Triggers are anything that put you in a certain mood or motivate you to do a certain habit. Add your own trigger
+            here through a link to music, text, an image or a youtube video! Make the trigger specific to the habit!
+        </p>
+        <Form onSubmit={async (e) => {
+            e.preventDefault()
+            if (type !== '') {
+                props.setContext(await addTrigger(context, name, type, props.event_id, { topText, bottomText }))
+            }
+            setName(''); setType(''); setResourceURL(''); setTopText(''); setBottomText(''); setPreviewShown(false);
+            props.hide();
+        }}>
+            <Form.Group>
+                <select onChange={(e) => setType(e.target.value)}>
+                    <option value="" disabled selected>Type of Trigger</option>
+                    <option value="video">Video</option>
+                    <option value="audio">Audio</option>
+                    <option value="image">Image</option>
+                    <option value="link">Link</option>
+                </select>
+            </Form.Group>
+            <Form.Group>
+                {option(name, setName, "Name of Trigger")}
+                {option(resourceURL, setResourceURL, "Link to Trigger")}
+                {type === "image" && <>
+                    {option(topText, setTopText, "Text to Place on Top of Image")}
+                    {option(bottomText, setBottomText, "Text to Place on the Bottom of Image")}
+                </>}
+                {previewShown && type !== "" && renderTrigger({
+                    name, type, resourceURL, topText, bottomText
+                })
+                }
+                <Button className="button" variant="primary" type="button" value='preview' onClick={() => setPreviewShown(!previewShown)}>Preview</Button>
+                <Button className="button" variant="success" type="submit" value='change'>Create Trigger</Button>
+            </Form.Group>
+        </Form>
+    </>
+}
+
+function Event(props) {
+    const [modalShown, setModalShown] = useState(false)
+
+    let head = <div className="subheader triggers-head">
+        <h2>{props.record.name}</h2>
+        {modalShown ?
+            <Icons.FaRegWindowClose onClick={() => { setModalShown(false) }} className="hover"></Icons.FaRegWindowClose> :
+            <Icons.FaRegPlusSquare onClick={() => { setModalShown(true) }} className="hover"></Icons.FaRegPlusSquare>
+        }
+    </div>
+    let hr = <hr className="triggers-hr" />
+    let triggers = <div className="formatter">
+        {Object.keys(props.record.triggers).map(_id =>
+            <Trigger record={props.record.triggers[_id]} setContext={props.setContext} key={_id} />
+        )}
+    </div>
+
+    let modalBody = modalShown && <Modal
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        show={modalShown}
+        onHide={() => setModalShown(false)}
+    >
+        <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title-vcenter">
+                Add a Trigger
+            </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            <ModalBody setContext={props.setContext} event_id={props.record._id} hide={() => { setModalShown(false) }} />
+        </Modal.Body>
+    </Modal>
+
+    return <>
+        {head}
+        {hr}
+        {triggers}
+        {modalBody}
+    </>
+}
+
+export default function TriggerList(props) {
+    const context = useContext(appContext)
+
+    let records = context.timedEvents[props.type]
+    return Object.keys(records).map(_id =>
+        <Event setContext={props.setContext} record={records[_id]} key={_id} />
+    )
 }

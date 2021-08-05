@@ -10,7 +10,8 @@ async function addTrigger(config) {
     try {
         event_id = ObjectId(event_id)
     } catch (err) { } finally {
-        await db_addTrigger(config.user, config.name, config.type, event_id, config.args || {})
+        let res = await db_addTrigger(config.user, config.name, config.type, event_id, config.args || {})
+        return getTrigger(res._id, res)
     }
 }
 const TRIGGER_SLICES = ['_id', 'user', 'name', 'type', 'event_id', 'resourceURL', 'topText', 'bottomText']

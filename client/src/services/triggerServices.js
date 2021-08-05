@@ -19,24 +19,24 @@ function updateTriggerObject(context, trigger, updObj) {
     }
 }
 
-async function addTrigger(context, name, type, event_id, args) {
+async function addTrigger(context, name, type, event_id, args = {}) {
     let res = await makeRequest('triggers', 'POST', {
         user: context.session.user, name, type, event_id, args
     }, context.session.jwt)
     if (!res.error) {
-        return update(context, updateTriggerObject(context, res.data, { "$set": [res.data] }))
+        return update(context, updateTriggerObject(context, res.data, { "$set": res.data }))
     } return context
 }
 
 async function updateTrigger(context, trigger, updObj) {
-    let res = await makeRequest(`triggers/${_id}`, 'PUT', updObj, context.session.jwt)
+    let res = await makeRequest(`triggers/${trigger._id}`, 'PUT', updObj, context.session.jwt)
     if (!res.error) {
-        return update(context, updateTriggerObject(context, trigger, { "$set": [res.data] }))
+        return update(context, updateTriggerObject(context, trigger, { "$set": res.data }))
     } return context
 }
 
 async function deleteTrigger(context, trigger) {
-    let res = await makeRequest(`triggers/${_id}`, 'DELETE', {}, context.session.jwt)
+    let res = await makeRequest(`triggers/${trigger._id}`, 'DELETE', {}, context.session.jwt)
     if (!res.error) {
         return update(context, {
             timedEvents: {

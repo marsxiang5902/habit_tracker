@@ -16,6 +16,7 @@ async function addEvent(user, name, type, args) {
     httpAssert.INTERNAL_SERVER(insertResult.insertedCount, `Could not insert.`)
     let _id = insertResult.insertedId
     await get_users_col().updateOne({ user: user }, { "$push": { [`eventLists.${type}`]: _id } })
+    return newEvent
 }
 function getEvent(_id) {
     return get_events_col().findOne({ _id: _id })

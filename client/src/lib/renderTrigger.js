@@ -1,12 +1,18 @@
-class renderer {
-    static link = (trigger) => {
+function getURL(trigger) {
+    if (trigger.type == 'image' && (trigger.topText || trigger.bottomText)) {
+        return `https://api.memegen.link/images/custom/${trigger.topText.replace(" ", "_")}/${trigger.bottomText.replace(" ", "_")}.png?background=${trigger.resourceURL}`
+    } return trigger.resourceURL
+}
+
+const renderer = {
+    link: trigger => {
         return (
-            <div className="link">
+            <div className="blank">
                 <a href={trigger.resourceURL}><h3 style={{ color: "white" }}>Link to {trigger.name}</h3></a>
             </div>
         )
-    }
-    static video = (trigger) => {
+    },
+    video: trigger => {
         if (trigger.resourceURL.includes('youtube')) {
             let request = trigger.resourceURL;
             if (!request.includes('embed')) {
@@ -23,8 +29,8 @@ class renderer {
                 <iframe width="100%" height="200" src={trigger.resourceURL} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
             </div>
         )
-    }
-    static audio = (trigger) => {
+    },
+    audio: trigger => {
         if (trigger.resourceURL.includes('spotify')) {
             let request;
             if (!trigger.resourceURL.includes('embed')) {
@@ -48,19 +54,16 @@ class renderer {
                 <source src={trigger.resourceURL} />
             </audio>
         )
-    }
-    getURL = (trigger) => {
-        if (trigger.type == 'image' && trigger.topText && trigger.bottomText) {
-            return `https://api.memegen.link/images/custom/${trigger.topText.replace(" ", "_")}/${trigger.bottomText.replace(" ", "_")}.png?background=${trigger.resourceURL}`
-        } return trigger.resourceURL
-    }
-    static image = (trigger) => {
+    },
+    image: trigger => {
         return (
             <div className="parent">
-                <img src={usegetURL(trigger)} alt={trigger.name}></img>
+                <img src={getURL(trigger)} alt={trigger.name}></img>
             </div>
         )
     }
 }
 
-export default renderTrigger = trigger => renderer[trigger.type](trigger)
+export default function renderTrigger(trigger) {
+    return (trigger.type in renderer) && renderer[trigger.type](trigger)
+}
