@@ -19,7 +19,9 @@ function ModalBody(props) {
                 Cues are anything that put you in a certain mood or motivate you to do a certain habit. Add your own cue
                 here through a link to music, text, an imager or a youtube video! Make the cue specific to the habit!
             </p>
-            <Form onSubmit={(e) => props.handleSubmit(e, type == "image" ? `https://api.memegen.link/images/custom/${imageText.replace(" ", "_")}/${bottomImageText.replace(" ", "_")}.png?background=${cue}` : cue, type, name)}>
+            <Form onSubmit={(e) => props.handleSubmit(e, type == "image" && bottomImageText && topImageText ?
+                `https://api.memegen.link/images/custom/${imageText.replace(" ", "_")}/${bottomImageText.replace(" ", "_")}.png?background=${cue}` :
+                cue, type, name)}>
                 <Form.Group>
                     <select onChange={(e) => setType(e.target.value)}>
                         <option value="" disabled selected>Type of Media</option>
@@ -53,9 +55,9 @@ function Cue(props) {
     const [deleted, setDeleted] = useState(false)
     const [popoverVisible, setPopoverVisible] = useState(false)
 
-    let handleSubmit = async(e) => {
+    let handleSubmit = async (e) => {
         e.preventDefault()
-        deleted ? props.setContext( await deleteData(props.context, props.index, 'cue')): props.editData({ name: name, link: link }, props.index)
+        deleted ? props.setContext(await deleteData(props.context, props.index, 'cue')) : props.editData({ name: name, link: link }, props.index)
         setDeleted(false)
         setName("")
         setLink("")
@@ -220,7 +222,7 @@ function CuesList(props) {
                             const temp = item.resourceURL.split(" ")
                             let cueItem = { link: temp[0], type: temp[1], habitId: temp[2] }
 
-                            let editData = async(data, index) => {
+                            let editData = async (data, index) => {
                                 let newData = {}
                                 for (let key in data) {
                                     if (key == 'link') {
@@ -229,10 +231,10 @@ function CuesList(props) {
                                         newData[key] = data[key]
                                     }
                                 }
-                                props.setContext( await changeData(props.context, newData, index, 'cue'))
+                                props.setContext(await changeData(props.context, newData, index, 'cue'))
                             }
                             if (cueItem.habitId === props.habit._id) {
-                                return <Cue editData={editData} item={item} link={cueItem.link} index={index} cuePreview={renderCueResource(item)} context={props.context} setContext={props.setContext}/>
+                                return <Cue editData={editData} item={item} link={cueItem.link} index={index} cuePreview={renderCueResource(item)} context={props.context} setContext={props.setContext} />
                                 // return(blank(cueItem))
                             }
                         } catch (err) { return null; }

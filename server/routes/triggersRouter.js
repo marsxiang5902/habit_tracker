@@ -12,7 +12,7 @@ const ENDPOINTS = [
     ['post', '/', [['update:event'], req => req.body.user], addTrigger],
     ['get', '/:_id', [['read:event']], getTrigger],
     ['put', '/:_id', [['update:event']], updateTrigger],
-    ['delete', '/:_id', [['delete:event']], removeTrigger]
+    ['delete', '/:_id', [['update:event']], removeTrigger]
 ]
 
 ENDPOINTS.forEach(ops => {

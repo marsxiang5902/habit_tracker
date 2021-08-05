@@ -6,51 +6,46 @@ import { defaultAppContext, appContext } from '../context/appContext';
 
 
 function DashboardContent(props) {
-    const [cue, setCue] = useState(null)
+    let habits = useContext(appContext).timedEvents.habit
+    const [trigger, setTrigger] = useState(null)
     const [event, setEvent] = useState(null)
 
-    let generateCue = () => {
-        let id2habit = {}
-        if (props.habits) {
-            props.habits.forEach(event => {
-                id2habit[event._id] = event
-            })
+    let generateEvent = () => {
+        let uncompleted = []
+        habits.forEach(eventRecord => {
+            if (!eventRecord.history[0]) {
+                uncompleted.append(eventRecord)
+            }
+        })
+        return uncompleted.length > 0 ? uncompleted[Math.floor(Math.random() * uncompleted.length)] :
+            null
+    }
+
+    let generateTrigger = () => {
+        let curEvent = generateEvent()
+        if (curEvent === null) {
+            return null
         }
-        let curCue = null, curEvent = null;
-        if (props.cues) {
-            props.cues.forEach((cue) => {
-                try {
-                    let [link, type, eventId] = cue.resourceURL.split(' ')
-                    if (eventId && eventId in id2habit) {
-                        let event = id2habit[eventId]
-                        console.log(event)
-                        if (event.history && '0' in event.history) {
-                            if (!event.history[0] && (!curCue || Math.random() < 0.5)) {
-                                curCue = cue
-                                curEvent = event
-                            }
-                        }
-                    }
-                } catch (err) { }
-            })
+        let curTrigger = { name: "Add a trigger to this event!" }
+        if (Array.isArray(curEvent.triggers) && curEvent.triggers.length > 0) {
+            curTrigger = curEvent.triggers[Math.floor(Math.random() * curEvent.trigger.length)]
         }
-        return [curCue, curEvent];
+        return [curTrigger, curEvent];
     }
 
     useEffect(() => {
-        console.log(props)
-        let [newCue, newEvent] = generateCue()
-        setCue(newCue)
+        let [newTrigger, newEvent] = generateTrigger()
+        setTrigger(newTrigger)
         setEvent(newEvent)
     }, [JSON.stringify(props)])
 
     return (
-        cue ? (
+        event !== null ? (
             <div className="dashboard">
                 <h3>Habit: {event.name}</h3>
-                <h1>Cue: {cue.name}</h1>
+                <h1>Trigger: {trigger.name}</h1>
                 <div className="parent">
-                    {renderCueResource(cue)}
+                    {renderCueResource(trigger)}
                 </div>
             </div>
         ) : (
@@ -61,12 +56,10 @@ function DashboardContent(props) {
 }
 
 function Dashboard(props) {
-    let cues = useContext(appContext).timedEvents.cue
-    let habits = useContext(appContext).timedEvents.habit
     return (
         <>
             <Layout name="Home" handleLogout={props.handleLogout} />
-            <DashboardContent cues={cues} habits={habits} />
+            <DashboardContent />
         </>
     )
 }
