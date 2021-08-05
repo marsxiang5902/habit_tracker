@@ -58,17 +58,11 @@ When an error occurs, a non-`200` status code is given:
 
 ### Events
 
-Events are habits, todos, daily things, cues, rewards, accountability responses, and anything to track. There are four types:
-* `habit`
-* `todo`
-* `repeat`
-* `cue`
-
-Each type has additional arguments that can be specified when created and that are returned when the event is fetched:
+Events are habits, todos, daily things, rewards, accountability responses, and anything to track. Each `event` object has additional arguments that can be specified when created and that are returned when the event is fetched. There are three types:
 * `habit`
   * `historyManagerType = bitmask`: `"<the type of history manager to use>"`
-* `cue`
-  * `resourceURL = ""`: `"<the URL of the activation resource>"`
+* `todo`
+* `repeat`
 
 ### History Managers
 
@@ -84,6 +78,18 @@ There are two types:
 * `bitmask`
   * Stores up to 32 previous days (including the current day). Each day can be either `true` or `false`.
 * `none`
+
+### Triggers
+
+Triggers are resources that may be displayed prior to start of an event to increase motivation or serve as a reminder. Each event has a list of triggers. Each `trigger` object has additional arguments that can be specified when created and that are returned when fetched. There are four types:
+* `image`
+  * `resourceURL = ""`: `"<a link to the image>"`
+* `audio`
+  * `resourceURL = ""`: `"<a link to the audio>"`
+* `video`
+  * `resourceURL = ""`: `"<a link to the video>"`
+* `link`
+  * `resourceURL = ""`: `"<a link>"`
 
 ## Endpoints
 
@@ -137,7 +143,8 @@ Omitted fields are blank.
 
 ### Events: `/events`
 
-#### Create an Event
+
+#### Create Event
 
 * Verb: **POST**
 * URL: `/`
@@ -151,9 +158,15 @@ Omitted fields are blank.
   *"args": <arguments passed to certain event types>
 }
 ```
-* Refer to the [events](#events) for `args`. All of them are optional.
+* Returned Data:
+```
+  <the newly created event>
+```
+* Refer to the [events](#events) for the `args`. All of them are optional.
+* Refer to [Get Event](#get-event) for the returned event.
 
-#### Get an Event's History
+
+#### Get Event's History
 
 * Verb: **GET**
 * URL: `/:_id/history`
@@ -167,7 +180,7 @@ Omitted fields are blank.
 }
 ```
 
-#### Get an Event
+#### Get Event
 
 * Verb: **GET**
 * URL: `/:_id`
@@ -179,13 +192,15 @@ Omitted fields are blank.
   "user": "<the user it belongs to>",
   "type": "<the event type>",
   "name": "<the name>",
-  "history": <the history>
-  *"resourceURL": <the history manager>
+  "history": <the history>,
+  "triggers": [<the triggers>]
 }
 ```
-* The `history` object is the same as the one returned from [Get an Event's History](#get-an-events-history)
+* The `history` object is the same as the one returned from [Get Event's History](#get-events-history)
+* Each element in the `triggers` array is the same as the one returned from [Get Trigger](#get-trigger)
 
-#### Update an Event
+
+#### Update Event
 
 * Verb: **PUT**
 * URL: `/:_id`
@@ -202,9 +217,9 @@ Omitted fields are blank.
 ```
 * Sets the specified fields to their respective values and leaves everything else the same. The allowed fields to change in this function are:
   * `name`
-  * `resourcePointer`
 
-#### Update an Event's History
+
+#### Update Event's History
 
 * Verb: **PUT**
 * URL: `/:_id/history`
@@ -220,11 +235,85 @@ Omitted fields are blank.
 }
 ```
 
-#### Delete an Event
+
+#### Delete Event
 
 * Verb: **DELETE**
 * URL: `/:_id`
 * Perms: {`delete:event`}
+
+
+### Triggers: `/triggers`
+
+
+#### Create Trigger
+
+* Verb: **POST**
+* URL: `/`
+* Perms: {`update:event`}
+* Request Body:
+```
+{
+  "user": "<the user it belongs to>",
+  "name": "<the name of the trigger>",
+  "type": "<the type of the trigger>",
+  "event_id": "<the _id of the event it belongs to>",
+  *"args": <arguments passed to certain trigger types>
+}
+```
+* Returned Data:
+```
+  <the newly created trigger>
+```
+* Refer to the [triggers](#triggers) for the `args`. All of them are optional.
+* Refer to [Get Trigger](#get-trigger) for the returned trigger.
+
+
+#### Get Trigger
+
+* Verb: **GET**
+* URL: `/:_id`
+* Perms: {`read:event`}
+* Returned Data:
+```
+{
+  "_id": "<the id>"
+  "user": "<the user it belongs to>",
+  "name": "<the name of the trigger>",
+  "type": "<the type of the trigger>",
+  "event_id": "<the _id of the event it belongs to>",
+  *"resourceURL": "<the URL of the resource>"
+}
+```
+* Refer to the [triggers](#triggers) for the returned properties.
+
+
+#### Update Trigger
+
+* Verb: **PUT**
+* URL: `/:_id`
+* Perms: {`update:event`}
+* Request Body:
+```
+{
+  "updObj": {
+    field1: <value1>,
+    field2: <value2>,
+    ...
+  }
+}
+```
+* Sets the specified fields to their respective values and leaves everything else the same. The allowed fields to change in this function are:
+  * `name`
+  * `resourceURL`
+
+
+#### Delete Trigger
+
+* Verb: **DELETE**
+* URL: `/:_id`
+* Perms: {`update:event`}
+
 
 ### Users: `/users`
 
@@ -254,7 +343,7 @@ Omitted fields are blank.
   ...
 }
 ```
-* See [Get an Event](#get-an-event) for the returned events.
+* Refer to [Get Event](#get-event) for the returned events.
 
 #### Get User Authentication Information
 

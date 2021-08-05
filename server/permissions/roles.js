@@ -4,7 +4,7 @@ const httpAssert = require('../errors/httpAssert')
 
 const ALL_ROLES = {
     'default': new Set([
-        'create:event',
+        'create:event_self',
         'read:user_self',
         'read:event_self',
         'update:user_self',

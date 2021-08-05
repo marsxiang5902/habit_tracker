@@ -3,6 +3,7 @@
 const TimedEvent = require('./TimedEvent')
 const { subclasses } = require('../HistoryManager/HistoryManagerClasses')
 const httpAssert = require('../errors/httpAssert')
+const { wrapObject } = require('../lib/wrapSliceObject')
 
 const DEFAULT_ARGS = {
     historyManagerType: 'bitmask'
@@ -12,11 +13,7 @@ module.exports = class TimedHabit extends TimedEvent {
     constructor(user, name, args) {
         // HARDCODE HABITS TO USE BITMASK
         httpAssert.BAD_REQUEST(typeof args == 'object', `Data is invalid.`)
-        for (let key in DEFAULT_ARGS) {
-            if (!(key in args)) {
-                args[key] = DEFAULT_ARGS[key]
-            }
-        }
+        wrapObject(args, DEFAULT_ARGS, true)
         let historyManagerType = args.historyManagerType
         httpAssert.BAD_REQUEST(historyManagerType in subclasses, `Type ${historyManagerType} is not valid.`)
         super(user, name, 'habit', new subclasses[historyManagerType]())

@@ -9,5 +9,6 @@ module.exports = class TimedEvent {
         this.type = type
         this.name = name
         this.historyManager = historyManager
+        this.triggerList = []
     }
 }

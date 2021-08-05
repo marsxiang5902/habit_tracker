@@ -1,6 +1,6 @@
 'use strict'
 
-const { subclasses } = require('../TimedEvents/TimedEventClasses')
+const { subclasses } = require('../TimedEvent/TimedEventClasses')
 const argon2 = require('argon2')
 
 module.exports = class User {

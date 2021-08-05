@@ -10,6 +10,9 @@ async function addUser(user, userRecord, password) {
     await newUser.init()
     await get_users_col().insertOne(newUser);
 }
+function getUser(user) {
+    return get_users_col().findOne({ user: user })
+}
 async function updateUser(user, userRecord, updObj) {
     httpAssert.NOT_FOUND(userRecord, `User ${user} not found.`)
     httpAssert.BAD_REQUEST(updObj && typeof updObj == 'object' && !('_id' in updObj), `Data is invalid.`)
@@ -20,6 +23,7 @@ async function removeUser(user, userRecord) {
     httpAssert.NOT_FOUND(userRecord, `User ${user} not found.`)
     await get_users_col().deleteOne({ user: user })
     await get_events_col().deleteMany({ user: user })
+    await get_triggers_col().deleteMany({ user: user })
 }
 
-module.exports = { addUser, updateUser, removeUser }
+module.exports = { addUser, getUser, updateUser, removeUser }
