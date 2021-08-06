@@ -13,8 +13,8 @@ function getEventTypes(events) {
 function updateTriggerObject(context, trigger, updObj) {
     return {
         timedEvents: {
-            [`${context.eventIds2Type[trigger.event_id]}`]
-                : { [`${trigger.event_id}`]: { triggers: { [`${trigger._id}`]: updObj } } }
+            [context.eventIds2Type[trigger.event_id]]
+                : { [trigger.event_id]: { triggers: { [trigger._id]: updObj } } }
         }
     }
 }
@@ -40,9 +40,9 @@ async function deleteTrigger(context, trigger) {
     if (!res.error) {
         return update(context, {
             timedEvents: {
-                [`${context.eventIds2Type[trigger.event_id]}`]
+                [context.eventIds2Type[trigger.event_id]]
                     : {
-                    [`${trigger.event_id}`]: {
+                    [trigger.event_id]: {
                         triggers: { "$unset": [trigger._id] }
                     }
                 }

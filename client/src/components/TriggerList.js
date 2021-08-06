@@ -20,6 +20,7 @@ class EditPopover extends React.Component {
     handleSubmit = async (e) => {
         e.preventDefault()
         this.props.setContext(await updateTrigger(this.context, this.props.record, this.state))
+        this.props.handleHide()
     }
 
     render() {
@@ -34,7 +35,7 @@ class EditPopover extends React.Component {
                     <Form.Group>
                         {Object.keys(renderedFields).map(key => (
                             <Form.Control className="text-form" type="text" placeholder={renderedFields[key]}
-                                value={this.state[key]} onChange={(e) => this.setState({ key: e.target.value })} />
+                                value={this.state[key]} onChange={(e) => { this.setState({ [key]: e.target.value }) }} />
                             // HARDCODE: ASSUMED ALL VALUES ARE STRINGS
                         ))}
                         <Button className="button" variant="success" value='change' onClick={this.handleSubmit}>Change</Button>
@@ -59,7 +60,7 @@ function Trigger(props) {
 
     let overlay = <div>
         <OverlayTrigger trigger="click" placement="left"
-            overlay={<EditPopover record={record} setContext={props.setContext} />}
+            overlay={<EditPopover record={record} setContext={props.setContext} handleHide={() => { setPopoverShown(false) }} />}
             show={popoverShown}>
             <Icons.FaPencilAlt className="hover" style={{ marginRight: '20px' }}
                 onClick={() => { setPopoverShown(!popoverShown) }} />

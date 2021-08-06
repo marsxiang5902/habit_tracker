@@ -21,7 +21,7 @@ function getTrigger(_id, triggerRecord) {
 }
 async function updateTrigger(_id, triggerRecord, updObj) {
     httpAssert.NOT_FOUND(triggerRecord, `Trigger with id ${_id} not found.`)
-    return await db_updateTrigger(_id, triggerRecord, sliceObject(updObj, ['name', 'resourceURL']))
+    return await db_updateTrigger(_id, triggerRecord, sliceObject(updObj, ['name', 'resourceURL', 'topText', 'bottomText']))
 }
 async function removeTrigger(_id, triggerRecord) {
     httpAssert.NOT_FOUND(triggerRecord, `Trigger with id ${_id} not found.`)
