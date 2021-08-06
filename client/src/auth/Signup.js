@@ -1,7 +1,6 @@
 import React from 'react';
 import makeRequest from '../api/makeRequest';
 import '../static/page.css';
-import { Redirect } from "react-router-dom";
 import Layout from '../components/layout';
 
 export default class Signup extends React.Component {

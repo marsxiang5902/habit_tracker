@@ -1,6 +1,5 @@
 import React from 'react';
 import './App.css';
-import Layout from './components/layout';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import All from './pages/all';
 import Dashboard from './pages/dashboard';
@@ -10,7 +9,6 @@ import Signup from './auth/Signup';
 import Login from './auth/Login';
 import { defaultAppContext, appContext } from './context/appContext'
 import jwt from 'jsonwebtoken';
-import makeRequest from './api/makeRequest';
 import FetchData from './api/fetchData';
 import { getEventTypes } from './services/triggerServices'
 
