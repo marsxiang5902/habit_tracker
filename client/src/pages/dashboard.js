@@ -26,13 +26,14 @@ function DashboardContent(props) {
 
         let generateTrigger = () => {
             let curEvent = generateEvent()
+            console.log(curEvent)
             if (curEvent === null) {
                 return [null, null]
             }
             let curTrigger = { name: "Add a trigger to this event!" }
             let triggers = curEvent.triggers
-            if (triggers) {
-                let ids = Object.keys(triggers)
+            let ids = Object.keys(triggers)
+            if (ids.length > 0) {
                 curTrigger = triggers[ids[Math.floor(Math.random() * ids.length)]]
             }
             return [curTrigger, curEvent];
@@ -41,10 +42,10 @@ function DashboardContent(props) {
         let [newTrigger, newEvent] = generateTrigger()
         setTrigger(newTrigger)
         setEvent(newEvent)
-    }, [JSON.stringify(habits)])
+    }, [habits])
 
     return (
-        event && trigger ? (
+        event !== null ? (
             <div className="dashboard">
                 <h3>Habit: {event.name}</h3>
                 <h1>Trigger: {trigger.name}</h1>
