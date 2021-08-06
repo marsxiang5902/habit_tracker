@@ -41,7 +41,7 @@ function DashboardContent(props) {
         let [newTrigger, newEvent] = generateTrigger()
         setTrigger(newTrigger)
         setEvent(newEvent)
-    }, [habits])
+    }, [JSON.stringify(habits)])
 
     return (
         event && trigger ? (
