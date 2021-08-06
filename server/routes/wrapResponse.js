@@ -1,6 +1,6 @@
 'use strict'
 
-const { wrapObject } = require("../services/wrapSliceObject")
+const { wrapObject } = require("../lib/wrapSliceObject")
 
 const REQUIRED_FIELDS = {
     'data': {},

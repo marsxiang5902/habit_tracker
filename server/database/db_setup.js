@@ -7,7 +7,7 @@ const httpAssert = require('../errors/httpAssert')
 const uri = `mongodb+srv://${db_username}:${db_password}@${db_cluster}.2kphp.mongodb.net/${db_name}?retryWrites=true&w=majority`
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-var users_col = null, events_col = null;
+var users_col = null, events_col = null, triggers_col = null;
 
 module.exports = {
     do_db_setup: async function do_db_setup() {
@@ -16,6 +16,7 @@ module.exports = {
             let db = client.db(db_name)
             users_col = db.collection("users")
             events_col = db.collection("events")
+            triggers_col = db.collection("triggers")
             console.log("Connected to db")
         } else {
             assert(users_col !== null && events_col !== null)
@@ -26,6 +27,7 @@ module.exports = {
             await client.close();
             users_col = null
             events_col = null
+            triggers_col = null
             console.log("Closed db")
         }
     },
@@ -37,4 +39,8 @@ module.exports = {
         httpAssert.INTERNAL_SERVER(users_col, `Database error.`)
         return events_col
     },
+    get_triggers_col: () => {
+        httpAssert.INTERNAL_SERVER(triggers_col, `Database error.`)
+        return triggers_col
+    }
 }

@@ -10,8 +10,10 @@ const defaultAppContext = {
     timedEvents: {
         loading: true,
         habit: [],
-        todo: [],
-        cue: []
+        todo: []
+    },
+    eventIds2Type: {
+
     }
 }
 

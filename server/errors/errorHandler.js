@@ -21,7 +21,8 @@ function returnError(err, req, res, next) {
     next()
 }
 function isOperationalError(err) {
-    return err instanceof BaseError ? err.isOperational : true
+    console.log(err instanceof BaseError ? err.isOperational : true)
+    return err instanceof BaseError ? err.isOperational : false
 }
 
 module.exports = {

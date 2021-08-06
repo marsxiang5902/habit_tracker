@@ -1,18 +1,16 @@
 import React from 'react';
 import './App.css';
-import Layout from './components/layout';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import All from './pages/all';
 import Dashboard from './pages/dashboard';
 import Habits from './pages/habits'
-import Cues from './pages/cues';
+import Triggers from './pages/triggers';
 import Signup from './auth/Signup';
 import Login from './auth/Login';
 import { defaultAppContext, appContext } from './context/appContext'
 import jwt from 'jsonwebtoken';
-import makeRequest from './api/makeRequest';
 import FetchData from './api/fetchData';
-
+import { getEventTypes } from './services/triggerServices'
 
 class App extends React.Component {
   constructor(props) {
@@ -37,7 +35,6 @@ class App extends React.Component {
     })
   }
 
-
   handleLogin = async token => {
     if (token) {
       let decoded = jwt.decode(token)
@@ -52,7 +49,8 @@ class App extends React.Component {
         this.setState({
           context: {
             session: session,
-            timedEvents: timedEvents
+            timedEvents: timedEvents,
+            eventIds2Type: getEventTypes(timedEvents)
           }
         })
         this.props.history.push('/')
@@ -65,7 +63,7 @@ class App extends React.Component {
     this.props.history.push('/login')
   }
 
-  render(){
+  render() {
     return (
       // <appContext.Provider value={[this.state.context, this.setContext]}>
       <appContext.Provider value={this.state.context}>
@@ -73,16 +71,16 @@ class App extends React.Component {
           <Switch>
             <Route path="/" exact render={(props) => {
               return (
-                  <Dashboard handleLogout={this.handleLogout} generateCue={this.generateRandomCue}/>
+                <Dashboard handleLogout={this.handleLogout} />
               )
             }} />
             <Route path="/editor" render={(props) => {
               return (
-                  <All handleLogout={this.handleLogout} setContext={this.setContext}/>
+                <All handleLogout={this.handleLogout} setContext={this.setContext} />
               )
             }} />
             <Route path="/habits" render={(props) => (
-                <Habits setContext={this.setContext} handleLogout={this.handleLogout}/>
+              <Habits setContext={this.setContext} handleLogout={this.handleLogout} />
             )} />
             <Route path="/signup">
               <Signup handleLogin={this.handleLogin} />
@@ -91,8 +89,8 @@ class App extends React.Component {
               <Login handleLogin={this.handleLogin} />
             </Route>
 
-            <Route path="/cues" render={(props) => (
-                <Cues setContext={this.setContext} handleLogout={this.handleLogout}/>
+            <Route path="/triggers" render={(props) => (
+              <Triggers setContext={this.setContext} handleLogout={this.handleLogout} />
             )} />
 
           </Switch>

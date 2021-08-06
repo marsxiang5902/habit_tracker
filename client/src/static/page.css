@@ -94,11 +94,11 @@ input[type=checkbox] {
     height:100%;
 }
 
-.cues-head {
+.triggers-head {
     padding: 5% 15% 0px 15%;
 }
 
-.cues-hr {
+.triggers-hr {
     width: 80%;
     border-top: 2px solid black;
     margin-top: 5px;

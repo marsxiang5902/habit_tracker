@@ -4,9 +4,10 @@ const cors = require('cors')
 const helmet = require('helmet')
 const morgan = require('morgan')
 const { do_db_setup, close_db } = require('./database/db_setup')
+const authRouter = require('./routes/authRouter.js')
 const usersRouter = require('./routes/usersRouter.js')
 const eventsRouter = require('./routes/eventsRouter.js')
-const authRouter = require('./routes/authRouter.js')
+const triggersRouter = require('./routes/triggersRouter.js')
 const { logError, returnError, isOperationalError, logErrorMiddleware } = require('./errors/errorHandler')
 const wrapResponse = require('./routes/wrapResponse')
 
@@ -23,6 +24,7 @@ app.use(morgan('combined'))
 app.use('/', authRouter)
 app.use('/users/', usersRouter)
 app.use('/events/', eventsRouter)
+app.use('/triggers/', triggersRouter)
 
 app.use(logErrorMiddleware)
 app.use(returnError)
@@ -33,7 +35,7 @@ process.on('unhandledRejection', err => {
 })
 process.on('uncaughtException', err => {
     logError(err)
-    if (!isOperationalError) {
+    if (!isOperationalError(err)) {
         process.exit(1)
     }
 })

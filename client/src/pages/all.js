@@ -1,12 +1,9 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, {useContext} from "react";
 import '../static/page.css'
-import { Form } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import DataList from '../components/data-list'
-import { appContext } from "../context/appContext";
+import EventList from '../components/EventList'
 import Layout from "../components/layout";
-
-
+import { appContext } from "../context/appContext";
 
 function All(props) {
     let context = useContext(appContext)
@@ -18,10 +15,10 @@ function All(props) {
             </Layout>
             <div className="formatter">
                 <div className="container" id="habits">
-                    <DataList data={habits} context={context} setContext={props.setContext} title="Daily Habits" type="Habit" />
+                    <EventList setContext={props.setContext} title="Daily Habits" type="habit" />
                 </div>
                 <div className="container" id="todos">
-                    <DataList data={todos} context={context} setContext={props.setContext} title="Todos" type="Todo" />
+                    <EventList setContext={props.setContext} title="Todos" type="todo" />
                 </div>
             </div>
         </>

@@ -15,8 +15,8 @@ export const SidebarData = [
     cName: 'nav-text'
   },
   {
-    title: 'Cues',
-    path: '/cues',
+    title: 'Triggers',
+    path: '/triggers',
     icon: <Icons.FaBullhorn />,
     cName: 'nav-text'
   },
