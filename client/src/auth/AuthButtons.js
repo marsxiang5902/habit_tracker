@@ -21,5 +21,4 @@ function AuthButtons(props) {
         )
     }
 }
-AuthButtons.contextType = appContext
 export default AuthButtons

@@ -6,45 +6,45 @@ import { appContext } from '../context/appContext';
 
 
 function DashboardContent(props) {
-    let context = useContext(appContext)
-    let habits = context.timedEvents.habit
+    const context = useContext(appContext)
+    const habits = context.timedEvents.habit
     const [trigger, setTrigger] = useState(null)
     const [event, setEvent] = useState(null)
 
-    let generateEvent = () => {
-        let uncompleted = []
-        for (let _id in habits) {
-            let eventRecord = habits[_id]
-            if (!eventRecord.history[0]) {
-                uncompleted.push(eventRecord)
-            }
-        }
-        return uncompleted.length > 0 ? uncompleted[Math.floor(Math.random() * uncompleted.length)] :
-            null
-    }
-
-    const generateTrigger = () => {
-        let curEvent = generateEvent()
-        if (curEvent === null) {
-            return [null, null]
-        }
-        let curTrigger = { name: "Add a trigger to this event!" }
-        let triggers = curEvent.triggers
-        if (triggers) {
-            let ids = Object.keys(triggers)
-            curTrigger = triggers[ids[Math.floor(Math.random() * ids.length)]]
-        }
-        return [curTrigger, curEvent];
-    }
-
     useEffect(() => {
+        let generateEvent = () => {
+            let uncompleted = []
+            for (let _id in habits) {
+                let eventRecord = habits[_id]
+                if (!eventRecord.history[0]) {
+                    uncompleted.push(eventRecord)
+                }
+            }
+            return uncompleted.length > 0 ? uncompleted[Math.floor(Math.random() * uncompleted.length)] :
+                null
+        }
+
+        let generateTrigger = () => {
+            let curEvent = generateEvent()
+            if (curEvent === null) {
+                return [null, null]
+            }
+            let curTrigger = { name: "Add a trigger to this event!" }
+            let triggers = curEvent.triggers
+            if (triggers) {
+                let ids = Object.keys(triggers)
+                curTrigger = triggers[ids[Math.floor(Math.random() * ids.length)]]
+            }
+            return [curTrigger, curEvent];
+        }
+
         let [newTrigger, newEvent] = generateTrigger()
         setTrigger(newTrigger)
         setEvent(newEvent)
-    }, [JSON.stringify(habits)])
+    }, [habits])
 
     return (
-        event !== null ? (
+        event && trigger ? (
             <div className="dashboard">
                 <h3>Habit: {event.name}</h3>
                 <h1>Trigger: {trigger.name}</h1>
