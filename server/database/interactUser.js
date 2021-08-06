@@ -1,5 +1,5 @@
 "use strict";
-const { get_users_col, get_events_col } = require('./db_setup')
+const { get_users_col, get_events_col, get_triggers_col } = require('./db_setup')
 const User = require('../Users/User')
 const httpAssert = require('../errors/httpAssert')
 
