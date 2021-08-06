@@ -2,11 +2,12 @@ import React, { useEffect, useState, useContext } from 'react';
 import renderTrigger from '../lib/renderTrigger';
 import Layout from '../components/layout';
 import '../static/page.css'
-import { defaultAppContext, appContext } from '../context/appContext';
+import { appContext } from '../context/appContext';
 
 
 function DashboardContent(props) {
-    let habits = useContext(appContext).timedEvents.habit
+    let context = useContext(appContext)
+    let habits = context.timedEvents.habit
     const [trigger, setTrigger] = useState(null)
     const [event, setEvent] = useState(null)
 
@@ -22,7 +23,7 @@ function DashboardContent(props) {
             null
     }
 
-    let generateTrigger = () => {
+    const generateTrigger = () => {
         let curEvent = generateEvent()
         if (curEvent === null) {
             return [null, null]
@@ -40,7 +41,7 @@ function DashboardContent(props) {
         let [newTrigger, newEvent] = generateTrigger()
         setTrigger(newTrigger)
         setEvent(newEvent)
-    }, [habits])
+    }, [JSON.stringify(habits)])
 
     return (
         event !== null ? (

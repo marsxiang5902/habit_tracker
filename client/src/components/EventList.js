@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import * as Icons from "react-icons/fa";
-import { Form, Popover, OverlayTrigger, Button, Modal } from 'react-bootstrap'
+import { Form, Popover, OverlayTrigger, Button } from 'react-bootstrap'
 import { addEvent, updateEvent, deleteEvent } from '../services/eventServices';
 import { appContext } from '../context/appContext';
 

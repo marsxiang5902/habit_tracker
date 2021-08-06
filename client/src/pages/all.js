@@ -1,18 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
+import React from "react";
 import '../static/page.css'
-import { Form } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import EventList from '../components/EventList'
-import { appContext } from "../context/appContext";
 import Layout from "../components/layout";
 
-
-
 function All(props) {
-    let context = useContext(appContext)
-    let todos = context.timedEvents.todo
-    let habits = context.timedEvents.habit
-
     return (
         <>
             <Layout name="🗺 THE PLAN" handleLogout={props.handleLogout}>

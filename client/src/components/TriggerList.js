@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react';
 import { appContext } from "../context/appContext";
 import * as Icons from "react-icons/fa";
-import { Form, Popover, OverlayTrigger, Button, Modal, Card } from 'react-bootstrap'
+import { Form, Popover, OverlayTrigger, Button, Modal } from 'react-bootstrap'
 import renderTrigger from "../lib/renderTrigger";
 import { updateTrigger, deleteTrigger, addTrigger } from "../services/triggerServices";
-import { wrapObject, sliceObject } from "../lib/wrapSliceObject";
+import { sliceObject } from "../lib/wrapSliceObject";
 
 
 const UPDATABLE_FIELDS = ['name', 'resourceURL', 'topText', 'bottomText']

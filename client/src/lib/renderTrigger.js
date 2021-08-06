@@ -1,5 +1,5 @@
 function getURL(trigger) {
-    if (trigger.type == 'image' && (trigger.topText || trigger.bottomText)) {
+    if (trigger.type === 'image' && (trigger.topText || trigger.bottomText)) {
         return `https://api.memegen.link/images/custom/${trigger.topText.replace(" ", "_")}/${trigger.bottomText.replace(" ", "_")}.png?background=${trigger.resourceURL}`
     } return trigger.resourceURL
 }
