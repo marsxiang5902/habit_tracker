@@ -2,6 +2,7 @@ import React from 'react';
 import makeRequest from '../api/makeRequest';
 import '../static/page.css'
 import Layout from '../components/layout';
+import { Button } from 'react-bootstrap';
 
 
 export default class Login extends React.Component {
@@ -56,7 +57,8 @@ export default class Login extends React.Component {
                 <form onSubmit={this.handleSubmit} style={{ marginRight: "10%" }}>
                     {this.inputPart("Username", "user", "text")}
                     {this.inputPart("Password", "password", "password")}
-                    <input type="submit" value="Log in" />
+                    {/* <input type="submit" value="Log in" /> */}
+                    <Button variant="primary" type="submit" value="Log in">Log In</Button>
                 </form>
             </div>
             </>
