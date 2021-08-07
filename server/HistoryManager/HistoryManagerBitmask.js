@@ -2,7 +2,9 @@
 
 const { HistoryManager, MILLS_IN_DAY, getDay, checkData } = require('./HistoryManager')
 const httpAssert = require('../errors/httpAssert')
-const assert = require('assert')
+const assert = require('assert');
+const { bit2obj, obj2bit } = require('../lib/bitmask');
+
 
 module.exports = class HistoryManagerBitmask extends HistoryManager {
     constructor(startDay = getDay(), curDay = getDay(), bit = 0) {
@@ -29,10 +31,7 @@ module.exports = class HistoryManagerBitmask extends HistoryManager {
     static getHistory(data) {
         this.checkBitmaskData(data)
         let daysPassed = this.realignDate(data)
-        let ret = {}
-        for (let i = 0; i < Math.min(32, daysPassed + 1); i++) {
-            ret[i] = (data.bit & (1 << i)) != 0
-        }
+        let ret = obj2bit(data, Math.min(32, daysPassed + 1))
         assert(checkData(ret))
         return ret;
     }

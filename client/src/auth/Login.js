@@ -37,13 +37,12 @@ export default class Login extends React.Component {
 
     handleSubmit = async e => {
         e.preventDefault()
-        try {
-            let loginResult = await makeRequest('/login', 'post', {
-                user: this.state.user, password: this.state.password
-            })
+        let loginResult = await makeRequest('/login', 'post', {
+            user: this.state.user, password: this.state.password
+        })
+        if (!loginResult.error) {
             this.props.handleLogin(loginResult.data.jwt)
-        }
-        catch (err) {
+        } else {
             this.setState({ loginFailed: true })
         }
     }

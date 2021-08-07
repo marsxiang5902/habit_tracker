@@ -1,4 +1,3 @@
-extract cues
-make next
+make activations like historyManager
 custom timezones / reset times
 salt
