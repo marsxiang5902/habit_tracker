@@ -2,6 +2,7 @@ import React from 'react';
 import makeRequest from '../api/makeRequest';
 import '../static/page.css';
 import Layout from '../components/layout';
+import { Button } from 'react-bootstrap';
 
 export default class Signup extends React.Component {
     constructor(props) {
@@ -56,7 +57,7 @@ export default class Signup extends React.Component {
                         {this.inputPart("Username", "user", "text")}
                         {this.inputPart("Email", "email", "text")}
                         {this.inputPart("Password", "password", "password")}
-                        <input type="submit" value="Sign up" />
+                        <Button variant="primary" type="submit" value="Log in">Sign Up</Button>
                     </form>
                 </div>
             </>
