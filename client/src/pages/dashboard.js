@@ -26,7 +26,6 @@ function DashboardContent(props) {
 
         let generateTrigger = () => {
             let curEvent = generateEvent()
-            console.log(curEvent)
             if (curEvent === null) {
                 return [null, null]
             }

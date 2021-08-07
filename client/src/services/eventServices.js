@@ -7,9 +7,7 @@ async function addEvent(context, name, type, args = {}) {
     }, context.session.jwt)
     if (!res.error) {
         console.log(res.data)
-        return update(update(context, { timedEvents: { [type]: { [res.data._id]: { "$set": res.data } } } }),
-            { eventIds2Type: { [res.data._id]: { "$set": type } } }
-        )
+        return update(context, { timedEvents: { [type]: { [res.data._id]: { "$set": res.data } } } })
     } return context
 }
 

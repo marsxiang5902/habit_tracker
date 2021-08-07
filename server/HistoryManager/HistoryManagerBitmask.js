@@ -31,7 +31,7 @@ module.exports = class HistoryManagerBitmask extends HistoryManager {
     static getHistory(data) {
         this.checkBitmaskData(data)
         let daysPassed = this.realignDate(data)
-        let ret = obj2bit(data, Math.min(32, daysPassed + 1))
+        let ret = bit2obj(data.bit, Math.min(32, daysPassed + 1))
         assert(checkData(ret))
         return ret;
     }

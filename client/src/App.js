@@ -10,7 +10,6 @@ import Login from './auth/Login';
 import { defaultAppContext, appContext } from './context/appContext'
 import jwt from 'jsonwebtoken';
 import FetchData from './api/fetchData';
-import { getEventTypes } from './services/triggerServices'
 
 class App extends React.Component {
   constructor(props) {
@@ -50,7 +49,6 @@ class App extends React.Component {
           context: {
             session: session,
             timedEvents: timedEvents,
-            eventIds2Type: getEventTypes(timedEvents)
           }
         })
         this.props.history.push('/')

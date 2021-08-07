@@ -12,9 +12,6 @@ const defaultAppContext = {
         habit: [],
         todo: []
     },
-    eventIds2Type: {
-
-    }
 }
 
 const appContext = React.createContext(defaultAppContext)

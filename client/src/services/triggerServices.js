@@ -1,23 +1,17 @@
 import makeRequest from "../api/makeRequest"
 import update from 'immutability-helper'
+import { getEventById } from "../lib/locateEvents"
 
-function getEventTypes(events) {
-    let ids2type = {}
-    for (let type in events) {
-        for (let _id in events[type]) {
-            ids2type[_id] = type
-        }
-    }
-    return ids2type
-}
 function updateTriggerObject(context, trigger, updObj) {
     return {
         timedEvents: {
-            [context.eventIds2Type[trigger.event_id]]
-                : { [trigger.event_id]: { triggers: { [trigger._id]: updObj } } }
+            [getEventById(context, trigger.event_id).type]: {
+                [trigger.event_id]: { triggers: { [trigger._id]: updObj } }
+            }
         }
     }
 }
+
 
 async function addTrigger(context, name, type, event_id, args = {}) {
     let res = await makeRequest('triggers', 'POST', {
@@ -40,11 +34,8 @@ async function deleteTrigger(context, trigger) {
     if (!res.error) {
         return update(context, {
             timedEvents: {
-                [context.eventIds2Type[trigger.event_id]]
-                    : {
-                    [trigger.event_id]: {
-                        triggers: { "$unset": [trigger._id] }
-                    }
+                [getEventById(context, trigger.event_id).type]: {
+                    [trigger.event_id]: { triggers: { "$unset": [trigger._id] } }
                 }
             }
         })
@@ -52,4 +43,4 @@ async function deleteTrigger(context, trigger) {
 }
 
 
-export { getEventTypes, addTrigger, updateTrigger, deleteTrigger }
+export { addTrigger, updateTrigger, deleteTrigger }
