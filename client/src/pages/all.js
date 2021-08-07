@@ -1,10 +1,14 @@
-import React from "react";
+import React, {useContext} from "react";
 import '../static/page.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import EventList from '../components/EventList'
 import Layout from "../components/layout";
+import { appContext } from "../context/appContext";
 
 function All(props) {
+    let context = useContext(appContext)
+    let todos = context.timedEvents.todo
+    let habits = context.timedEvents.habit
     return (
         <>
             <Layout name="🗺 THE PLAN" handleLogout={props.handleLogout}>
