@@ -36,13 +36,12 @@ export default class Login extends React.Component {
 
     handleSubmit = async e => {
         e.preventDefault()
-        try {
-            let loginResult = await makeRequest('/login', 'post', {
-                user: this.state.user, password: this.state.password
-            })
+        let loginResult = await makeRequest('/login', 'post', {
+            user: this.state.user, password: this.state.password
+        })
+        if (!loginResult.error) {
             this.props.handleLogin(loginResult.data.jwt)
-        }
-        catch (err) {
+        } else {
             this.setState({ loginFailed: true })
         }
     }
@@ -50,15 +49,15 @@ export default class Login extends React.Component {
     render() {
         return (
             <>
-            <Layout name="THE LOGIN"></Layout>
-            <div className="dashboard">
-                {this.state.loginFailed && <p>Login failed.</p>}
-                <form onSubmit={this.handleSubmit} style={{ marginRight: "10%" }}>
-                    {this.inputPart("Username", "user", "text")}
-                    {this.inputPart("Password", "password", "password")}
-                    <input type="submit" value="Log in" />
-                </form>
-            </div>
+                <Layout name="THE LOGIN"></Layout>
+                <div className="dashboard">
+                    {this.state.loginFailed && <p>Login failed.</p>}
+                    <form onSubmit={this.handleSubmit} style={{ marginRight: "10%" }}>
+                        {this.inputPart("Username", "user", "text")}
+                        {this.inputPart("Password", "password", "password")}
+                        <input type="submit" value="Log in" />
+                    </form>
+                </div>
             </>
         )
     }
