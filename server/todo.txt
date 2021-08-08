@@ -1,3 +1,4 @@
-make activations like historyManager
+stack
 custom timezones / reset times
+fix historymanager
 salt
