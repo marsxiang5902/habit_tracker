@@ -1,9 +1,8 @@
 import React, { useState, useContext } from 'react';
 import * as Icons from "react-icons/fa";
-import { Form, Row, Col, Popover, OverlayTrigger, Button, Dropdown, DropdownButton } from 'react-bootstrap'
+import { Form, Row, Col, Popover, OverlayTrigger, Button, } from 'react-bootstrap'
 import { addEvent, updateEvent, deleteEvent } from '../services/eventServices';
 import { appContext } from '../context/appContext';
-import { getAllEvents, getEventById } from '../lib/locateEvents';
 
 function pct(items) {
   try {
@@ -51,28 +50,16 @@ let ActivationPopover = React.forwardRef((props, ref) => {
   const [activationDays, setActivationDays] = useState(props.record.activationDays)
   const [activationTimeHour, setActivationTimeHour] = useState(Math.floor(props.record.activationTime / 60))
   const [activationTimeMin, setActivationTimeMin] = useState(props.record.activationTime % 60)
-  const [nextEvent, setNextEvent] = useState(props.record.nextEvent)
 
   async function handleEdit(event) {
     event.preventDefault();
     props.setContext(await updateEvent(context, props.record, {
-      activationDays, nextEvent,
-      activationTime: activationTimeHour * 60 + activationTimeMin
+      activationDays, activationTime: activationTimeHour * 60 + activationTimeMin
     }))
     props.hidePopover()
   }
 
   const DAYS = ['M', 'T', 'W', 'Th', 'F', 'Sa', 'Su']
-
-  const NO_NEXT_EVENT = { name: 'No Next Event', _id: null }
-  let nextEventRecord = getEventById(context, nextEvent) || NO_NEXT_EVENT
-  function getNextEventOptions() {
-    let allEvents = getAllEvents(context)
-    let construct = record => (
-      <Dropdown.Item onClick={() => { setNextEvent(record._id) }} key={record._id}>{record.name}</Dropdown.Item>
-    )
-    return [construct(NO_NEXT_EVENT), ...Object.keys(allEvents).map(_id => construct(allEvents[_id]))]
-  }
 
   return <Popover ref={ref} {...props} id="popover-basic">
     <Popover.Title as="h3">{`Edit ${capitalizeFirst(props.type)}`}</Popover.Title>
@@ -109,12 +96,6 @@ let ActivationPopover = React.forwardRef((props, ref) => {
           </Row>
         </Form.Group>
 
-        <Form.Group>
-          <Form.Label>Next Event</Form.Label>
-          <DropdownButton id="dropdown-basic-button" title={nextEventRecord.name}>
-            {getNextEventOptions()}
-          </DropdownButton>
-        </Form.Group>
         <Button className="button" variant="success" type="submit" value='change'>Change</Button>
       </Form>
     </Popover.Content>

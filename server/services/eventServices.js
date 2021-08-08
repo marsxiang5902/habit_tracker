@@ -1,5 +1,6 @@
 'use strict'
 
+const { getUser: db_getUser } = require('../database/interactUser')
 const { addEvent: db_addEvent, updateEvent: db_updateEvent, removeEvent: db_removeEvent } = require('../database/interactEvent')
 const { getTriggers: db_getTriggers } = require('../database/interactTrigger')
 const { getTrigger } = require('./triggerServices')
@@ -20,7 +21,7 @@ async function getEvent(_id, eventRecord) {
     httpAssert.NOT_FOUND(eventRecord, `Event with id ${_id} not found.`)
     let ret = sliceObject(eventRecord, EVENT_GET_SLICES)
 
-    ret.history = getEventHistory(_id, eventRecord)
+    ret.history = await getEventHistory(_id, eventRecord)
     let triggerList = eventRecord.triggerList
 
     let ar = await db_getTriggers(triggerList.map(_id => ObjectId(_id)))
@@ -33,10 +34,10 @@ async function getEvent(_id, eventRecord) {
     ret.activationDays = bit2obj(eventRecord.activationDaysBit, 7)
     return ret;
 }
-function getEventHistory(_id, eventRecord) {
+async function getEventHistory(_id, eventRecord) {
     httpAssert.NOT_FOUND(eventRecord, `Event with id ${_id} not found.`)
     let hm = eventRecord.historyManager
-    return historyManagerSubclasses[hm.type].getHistory(hm.data)
+    return historyManagerSubclasses[hm.type].getHistory(hm.data, (await db_getUser(eventRecord.user)).lastLoginDay)
 }
 const EVENT_UPD_SLICES = ['name', 'activationDaysBit', 'activationTime', 'nextEvent']
 async function updateEvent(_id, eventRecord, updObj) {
@@ -52,7 +53,7 @@ async function updateEvent(_id, eventRecord, updObj) {
 async function updateEventHistory(_id, eventRecord, updObj) {
     httpAssert.NOT_FOUND(eventRecord, `Event with id ${_id} not found.`)
     let hm = eventRecord.historyManager
-    historyManagerSubclasses[hm.type].setHistory(hm.data, updObj)
+    historyManagerSubclasses[hm.type].setHistory(hm.data, (await db_getUser(eventRecord.user)).lastLoginDay, updObj)
     return await getEvent(_id, await db_updateEvent(_id, eventRecord, { historyManager: hm }))
 }
 async function removeEvent(_id, eventRecord) {

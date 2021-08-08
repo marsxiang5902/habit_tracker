@@ -1,13 +1,14 @@
 'use strict'
 
 const httpAssert = require('../errors/httpAssert')
-const httpStatusErrors = require('../errors/httpStatusErrors')
-const { removeUser: db_removeUser } = require('../database/interactUser')
-const { getEvents: db_getEvents } = require('../database/interactEvent')
+const { updateUser: db_updateUser, removeUser: db_removeUser } = require('../database/interactUser')
+const { getEvent: db_getEvent, getEvents: db_getEvents, updateEvent: db_updateEvent } = require('../database/interactEvent')
 const { ObjectId } = require('mongodb')
 const { sliceObject } = require('../lib/wrapSliceObject')
 const { getPerms } = require('../permissions/roles')
 const { getEvent } = require('./eventServices')
+const { getDay } = require('../lib/time')
+const { subclasses: HistoryManagerSubclasses } = require('../HistoryManager/HistoryManagerClasses')
 // CAN ONLY TAKE <= 1 PARAMETER AFTER USER AND USERRECORD
 
 function getUser(user, userRecord) {
@@ -25,18 +26,33 @@ async function getUserEvents(user, userRecord) {
     let eventLists = userRecord.eventLists
     let ret = {}
     for (let type in eventLists) {
-        try {
-            ret[type] = {}
-            let ar = await db_getEvents(eventLists[type].map(_id => ObjectId(_id)))
-            let records = await Promise.all(ar.map(eventRecord => getEvent(eventRecord._id, eventRecord)))
-            records.forEach(record => {
-                ret[type][record._id] = record
-            })
-        } catch (err) {
-            throw new httpStatusErrors.BAD_REQUEST(`Data is invalid.`)
-        }
+        ret[type] = {}
+        let ar = await db_getEvents(eventLists[type].map(_id => ObjectId(_id)))
+        let records = await Promise.all(ar.map(eventRecord => getEvent(eventRecord._id, eventRecord)))
+        records.forEach(record => {
+            ret[type][record._id] = record
+        })
     }
     return ret;
+}
+async function newDay(user, userRecord) {
+    httpAssert.NOT_FOUND(userRecord, `User ${user} not found.`)
+    let curDay = getDay(/*userRecord.timezoneOffset*/), dayDiff = curDay - userRecord.lastLoginDay
+    if (dayDiff > 0) {
+        let eventLists = userRecord.eventLists
+        for (let type in eventLists) {
+            let ar = await db_getEvents(eventLists[type].map(_id => ObjectId(_id)))
+            let records = await Promise.all(ar.map(eventRecord => db_getEvent(eventRecord._id, eventRecord)))
+            for (let i = 0; i < records.length; i++) {
+                let record = records[i];
+                let hm = record.historyManager
+                HistoryManagerSubclasses[hm.type].realignDate(hm.data, dayDiff)
+                await db_updateEvent(record._id, record, { historyManager: hm })
+            }
+        }
+        await db_updateUser(user, userRecord, { lastLoginDay: curDay, })
+    }
+    return { dayDiff };
 }
 async function removeUser(user, userRecord) {
     httpAssert.NOT_FOUND(userRecord, `User ${user} not found.`)
@@ -44,5 +60,5 @@ async function removeUser(user, userRecord) {
 }
 
 module.exports = {
-    getUser, getUserAuth, getUserEvents, removeUser
+    getUser, getUserAuth, getUserEvents, newDay, removeUser
 }

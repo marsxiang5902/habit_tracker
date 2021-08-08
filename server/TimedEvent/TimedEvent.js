@@ -12,6 +12,5 @@ module.exports = class TimedEvent {
         this.triggerList = []
         this.activationDaysBit = 0
         this.activationTime = 0
-        this.nextEvent = null
     }
 }

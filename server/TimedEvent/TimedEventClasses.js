@@ -5,6 +5,7 @@ const TimedHabit = require("./TimedHabit")
 const TimedTodo = require("./TimedTodo")
 const TimedRepeat = require("./TimedRepeat")
 const TimedReward = require("./TimedReward")
+const TimedStack = require("./TimedStack")
 
 module.exports = {
     superclass: TimedEvent,
@@ -12,6 +13,7 @@ module.exports = {
         habit: TimedHabit,
         todo: TimedTodo,
         repeat: TimedRepeat,
-        reward: TimedReward
+        reward: TimedReward,
+        stack: TimedStack
     }
 }

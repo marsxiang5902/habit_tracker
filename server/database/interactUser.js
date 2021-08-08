@@ -17,6 +17,10 @@ async function updateUser(user, userRecord, updObj) {
     httpAssert.NOT_FOUND(userRecord, `User ${user} not found.`)
     httpAssert.BAD_REQUEST(updObj && typeof updObj == 'object' && !('_id' in updObj), `Data is invalid.`)
     await get_users_col().updateOne({ user: user }, { "$set": updObj })
+    for (let key in updObj) {
+        userRecord[key] = updObj[key]
+    }
+    return userRecord
 }
 async function removeUser(user, userRecord) {
     // not indexed by id since i don't expect this to get called too much
