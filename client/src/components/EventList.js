@@ -86,12 +86,12 @@ let ActivationPopover = React.forwardRef((props, ref) => {
           <Row>
             <Col>
               <Form.Control type="number" placeholder="Hour" value={activationTimeHour}
-                onChange={(e) => setActivationTimeHour(e.target.value)} />
+                onChange={(e) => setActivationTimeHour(parseInt(e.target.value))} />
             </Col>
             <Col sm={0.5}><h3>:</h3></Col>
             <Col>
               <Form.Control type="number" placeholder="Minute" value={activationTimeMin}
-                onChange={(e) => setActivationTimeMin(e.target.value)} />
+                onChange={(e) => setActivationTimeMin(parseInt(e.target.value))} />
             </Col>
           </Row>
         </Form.Group>

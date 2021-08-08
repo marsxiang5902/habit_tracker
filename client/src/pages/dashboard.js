@@ -3,24 +3,29 @@ import renderTrigger from '../lib/renderTrigger';
 import Layout from '../components/layout';
 import '../static/page.css'
 import { appContext } from '../context/appContext';
+import { getAllEvents } from '../lib/locateEvents';
+import { getDay, getMin } from '../lib/time';
 
 
-function DashboardContent(props) {
+function DashboardContent(props) { // props: dayOfWeek, curMin
     const context = useContext(appContext)
-    const habits = context.timedEvents.habit
+    const timedEvents = context.timedEvents
     const [trigger, setTrigger] = useState(null)
     const [event, setEvent] = useState(null)
 
     useEffect(() => {
         let generateEvent = () => {
-            let uncompleted = []
-            for (let _id in habits) {
-                let eventRecord = habits[_id]
-                if (!eventRecord.history[0]) {
+            let uncompleted = [], all = getAllEvents(context)
+            for (let _id in all) {
+                let eventRecord = all[_id]
+                if (eventRecord.type !== 'todo' && !eventRecord.history[0] &&
+                    eventRecord.activationDays[props.dayOfWeek] && props.curMin >= eventRecord.activationTime
+                ) {
                     uncompleted.push(eventRecord)
                 }
             }
-            return uncompleted.length > 0 ? uncompleted[Math.floor(Math.random() * uncompleted.length)] :
+            uncompleted.sort((r1, r2) => r1.activationTime - r2.activationTime)
+            return uncompleted.length > 0 ? uncompleted[0] :
                 null
         }
 
@@ -41,7 +46,7 @@ function DashboardContent(props) {
         let [newTrigger, newEvent] = generateTrigger()
         setTrigger(newTrigger)
         setEvent(newEvent)
-    }, [habits])
+    }, [JSON.stringify(timedEvents), props.dayOfWeek, props.curMin])
 
     return (
         event !== null ? (
@@ -60,10 +65,21 @@ function DashboardContent(props) {
 }
 
 function Dashboard(props) {
+    const [curMin, setCurMin] = useState(getMin())
+    const [dayOfWeek, setDayOfWeek] = useState(getDay())
+
+    useEffect(() => {
+        let interval = setInterval(() => {
+            setCurMin(getMin())
+            setDayOfWeek(getDay())
+        }, 1000 * 10)
+        return () => clearInterval(interval)
+    }, [])
+
     return (
         <>
             <Layout name="Home" handleLogout={props.handleLogout} />
-            <DashboardContent />
+            <DashboardContent dayOfWeek={dayOfWeek} curMin={curMin} />
         </>
     )
 }
