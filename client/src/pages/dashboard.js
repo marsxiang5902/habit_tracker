@@ -5,13 +5,15 @@ import '../static/page.css'
 import { appContext } from '../context/appContext';
 import { getAllEvents } from '../lib/locateEvents';
 import { getDay, getMin } from '../lib/time';
-
+import { checkNotification } from '../services/notificationServices'
+import { useHistory } from 'react-router-dom';
 
 function DashboardContent(props) { // props: dayOfWeek, curMin
     const context = useContext(appContext)
     const timedEvents = context.timedEvents
     const [trigger, setTrigger] = useState(null)
     const [event, setEvent] = useState(null)
+    const history = useHistory()
 
     useEffect(() => {
         let generateEvent = () => {
@@ -24,7 +26,7 @@ function DashboardContent(props) { // props: dayOfWeek, curMin
                     uncompleted.push(eventRecord)
                 }
             }
-            uncompleted.sort((r1, r2) => r1.activationTime - r2.activationTime)
+            uncompleted.sort((r1, r2) => r2.activationTime - r1.activationTime)
             return uncompleted.length > 0 ? uncompleted[0] :
                 null
         }
@@ -47,6 +49,10 @@ function DashboardContent(props) { // props: dayOfWeek, curMin
         setTrigger(newTrigger)
         setEvent(newEvent)
     }, [JSON.stringify(timedEvents), props.dayOfWeek, props.curMin])
+
+    if (event !== null && event.activationTime === props.curMin) {
+        checkNotification(event.name, (trigger && trigger.resourceURL) || '', '', () => { history.push('/') })
+    }
 
     return (
         event !== null ? (

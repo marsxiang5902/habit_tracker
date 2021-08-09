@@ -1,30 +1,27 @@
-function checkNotification(context){
-    console.log(context)
-    if (Notification.permission === 'granted'){
-        newNotification(context)
+function checkNotification(title, icon, body, callback) {
+    if (Notification.permission === 'granted') {
+        newNotification(title, icon, body, callback)
     }
-    else if (Notification.permission !== 'denied'){
+    else if (Notification.permission !== 'denied') {
         Notification.requestPermission().then(permission => {
-            if (permission === 'granted'){
-                newNotification(context)
+            if (permission === 'granted') {
+                newNotification(title, icon, body, callback)
             }
         })
     }
     return
 }
 
-function newNotification(context){
-    let title = "Habits"
-    let icon = "https://i.ytimg.com/vi/uwMGMEYYFZw/maxresdefault.jpg"
-    let body = "Push yourself to choose long term over short term"
-    const notification = new Notification(title, {
-        icon: icon,
-        body: body
-    })
-
+function newNotification(title, icon, body, callback) {
+    // let title = "Habits"
+    // let icon = "https://i.ytimg.com/vi/uwMGMEYYFZw/maxresdefault.jpg"
+    // let body = "Push yourself to choose long term over short term"
+    console.log(title, icon, body)
+    const notification = new Notification(title, { title, icon, body })
     notification.onclick = (e) => {
-        window.open(icon)
+        window.parent.parent.focus();
+        callback()
     }
 }
 
-export {checkNotification}
+export { checkNotification }

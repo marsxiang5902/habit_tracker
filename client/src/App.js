@@ -63,7 +63,6 @@ class App extends React.Component {
   }
 
   render() {
-    // checkNotification(this.state.context.timedEvents.habit);
     return (
       // <appContext.Provider value={[this.state.context, this.setContext]}>
       <appContext.Provider value={this.state.context}>
