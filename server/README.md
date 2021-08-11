@@ -79,6 +79,8 @@ There are two types:
   * Stores up to 32 previous days (including the current day). Each day can be either `true` or `false`.
 * `none`
 
+The data is reset at the end of each day, which is checked upon login.
+
 ### Triggers
 
 Triggers are resources that may be displayed prior to start of an event to increase motivation or serve as a reminder. Each event has a list of triggers. Each `trigger` object has additional arguments that can be specified when created and that are returned when fetched. There are four types:
@@ -122,6 +124,7 @@ Omitted fields are blank.
   jwt: "<the JWT>"
 }
 ```
+* Resets `History Managers`.
 
 #### Sign Up
 
@@ -132,6 +135,7 @@ Omitted fields are blank.
 {
   "user": "<the username>",
   "password": "<the password>"
+  "email": "<the email>"
 }
 ```
 * Returned data:
@@ -215,8 +219,13 @@ Omitted fields are blank.
   }
 }
 ```
+* Returned Data:
+```
+  <the new event>
+```
 * Sets the specified fields to their respective values and leaves everything else the same. The allowed fields to change in this function are:
   * `name`
+* The `event` returned is the same as the one returned from [Get Event](#get-event) 
 
 
 #### Update Event's History
@@ -234,6 +243,11 @@ Omitted fields are blank.
   }
 }
 ```
+* Returned Data:
+```
+  <the new history>
+```
+* The `history` object is the same as the one returned from [Get Event's History](#get-events-history)
 
 
 #### Delete Event
@@ -303,9 +317,14 @@ Omitted fields are blank.
   }
 }
 ```
+* Returned Data:
+```
+  <the new trigger>
+```
 * Sets the specified fields to their respective values and leaves everything else the same. The allowed fields to change in this function are:
   * `name`
   * `resourceURL`
+* The `trigger` returned is the same as the one returned from [Get Event](#get-trigger) 
 
 
 #### Delete Trigger
@@ -326,7 +345,9 @@ Omitted fields are blank.
 ```
 {
   "user": "<the username>",
-  "perms": [<the perms>]
+  "perms": [<the perms>],
+  "email": "<the email>",
+  "dayStartTime": "<the time a new day starts>"
 }
 ```
 
@@ -348,7 +369,7 @@ Omitted fields are blank.
 #### Get User Authentication Information
 
 * Verb: **GET**
-* URL: `/user/auth`
+* URL: `/:user/auth`
 * Perms: {`read:user_auth`}
 * Returned Data:
 ```
@@ -356,6 +377,27 @@ Omitted fields are blank.
   "password_hashed": "<the hashed password>"
 }
 ```
+
+#### Update User
+
+* Verb: **PUT**
+* URL: `/:user`
+* Perms: {`update:user`}
+* Request Body:
+```
+{
+  *""
+}
+```
+* Returned Data:
+```
+  <the new user>
+```
+* Sets the specified fields to their respective values and leaves everything else the same. The allowed fields to change in this function are:
+  * `email`
+  * `dayStartTime`
+* The `user` returned is the same as the one returned from [Get Event](#get-trigger) 
+
 
 #### Delete a User
 
