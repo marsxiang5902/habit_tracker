@@ -39,4 +39,10 @@ export const SidebarData = [
     icon: <Icons.FaPencilAlt />,
     cName: 'nav-text',
   },
+  {
+    title: 'User',
+    path: '/user',
+    icon: <Icons.FaUserAlt />,
+    cName: 'nav-text'
+  }
 ];

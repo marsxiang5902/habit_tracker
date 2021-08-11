@@ -23,7 +23,7 @@ export default class Signup extends React.Component {
     inputPart = (label, name, type) => {
         // mini component
         return (
-            <label style={{ paddingRight: "5px" }}> {label}
+            <label className="page-form"> {label}
                 <input
                     name={name}
                     type={type}
@@ -38,7 +38,7 @@ export default class Signup extends React.Component {
     handleSubmit = async e => {
         e.preventDefault()
         let signupResult = await makeRequest('/signup', 'post', {
-            user: this.state.user, password: this.state.password
+            user: this.state.user, password: this.state.password, email: this.state.email
         })
         if (signupResult.error) {
             this.setState({ signupFailed: true })

@@ -12,7 +12,7 @@ authRouter.post('/login', async (req, res, next) => {
 })
 authRouter.post('/signup', async (req, res, next) => {
     try {
-        res.locals.data = await signup(req.body.user, req.body.password)
+        res.locals.data = await signup(req.body.user, req.body.password, req.body.email)
         next()
     } catch (err) { next(err) }
 })

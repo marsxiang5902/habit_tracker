@@ -6,7 +6,7 @@ const httpAssert = require('../errors/httpAssert')
 const { wrapObject } = require('../lib/wrapSliceObject')
 
 const DEFAULT_ARGS = {
-    historyManagerType: 'bitmask'
+    historyManagerType: 'bitmask', activationDaysBit: 127
 }
 
 module.exports = class TimedHabit extends TimedEvent {

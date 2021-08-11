@@ -1,7 +1,7 @@
 'use strict'
 
 const httpAssert = require('../errors/httpAssert')
-const { updateUser: db_updateUser, removeUser: db_removeUser } = require('../database/interactUser')
+const { updateUser: db_updateUser, removeUser: db_removeUser, getUserByEmail } = require('../database/interactUser')
 const { getEvent: db_getEvent, getEvents: db_getEvents, updateEvent: db_updateEvent } = require('../database/interactEvent')
 const { ObjectId } = require('mongodb')
 const { sliceObject } = require('../lib/wrapSliceObject')
@@ -11,9 +11,10 @@ const { getDay } = require('../lib/time')
 const { subclasses: HistoryManagerSubclasses } = require('../HistoryManager/HistoryManagerClasses')
 // CAN ONLY TAKE <= 1 PARAMETER AFTER USER AND USERRECORD
 
+const USER_GET_SLICES = ['user', 'email', 'dayStartTime']
 function getUser(user, userRecord) {
     httpAssert.NOT_FOUND(userRecord, `User ${user} not found.`)
-    let ret = sliceObject(userRecord, ['user'])
+    let ret = sliceObject(userRecord, USER_GET_SLICES)
     ret.perms = Array.from(getPerms(userRecord.roles))
     return ret
 }
@@ -35,9 +36,17 @@ async function getUserEvents(user, userRecord) {
     }
     return ret;
 }
+const USER_UPD_SLICES = ['email', 'dayStartTime']
+async function updateUser(user, userRecord, updObj) {
+    httpAssert.NOT_FOUND(userRecord, `User ${user} not found.`)
+    if ('email' in updObj) {
+        httpAssert.CONFLICT(!await getUserByEmail(updObj.email), `Email ${updObj.email} is taken.`)
+    }
+    return getUser(user, await db_updateUser(user, userRecord, sliceObject(updObj, USER_UPD_SLICES)))
+}
 async function newDay(user, userRecord) {
     httpAssert.NOT_FOUND(userRecord, `User ${user} not found.`)
-    let curDay = getDay(/*userRecord.timezoneOffset*/), dayDiff = curDay - userRecord.lastLoginDay
+    let curDay = getDay(userRecord.dayStartTime), dayDiff = curDay - userRecord.lastLoginDay
     if (dayDiff > 0) {
         let eventLists = userRecord.eventLists
         for (let type in eventLists) {
@@ -60,5 +69,5 @@ async function removeUser(user, userRecord) {
 }
 
 module.exports = {
-    getUser, getUserAuth, getUserEvents, newDay, removeUser
+    getUser, getUserAuth, getUserEvents, updateUser, newDay, removeUser
 }

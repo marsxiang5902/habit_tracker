@@ -4,14 +4,17 @@ const User = require('../Users/User')
 const httpAssert = require('../errors/httpAssert')
 
 
-async function addUser(user, userRecord, password) {
+async function addUser(user, userRecord, password, email) {
     httpAssert.CONFLICT(!userRecord, `User ${user} already exists.`)
-    let newUser = new User(user, password)
+    let newUser = new User(user, password, email)
     await newUser.init()
     await get_users_col().insertOne(newUser);
 }
 function getUser(user) {
-    return get_users_col().findOne({ user: user })
+    return get_users_col().findOne({ user })
+}
+function getUserByEmail(email) {
+    return get_users_col().findOne({ email })
 }
 async function updateUser(user, userRecord, updObj) {
     httpAssert.NOT_FOUND(userRecord, `User ${user} not found.`)
@@ -30,4 +33,4 @@ async function removeUser(user, userRecord) {
     await get_triggers_col().deleteMany({ user: user })
 }
 
-module.exports = { addUser, getUser, updateUser, removeUser }
+module.exports = { addUser, getUser, getUserByEmail, updateUser, removeUser }

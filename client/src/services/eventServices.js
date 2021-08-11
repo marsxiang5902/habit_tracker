@@ -6,7 +6,6 @@ async function addEvent(context, name, type, args = {}) {
         user: context.session.user, name, type, args
     }, context.session.jwt)
     if (!res.error) {
-        console.log(res.data)
         return update(context, { timedEvents: { [type]: { [res.data._id]: { "$set": res.data } } } })
     } return context
 }

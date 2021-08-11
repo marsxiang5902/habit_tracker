@@ -28,7 +28,7 @@ try {
                     delete hm.data.curDay
                 }
                 await updateEvent(eventRecord._id, eventRecord, {
-                    activationDaysBit: 0, activationTime: 0, historyManager: hm
+                    activationDaysBit: 127, activationTime: 0, historyManager: hm
                 })
             }
             await updateUser(userRecord.user, userRecord, { lastLoginDay: lastDay || getDay() })

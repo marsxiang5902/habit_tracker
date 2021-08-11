@@ -5,7 +5,7 @@ const argon2 = require('argon2')
 const { getDay } = require('../lib/time')
 
 module.exports = class User {
-    constructor(user, password) {
+    constructor(user, password, email) {
         this.user = user
         this.eventLists = {}
         for (let type in subclasses) {
@@ -13,7 +13,9 @@ module.exports = class User {
         }
         this.roles = ['default']
         this.password = password
-        this.lastLoginDay = getDay()
+        this.email = email
+        this.dayStartTime = 0
+        this.lastLoginDay = getDay(this.dayStartTime)
     }
     async init() {
         this.password_hashed = await argon2.hash(this.password)

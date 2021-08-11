@@ -40,8 +40,11 @@ function authorizeEndpoint(perms, getTargetUser = defaultGetTargetUser) {
             perms.forEach(perm => {
                 try {
                     assert(req.user.perms.has(perm) ||
-                        (getTargetUser(req) == req.user.user && req.user.perms.has(permSelf(perm))))
-                } catch (err) { next(new httpStatusErrors.UNAUTHORIZED(`Not authorized.`)) }
+                        (getTargetUser(req) === req.user.user && req.user.perms.has(permSelf(perm))))
+                } catch (err) {
+                    console.log(err)
+                    next(new httpStatusErrors.UNAUTHORIZED(`Not authorized.`))
+                }
             })
             next()
         })

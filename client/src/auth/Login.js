@@ -24,7 +24,7 @@ export default class Login extends React.Component {
     inputPart = (label, name, type) => {
         // mini component
         return (
-            <label className="login-form"> {label}
+            <label className="page-form"> {label}
                 <input
                     name={name}
                     type={type}
@@ -50,16 +50,16 @@ export default class Login extends React.Component {
     render() {
         return (
             <>
-            <Layout name="THE LOGIN"></Layout>
-            <div className="dashboard">
-                {this.state.loginFailed && <p>Login failed.</p>}
-                <form onSubmit={this.handleSubmit} style={{ marginRight: "10%" }}>
-                    {this.inputPart("Username", "user", "text")}
-                    {this.inputPart("Password", "password", "password")}
-                    {/* <input type="submit" value="Log in" /> */}
-                    <Button variant="primary" type="submit" value="Log in">Log In</Button>
-                </form>
-            </div>
+                <Layout name="THE LOGIN"></Layout>
+                <div className="dashboard">
+                    {this.state.loginFailed && <p>Login failed.</p>}
+                    <form onSubmit={this.handleSubmit} style={{ marginRight: "10%" }}>
+                        {this.inputPart("Username", "user", "text")}
+                        {this.inputPart("Password", "password", "password")}
+                        {/* <input type="submit" value="Log in" /> */}
+                        <Button variant="primary" type="submit" value="Log in">Log In</Button>
+                    </form>
+                </div>
             </>
         )
     }

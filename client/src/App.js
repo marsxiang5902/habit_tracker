@@ -10,7 +10,10 @@ import Login from './auth/Login';
 import { defaultAppContext, appContext } from './context/appContext'
 import jwt from 'jsonwebtoken';
 import FetchData from './api/fetchData';
-import { checkNotification } from './services/notificationServices';
+import makeRequest from './api/makeRequest';
+import User from './pages/User';
+import subscribeToNotifications from './notifications/notify';
+import { getAllEvents } from './lib/locateEvents';
 
 class App extends React.Component {
   constructor(props) {
@@ -29,22 +32,20 @@ class App extends React.Component {
     console.log('mount')
   }
 
-  setContext = (value) => {
-    this.setState({
-      context: value
-    })
-  }
+  setContext = context => { this.setState({ context }) }
 
   handleLogin = async token => {
     if (token) {
       let decoded = jwt.decode(token)
       if ('user' in decoded && 'perms' in decoded) {
+
+        let userRecord = (await makeRequest(`users/${decoded.user}`, 'get', {}, token)).data
         let session = {
           isAuthed: true,
           jwt: token,
-          user: decoded.user,
-          perms: decoded.perms
+          ...userRecord
         }
+
         let timedEvents = await FetchData(session)
         this.setState({
           context: {
@@ -52,12 +53,17 @@ class App extends React.Component {
             timedEvents: timedEvents,
           }
         })
+
+        this.unsubscribeToNotifications = subscribeToNotifications(userRecord.dayStartTime, () => (
+          getAllEvents(this.state.context)
+        ), () => { this.props.history.push('/') })
         this.props.history.push('/')
       }
     }
   }
 
   handleLogout = () => {
+    this.unsubscribeToNotifications()
     this.setState({ context: defaultAppContext })
     this.props.history.push('/login')
   }
@@ -65,7 +71,7 @@ class App extends React.Component {
   render() {
     return (
       // <appContext.Provider value={[this.state.context, this.setContext]}>
-      <appContext.Provider value={this.state.context}>
+      <appContext.Provider value={{ ...this.state.context, setContext: this.setContext }}>
         <div className="App">
           <Switch>
             <Route path="/" exact render={(props) => {
@@ -81,6 +87,13 @@ class App extends React.Component {
             <Route path="/habits" render={(props) => (
               <Habits setContext={this.setContext} handleLogout={this.handleLogout} />
             )} />
+            <Route path="/triggers" render={(props) => (
+              <Triggers setContext={this.setContext} handleLogout={this.handleLogout} />
+            )} />
+            <Route path="/user" render={(props) => (
+              <User setContext={this.setContext} handleLogout={this.handleLogout} />
+            )} />
+
             <Route path="/signup">
               <Signup handleLogin={this.handleLogin} />
             </Route>
@@ -88,9 +101,6 @@ class App extends React.Component {
               <Login handleLogin={this.handleLogin} />
             </Route>
 
-            <Route path="/triggers" render={(props) => (
-              <Triggers setContext={this.setContext} handleLogout={this.handleLogout} />
-            )} />
 
           </Switch>
         </div>

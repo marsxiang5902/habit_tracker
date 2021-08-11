@@ -1,5 +1,4 @@
 const { ObjectId } = require('mongodb');
-const httpAssert = require('../errors/httpAssert');
 const { getEvent } = require('./interactEvent');
 const { getTrigger } = require('./interactTrigger');
 const { getUser } = require('./interactUser');
