@@ -2,12 +2,13 @@
 
 const httpAssert = require('../errors/httpAssert')
 const { updateUser: db_updateUser, removeUser: db_removeUser, getUserByEmail } = require('../database/interactUser')
-const { getEvent: db_getEvent, getEvents: db_getEvents, updateEvent: db_updateEvent } = require('../database/interactEvent')
+const { getEvents: db_getEvents, updateEvent: db_updateEvent } = require('../database/interactEvent')
 const { ObjectId } = require('mongodb')
 const { sliceObject } = require('../lib/wrapSliceObject')
 const { getPerms } = require('../permissions/roles')
 const { getEvent } = require('./eventServices')
 const { getDay } = require('../lib/time')
+const { subclasses: TimedEventSubclasses } = require('../TimedEvent/TimedEventClasses')
 const { subclasses: HistoryManagerSubclasses } = require('../HistoryManager/HistoryManagerClasses')
 // CAN ONLY TAKE <= 1 PARAMETER AFTER USER AND USERRECORD
 
@@ -54,7 +55,8 @@ async function newDay(user, userRecord) {
                 let eventRecord = allEvents[type][_id]
                 let hm = eventRecord.historyManager
                 HistoryManagerSubclasses[hm.type].realignDate(hm.data, dayDiff)
-                await db_updateEvent(_id, eventRecord, { historyManager: hm })
+                let subset = TimedEventSubclasses[eventRecord.type].reset(eventRecord, daydiff)
+                await db_updateEvent(_id, eventRecord, sliceObject(eventRecord, [historyManager, ...subset]))
             }
         }
         await db_updateUser(user, userRecord, { lastLoginDay: curDay, })

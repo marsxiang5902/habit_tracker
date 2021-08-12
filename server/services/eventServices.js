@@ -17,7 +17,7 @@ async function addEvent(config) {
     let res = await db_addEvent(config.user, config.name, config.type, userRecord.lastLoginDay, config.args || {})
     return await getEvent(res._id, res)
 }
-const EVENT_GET_SLICES = ['_id', 'user', 'name', 'type', 'activationTime', 'nextEvent']
+const EVENT_GET_SLICES = ['_id', 'user', 'name', 'type', 'activationTime', 'nextEvent', 'eventList', 'pointer']
 async function getEvent(_id, eventRecord) {
     httpAssert.NOT_FOUND(eventRecord, `Event with id ${_id} not found.`)
     let ret = sliceObject(eventRecord, EVENT_GET_SLICES)
@@ -40,7 +40,7 @@ async function getEventHistory(_id, eventRecord) {
     let hm = eventRecord.historyManager
     return historyManagerSubclasses[hm.type].getHistory(hm.data, (await db_getUser(eventRecord.user)).lastLoginDay)
 }
-const EVENT_UPD_SLICES = ['name', 'activationDaysBit', 'activationTime', 'nextEvent']
+const EVENT_UPD_SLICES = ['name', 'activationDaysBit', 'activationTime', 'nextEvent', 'eventList', 'pointer']
 async function updateEvent(_id, eventRecord, updObj) {
 
     httpAssert.NOT_FOUND(eventRecord, `Event with id ${_id} not found.`)

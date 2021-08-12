@@ -103,7 +103,6 @@ let ActivationPopover = React.forwardRef((props, ref) => {
 })
 
 function EventList(props) {
-
   const [editPopoverId, setEditPopoverId] = useState("")
   const [activationPopoverId, setActivationPopoverId] = useState("")
 
@@ -120,7 +119,7 @@ function EventList(props) {
     setName("")
   }
 
-  return (
+  return !context.timedEvents.loading && (
     <>
       <div className="subheader">
         <h2>{props.title}</h2>
@@ -133,26 +132,28 @@ function EventList(props) {
         return (
           <div className="card-2 border-2" key={_id}>
             <div className="habit habit-2 inline">
-              {record.type === 'habit' && <h4 className="habit no-padding-top">{pct(record.history)}%</h4>}
+              {props.type === 'habit' && <h4 className="habit no-padding-top">{pct(record.history)}%</h4>}
               <h4 className="habit no-padding-top">{record.name}</h4>
             </div>
             <div>
-              <OverlayTrigger
-                trigger="click"
-                placement="left"
-                overlay={<ActivationPopover
-                  record={record}
-                  type={props.type}
-                  setContext={props.setContext}
-                  style={{ maxWidth: '350px' }}
-                  hidePopover={() => { setActivationPopoverId("") }}
-                />}
-                show={activationPopoverId === _id}>
-                <Icons.FaCalendarAlt
-                  className="hover"
-                  style={{ marginRight: '20px' }}
-                  onClick={() => { setActivationPopoverId(activationPopoverId === _id ? "" : _id) }} />
-              </OverlayTrigger>
+              {props.type !== 'todo' &&
+                <OverlayTrigger
+                  trigger="click"
+                  placement="left"
+                  overlay={<ActivationPopover
+                    record={record}
+                    type={props.type}
+                    setContext={props.setContext}
+                    style={{ maxWidth: '350px' }}
+                    hidePopover={() => { setActivationPopoverId("") }}
+                  />}
+                  show={activationPopoverId === _id}>
+                  <Icons.FaCalendarAlt
+                    className="hover"
+                    style={{ marginRight: '20px' }}
+                    onClick={() => { setActivationPopoverId(activationPopoverId === _id ? "" : _id) }} />
+                </OverlayTrigger>
+              }
 
               <OverlayTrigger
                 trigger="click"

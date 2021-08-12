@@ -3,15 +3,20 @@ import { appContext } from '../context/appContext';
 import '../static/page.css'
 import Layout from '../components/layout';
 import { updateEventHistory } from '../services/eventServices';
+import { getAllEvents } from '../lib/locateEvents';
 
 function Habits(props) {
-    let context = useContext(appContext)
-    let habits = context.timedEvents.habit
+    const context = useContext(appContext)
+    let allEvents = getAllEvents(context)
     return (
         <>
             <Layout name="🗺 THE LITTLE THINGS" handleLogout={props.handleLogout} />
-            {Object.keys(habits).map(_id => {
-                let record = habits[_id], checked = false
+            {Object.keys(allEvents).map(_id => {
+                let record = allEvents[_id]
+                if (record.type === 'todo') {
+                    return null
+                }
+                let checked = false
                 if (('history' in record) && ('0' in record.history)) {
                     checked = record.history['0'];
                 }

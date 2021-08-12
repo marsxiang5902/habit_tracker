@@ -13,4 +13,5 @@ module.exports = class TimedEvent {
         this.activationDaysBit = activationDaysBit
         this.activationTime = 0
     }
+    static reset(eventRecord, dayDiff) { return [] }
 }
