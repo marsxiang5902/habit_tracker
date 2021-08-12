@@ -13,7 +13,8 @@ const { bit2obj, obj2bit } = require('../lib/bitmask')
 // CAN ONLY TAKE <= 1 PARAMETER AFTER _ID AND EVENTRECORD
 
 async function addEvent(config) {
-    let res = await db_addEvent(config.user, config.name, config.type, config.args || {})
+    let userRecord = db_getUser(config.user)
+    let res = await db_addEvent(config.user, config.name, config.type, userRecord.lastLoginDay, config.args || {})
     return await getEvent(res._id, res)
 }
 const EVENT_GET_SLICES = ['_id', 'user', 'name', 'type', 'activationTime', 'nextEvent']

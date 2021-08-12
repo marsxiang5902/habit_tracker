@@ -2,7 +2,7 @@
 
 const TimedEvent = require('./TimedEvent')
 module.exports = class TimedReward extends TimedEvent {
-    constructor(user, name, args) {
-        super(user, name, 'reward')
+    constructor(user, name, startDay, args) {
+        super(user, name, startDay, 'reward')
     }
 }
