@@ -3,6 +3,7 @@ import { appContext } from '../context/appContext';
 import '../static/page.css'
 import Layout from '../components/layout';
 import { updateEventHistory } from '../services/eventServices';
+import { HabitObject } from '../components/HabitList';
 
 function Habits(props) {
     let context = useContext(appContext)

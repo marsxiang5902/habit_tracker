@@ -14,6 +14,7 @@ import makeRequest from './api/makeRequest';
 import User from './pages/User';
 import subscribeToNotifications from './notifications/notify';
 import { getAllEvents } from './lib/locateEvents';
+import DataRoom from './pages/dataroom';
 
 class App extends React.Component {
   constructor(props) {
@@ -92,6 +93,9 @@ class App extends React.Component {
             )} />
             <Route path="/user" render={(props) => (
               <User setContext={this.setContext} handleLogout={this.handleLogout} />
+            )} />
+            <Route path="/data" render={(props) => (
+              <DataRoom setContext={this.setContext} handleLogout={this.handleLogout} />
             )} />
 
             <Route path="/signup">
