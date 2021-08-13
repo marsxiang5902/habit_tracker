@@ -48,15 +48,16 @@ async function updateUser(user, userRecord, updObj) {
 async function newDay(user, userRecord) {
     httpAssert.NOT_FOUND(userRecord, `User ${user} not found.`)
     let curDay = getDay(userRecord.dayStartTime), dayDiff = curDay - userRecord.lastLoginDay
+    dayDiff = 1
     if (dayDiff > 0) {
-        let allEvents = getUserEvents(user, userRecord)
-        for (let type in allEvents) {
-            for (let _id in allEvents[type]) {
-                let eventRecord = allEvents[type][_id]
+        for (let type in userRecord.eventLists) {
+            let eventsAr = await db_getEvents(userRecord.eventLists[type].map(_id => ObjectId(_id)))
+            for (let i = 0; i < eventsAr.length; i++) {
+                let eventRecord = eventsAr[i]
                 let hm = eventRecord.historyManager
                 HistoryManagerSubclasses[hm.type].realignDate(hm.data, dayDiff)
-                let subset = TimedEventSubclasses[eventRecord.type].reset(eventRecord, daydiff)
-                await db_updateEvent(_id, eventRecord, sliceObject(eventRecord, [historyManager, ...subset]))
+                let subset = TimedEventSubclasses[eventRecord.type].reset(eventRecord, dayDiff)
+                console.log(await db_updateEvent(eventRecord._id, eventRecord, sliceObject(eventRecord, ['historyManager', ...subset])))
             }
         }
         await db_updateUser(user, userRecord, { lastLoginDay: curDay, })
