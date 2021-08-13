@@ -7,5 +7,6 @@ export default function Triggers(props) {
     return <>
         <Layout name="🗺 THE TRIGGERS" handleLogout={props.handleLogout}></Layout>
         <TriggerList setContext={props.setContext} type="habit"></TriggerList>
+        <TriggerList setContext={props.setContext} type="reward"></TriggerList>
     </>
 }

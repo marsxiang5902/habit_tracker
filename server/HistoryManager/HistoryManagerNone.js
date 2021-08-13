@@ -1,7 +1,7 @@
 "use strict";
 
-const { HistoryManager, MILLS_IN_DAY, getDay } = require('./HistoryManager')
-module.exports = class HistoryManagerBitmask extends HistoryManager {
+const { HistoryManager } = require('./HistoryManager')
+module.exports = class HistoryManagerNone extends HistoryManager {
     constructor() {
         super('none', null)
     }

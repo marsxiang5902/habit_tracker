@@ -20,6 +20,12 @@ export const SidebarData = [
     icon: <Icons.FaBullhorn />,
     cName: 'nav-text'
   },
+  {
+    title: 'Stacks',
+    path: '/stacks',
+    icon: <Icons.FaStackOverflow />,
+    cName: 'nav-text'
+  },
   // {
   //   title: 'Updates',
   //   path: '/updates',

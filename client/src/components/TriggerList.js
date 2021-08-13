@@ -97,7 +97,7 @@ function ModalBody(props) {
         <Form onSubmit={async (e) => {
             e.preventDefault()
             if (type !== '') {
-                props.setContext(await addTrigger(context, name, type, props.event_id, { topText, bottomText }))
+                props.setContext(await addTrigger(context, name, type, props.event_id, { resourceURL, topText, bottomText }))
             }
             setName(''); setType(''); setResourceURL(''); setTopText(''); setBottomText(''); setPreviewShown(false);
             props.hide();

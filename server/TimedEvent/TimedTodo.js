@@ -2,7 +2,7 @@
 
 const TimedEvent = require('./TimedEvent')
 module.exports = class TimedTodo extends TimedEvent {
-    constructor(user, name, args) {
-        super(user, name, 'todo')
+    constructor(user, name, startDay, args) {
+        super(user, name, 'todo', startDay)
     }
 }

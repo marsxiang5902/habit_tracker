@@ -10,12 +10,12 @@ const DEFAULT_ARGS = {
 }
 
 module.exports = class TimedHabit extends TimedEvent {
-    constructor(user, name, args) {
+    constructor(user, name, startDay, args) {
         // HARDCODE HABITS TO USE BITMASK
         httpAssert.BAD_REQUEST(typeof args == 'object', `Data is invalid.`)
         wrapObject(args, DEFAULT_ARGS, true)
         let historyManagerType = args.historyManagerType
         httpAssert.BAD_REQUEST(historyManagerType in subclasses, `Type ${historyManagerType} is not valid.`)
-        super(user, name, 'habit', new subclasses[historyManagerType]())
+        super(user, name, 'habit', startDay, new subclasses[historyManagerType](startDay))
     }
 }

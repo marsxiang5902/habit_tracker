@@ -6,8 +6,8 @@
 
 .formatter {
     display: grid;
-    grid-template-areas:    "habits    todos" 
-                            "weeklyGoals    priorities";
+    grid-template-areas:    "habit    todo" 
+                            "reward    stack";
     padding-left: 10%;
     padding-right: 10%;
     gap: 10px 50px;
@@ -73,6 +73,13 @@
 
 .subheader {
     width: clamp(fit-content, 40%, 40%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fullheader {
+    width: clamp(fit-content, 80%, 80%);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -199,4 +206,17 @@ select {
 
 .dropdown{
     margin-bottom: 10px
+}
+
+.stacked{
+    display: flex;
+    flex-direction: column;
+}
+
+.pushed{
+    display: flex;
+}
+
+.pushed-spaced{
+    margin-left: 5px
 }

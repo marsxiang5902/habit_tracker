@@ -5,13 +5,13 @@ const { subclasses: eventSubclasses } = require('../TimedEvent/TimedEventClasses
 const httpAssert = require('../errors/httpAssert')
 const { getUser } = require('./interactUser')
 
-async function addEvent(user, name, type, args) {
+async function addEvent(user, name, type, startDay, args) {
     // also adds to user's event list
     // args are given to events to handle
     httpAssert.BAD_REQUEST(type in eventSubclasses, `Type ${type} not valid.`)
     let userRecord = await getUser(user)
     httpAssert.NOT_FOUND(userRecord, `User ${user} not found.`)
-    let newEvent = new eventSubclasses[type](user, name, args)
+    let newEvent = new eventSubclasses[type](user, name, startDay, args)
     let insertResult = await get_events_col().insertOne(newEvent)
     httpAssert.INTERNAL_SERVER(insertResult.insertedCount, `Could not insert.`)
     let _id = insertResult.insertedId

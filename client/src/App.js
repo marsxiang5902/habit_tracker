@@ -1,20 +1,21 @@
 import React from 'react';
 import './App.css';
 import { Route, Switch, withRouter } from 'react-router-dom';
-import All from './pages/all';
-import Dashboard from './pages/dashboard';
-import Habits from './pages/habits'
-import Triggers from './pages/triggers';
+import Editor from './pages/Editor';
+import Dashboard from './pages/Dashboard';
+import Habits from './pages/Habits'
+import Triggers from './pages/Triggers';
 import Signup from './auth/Signup';
 import Login from './auth/Login';
 import { defaultAppContext, appContext } from './context/appContext'
 import jwt from 'jsonwebtoken';
-import FetchData from './api/fetchData';
+import fetchData from './api/fetchData';
 import makeRequest from './api/makeRequest';
 import User from './pages/User';
 import subscribeToNotifications from './notifications/notify';
 import { getAllEvents } from './lib/locateEvents';
 import DataRoom from './pages/dataroom';
+import Stacks from './pages/Stacks';
 
 class App extends React.Component {
   constructor(props) {
@@ -25,7 +26,6 @@ class App extends React.Component {
   }
 
   async componentDidMount() {
-    // console.log(await makeRequest(`users/adam/events`))
     const user = this.state.context.session.user
     if (user === null) {
       this.props.history.push('/login')
@@ -34,6 +34,7 @@ class App extends React.Component {
   }
 
   setContext = context => { this.setState({ context }) }
+  getContext = () => this.state.context
 
   handleLogin = async token => {
     if (token) {
@@ -47,7 +48,7 @@ class App extends React.Component {
           ...userRecord
         }
 
-        let timedEvents = await FetchData(session)
+        let timedEvents = await fetchData(session)
         this.setState({
           context: {
             session: session,
@@ -72,7 +73,7 @@ class App extends React.Component {
   render() {
     return (
       // <appContext.Provider value={[this.state.context, this.setContext]}>
-      <appContext.Provider value={{ ...this.state.context, setContext: this.setContext }}>
+      <appContext.Provider value={{ ...this.state.context, setContext: this.setContext, getContext: this.getContext }}>
         <div className="App">
           <Switch>
             <Route path="/" exact render={(props) => {
@@ -82,7 +83,7 @@ class App extends React.Component {
             }} />
             <Route path="/editor" render={(props) => {
               return (
-                <All handleLogout={this.handleLogout} setContext={this.setContext} />
+                <Editor handleLogout={this.handleLogout} setContext={this.setContext} />
               )
             }} />
             <Route path="/habits" render={(props) => (
@@ -90,6 +91,9 @@ class App extends React.Component {
             )} />
             <Route path="/triggers" render={(props) => (
               <Triggers setContext={this.setContext} handleLogout={this.handleLogout} />
+            )} />
+            <Route path="/stacks" render={(props) => (
+              <Stacks handleLogout={this.handleLogout} />
             )} />
             <Route path="/user" render={(props) => (
               <User setContext={this.setContext} handleLogout={this.handleLogout} />

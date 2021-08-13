@@ -2,12 +2,13 @@
 
 const httpAssert = require('../errors/httpAssert')
 const { updateUser: db_updateUser, removeUser: db_removeUser, getUserByEmail } = require('../database/interactUser')
-const { getEvent: db_getEvent, getEvents: db_getEvents, updateEvent: db_updateEvent } = require('../database/interactEvent')
+const { getEvents: db_getEvents, updateEvent: db_updateEvent } = require('../database/interactEvent')
 const { ObjectId } = require('mongodb')
 const { sliceObject } = require('../lib/wrapSliceObject')
 const { getPerms } = require('../permissions/roles')
 const { getEvent } = require('./eventServices')
 const { getDay } = require('../lib/time')
+const { subclasses: TimedEventSubclasses } = require('../TimedEvent/TimedEventClasses')
 const { subclasses: HistoryManagerSubclasses } = require('../HistoryManager/HistoryManagerClasses')
 // CAN ONLY TAKE <= 1 PARAMETER AFTER USER AND USERRECORD
 
@@ -47,16 +48,16 @@ async function updateUser(user, userRecord, updObj) {
 async function newDay(user, userRecord) {
     httpAssert.NOT_FOUND(userRecord, `User ${user} not found.`)
     let curDay = getDay(userRecord.dayStartTime), dayDiff = curDay - userRecord.lastLoginDay
+    dayDiff = 1
     if (dayDiff > 0) {
-        let eventLists = userRecord.eventLists
-        for (let type in eventLists) {
-            let ar = await db_getEvents(eventLists[type].map(_id => ObjectId(_id)))
-            let records = await Promise.all(ar.map(eventRecord => db_getEvent(eventRecord._id, eventRecord)))
-            for (let i = 0; i < records.length; i++) {
-                let record = records[i];
-                let hm = record.historyManager
+        for (let type in userRecord.eventLists) {
+            let eventsAr = await db_getEvents(userRecord.eventLists[type].map(_id => ObjectId(_id)))
+            for (let i = 0; i < eventsAr.length; i++) {
+                let eventRecord = eventsAr[i]
+                let hm = eventRecord.historyManager
                 HistoryManagerSubclasses[hm.type].realignDate(hm.data, dayDiff)
-                await db_updateEvent(record._id, record, { historyManager: hm })
+                let subset = TimedEventSubclasses[eventRecord.type].reset(eventRecord, dayDiff)
+                console.log(await db_updateEvent(eventRecord._id, eventRecord, sliceObject(eventRecord, ['historyManager', ...subset])))
             }
         }
         await db_updateUser(user, userRecord, { lastLoginDay: curDay, })

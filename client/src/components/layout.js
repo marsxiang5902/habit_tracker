@@ -1,13 +1,17 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import * as Icons from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { SidebarData } from "./menu-options";
 import { IconContext } from "react-icons";
 import "../static/layout.css";
 import AuthButtons from "../auth/AuthButtons";
+import { appContext } from "../context/appContext";
+import fetchData from "../api/fetchData";
+import update from "immutability-helper"
 
 function Layout(props) {
     const [menu, setMenu] = useState(false);
+    const context = useContext(appContext)
 
     const showMenu = () => {
         setMenu(!menu);
@@ -44,7 +48,17 @@ function Layout(props) {
                 <h1 className={menu ? "title-active" : "title"}>{props.name}</h1>
                 <hr></hr>
             </div>
-            <AuthButtons handleLogout={props.handleLogout} />
+            <div className="pushed">
+                <h4>
+                    <Icons.FaRedo className="hover button" onClick={async () => {
+                        if (context.session.isAuthed) {
+                            let timedEvents = await fetchData(context.session)
+                            context.setContext(update(context, { timedEvents: { "$merge": { ...timedEvents } } }))
+                        }
+                    }} />
+                </h4>
+                <AuthButtons handleLogout={props.handleLogout} />
+            </div>
         </div>
     );
 }
