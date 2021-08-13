@@ -62,7 +62,7 @@ async function newDay(user, userRecord) {
         }
         await db_updateUser(user, userRecord, { lastLoginDay: curDay, })
     }
-    return { dayDiff };
+    return { dayDiff }
 }
 async function removeUser(user, userRecord) {
     httpAssert.NOT_FOUND(userRecord, `User ${user} not found.`)
