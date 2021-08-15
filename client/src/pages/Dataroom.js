@@ -6,7 +6,7 @@ import { Nav } from 'react-bootstrap'
 import DisplayOverview from "../components/ProgressOverview";
 import { LineChart } from "../components/Chart";
 
-function DataRoom(props){
+function DataRoom(props) {
 
     let context = useContext(appContext)
 
@@ -32,25 +32,25 @@ function DataRoom(props){
 
 
 
-    if(navPage === "Overview"){
-        renderContent = <DisplayOverview context={context}/>
+    if (navPage === "Overview") {
+        renderContent = <DisplayOverview context={context} />
     }
-    else if(navPage === "Graphs"){
+    else if (navPage === "Graphs") {
         renderContent = <LineChart habits={context.timedEvents.habit}></LineChart>
     }
-    else{
+    else {
         navPage = null
     }
 
 
-    return(
-    <div className="wrapper">
-        <Layout name="📈 THE DATA ROOM" handleLogout={props.handleLogout}></Layout>
-        {nav} 
-        <div className="padding">
-        {renderContent}
+    return (
+        <div className="wrapper">
+            <Layout name="📈 THE DATA ROOM" handleLogout={props.handleLogout}></Layout>
+            {nav}
+            <div className="padding">
+                {renderContent}
+            </div>
         </div>
-    </div>
     )
 }
 
