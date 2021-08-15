@@ -48,7 +48,6 @@ async function updateUser(user, userRecord, updObj) {
 async function newDay(user, userRecord) {
     httpAssert.NOT_FOUND(userRecord, `User ${user} not found.`)
     let curDay = getDay(userRecord.dayStartTime), dayDiff = curDay - userRecord.lastLoginDay
-    dayDiff = 1
     if (dayDiff > 0) {
         for (let type in userRecord.eventLists) {
             let eventsAr = await db_getEvents(userRecord.eventLists[type].map(_id => ObjectId(_id)))
