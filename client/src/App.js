@@ -14,7 +14,7 @@ import makeRequest from './api/makeRequest';
 import User from './pages/User';
 import subscribeToNotifications from './notifications/notify';
 import { getAllEvents } from './lib/locateEvents';
-import DataRoom from './pages/dataroom';
+import DataRoom from './pages/Dataroom';
 import Stacks from './pages/Stacks';
 
 class App extends React.Component {

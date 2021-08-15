@@ -2,28 +2,31 @@ import { React, useState } from 'react'
 
 function HabitObject(habits){
 
-    console.log(habits.length)
-    let checked = []
+    let [checked, setChecked] = useState([])
+
 
     if (checked.length < Object.keys(habits).length){
         for (let i in habits){
-            checked[i] = {'name': habits[i].name, 'value': false}
+            let temp = checked
+            temp.push({'name': habits[i].name, 'value': false})
+            setChecked(temp)
         }
     }
 
     let onChange = (event, index) => {
-        checked[index].value = event.target.checked
+        let temp = [...checked]
+        temp[index].value = event.target.checked
+        setChecked(temp)
     }
+
 
     return {'value': checked, 'edit': onChange}
 }
 
 let DisplayHabit = (props) => {
 
-    console.log(props.checked)
-
     return(
-        (props.checked).map((item, index) => {
+        props.checked.map((item, index) => {
             return <div className="habit-list" key={index}>
                 <input type="checkbox" className="checkbox"
                     checked={item.value}

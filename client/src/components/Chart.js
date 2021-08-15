@@ -5,9 +5,9 @@ import { DisplayHabit, HabitObject } from './HabitList'
 
 function SideBar(props){
     let habitObj = HabitObject(props.habits)
-    console.log(habitObj)
     return(
         <div>
+        <DisplayHabit checked={habitObj.value} onChange={habitObj.edit}/>
         <Dropdown>
             <Dropdown.Toggle id="dropdown-autoclose-true">
             Y-Axis Variable
@@ -30,7 +30,6 @@ function SideBar(props){
             <Dropdown.Item href="#">Menu Item</Dropdown.Item>
             </Dropdown.Menu>
         </Dropdown>
-        <DisplayHabit checked={habitObj.value} onChange={habitObj.edit}/>
         </div>
     )
 }

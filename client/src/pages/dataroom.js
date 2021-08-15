@@ -44,13 +44,13 @@ function DataRoom(props){
 
 
     return(
-    <>
+    <div className="wrapper">
         <Layout name="📈 THE DATA ROOM" handleLogout={props.handleLogout}></Layout>
         {nav} 
         <div className="padding">
         {renderContent}
         </div>
-    </>
+    </div>
     )
 }
 
