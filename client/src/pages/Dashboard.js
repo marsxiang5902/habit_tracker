@@ -106,10 +106,10 @@ function Dashboard(props) {
     }, [])
 
     return (
-        <>
+        <div className="wrapper">
             <Layout name="Home" handleLogout={props.handleLogout} />
             <DashboardContent day={day} min={min} />
-        </>
+        </div>
     )
 }
 

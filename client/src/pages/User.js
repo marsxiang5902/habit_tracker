@@ -17,7 +17,7 @@ function User(props) {
     }
 
     return (
-        <>
+        <div className="wrapper">
             <Layout name="🗺 THE USER" handleLogout={props.handleLogout} />
             <div className="dashboard">
                 <Form onSubmit={handleSubmit}>
@@ -41,7 +41,7 @@ function User(props) {
                     </Button>
                 </Form>
             </div>
-        </>
+        </div>
     );
 }
 

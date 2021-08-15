@@ -9,7 +9,7 @@ function Habits(props) {
     const context = useContext(appContext)
     let allEvents = getAllEvents(context)
     return (
-        <>
+        <div className="wrapper">
             <Layout name="🗺 THE LITTLE THINGS" handleLogout={props.handleLogout} />
             {Object.keys(allEvents).map(_id => {
                 let record = allEvents[_id]
@@ -32,7 +32,7 @@ function Habits(props) {
                 </div>
             }
             )}
-        </>
+        </div>
     )
 }
 

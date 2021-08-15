@@ -6,7 +6,7 @@ import Layout from "../components/layout";
 
 function Editor(props) {
     return (
-        <>
+        <div className="wrapper">
             <Layout name="🗺 THE PLAN" handleLogout={props.handleLogout}>
             </Layout>
             <div className="formatter">
@@ -23,7 +23,7 @@ function Editor(props) {
                     <EventList setContext={props.setContext} title="Stacks" type="stack" />
                 </div>
             </div>
-        </>
+        </div>
     );
 }
 
