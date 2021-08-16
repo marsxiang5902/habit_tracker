@@ -1,4 +1,4 @@
-import { pct, streaks, totalDayCompletion } from "../services/dataServices"
+import { pct, streaks, totalDayCompletion } from "../lib/dataServices"
 import { Table } from "react-bootstrap"
 
 function DisplayOverview(props){

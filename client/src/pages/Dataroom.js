@@ -5,8 +5,9 @@ import '../static/page.css'
 import { Nav } from 'react-bootstrap'
 import DisplayOverview from "../components/ProgressOverview";
 import { LineChart } from "../components/Chart";
+import { Calendar } from "../components/Calendar";
 
-function DataRoom(props){
+function DataRoom(props) {
 
     let context = useContext(appContext)
 
@@ -25,32 +26,33 @@ function DataRoom(props){
             <Nav.Item>
                 <Nav.Link eventKey="1">Graphs</Nav.Link>
             </Nav.Item>
-            <Nav.Item>
+            {/* <Nav.Item>
                 <Nav.Link eventKey="2">Calendar</Nav.Link>
-            </Nav.Item>
+            </Nav.Item> */}
         </Nav>
 
 
 
-    if(navPage === "Overview"){
-        renderContent = <DisplayOverview context={context}/>
+    if (navPage === "Overview") {
+        renderContent = <DisplayOverview context={context} />
     }
-    else if(navPage === "Graphs"){
+    else if (navPage === "Graphs") {
         renderContent = <LineChart habits={context.timedEvents.habit}></LineChart>
     }
     else{
-        navPage = null
+        // renderContent = <Calendar habits={context.timedEvents.habit}></Calendar>
+        renderContent = null
     }
 
 
-    return(
-    <div className="wrapper">
-        <Layout name="📈 THE DATA ROOM" handleLogout={props.handleLogout}></Layout>
-        {nav} 
-        <div className="padding">
-        {renderContent}
+    return (
+        <div className="wrapper">
+            <Layout name="📈 THE DATA ROOM" handleLogout={props.handleLogout}></Layout>
+            {nav}
+            <div className="padding">
+                {renderContent}
+            </div>
         </div>
-    </div>
     )
 }
 

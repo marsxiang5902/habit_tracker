@@ -3,7 +3,7 @@ import * as Icons from "react-icons/fa";
 import { Form, Row, Col, Popover, OverlayTrigger, Button, } from 'react-bootstrap'
 import { addEvent, updateEvent, deleteEvent } from '../services/eventServices';
 import { appContext } from '../context/appContext';
-import { calcPct as pct } from '../services/dataServices'
+import { calcPct as pct } from '../lib/dataServices'
 
 
 function capitalizeFirst(str) {

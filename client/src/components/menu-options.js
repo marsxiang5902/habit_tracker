@@ -32,12 +32,12 @@ export const SidebarData = [
   //   icon: <Icons.FaClipboardList />,
   //   cName: 'nav-text'
   // },
-  {
-    title: 'Data Room',
-    path: '/data',
-    icon: <Icons.FaDatabase />,
-    cName: 'nav-text'
-  },
+  // {
+  //   title: 'Data Room',
+  //   path: '/data',
+  //   icon: <Icons.FaDatabase />,
+  //   cName: 'nav-text'
+  // },
   // nothing to see here
   {
     title: 'Editor',

@@ -11,6 +11,7 @@ import { updateEvent, updateEventHistory } from '../services/eventServices';
 import { eventIsActivated, timeSinceStart } from '../lib/eventIsActivated';
 
 function DashboardContent(props) { // props: dayOfWeek, curMin
+    const [triggerCaches, setTriggerCaches] = useState({})
     const context = useContext(appContext)
 
     let generateEvent = () => {
@@ -31,11 +32,17 @@ function DashboardContent(props) { // props: dayOfWeek, curMin
         if (eventRecord === null) {
             return null
         }
-        let triggers = eventRecord.triggers
-        let ids = Object.keys(triggers)
-        if (ids.length > 0) {
-            return triggers[ids[Math.floor(Math.random() * ids.length)]]
-        } return { name: "Add a trigger to this event!" }
+        let _id = eventRecord._id, triggers = eventRecord.triggers
+        if (!(_id in triggerCaches) || !(triggerCaches[_id]._id in triggers)) {
+            let trigger_ids = Object.keys(triggers), len = trigger_ids.length
+            if (len > 0) {
+                setTriggerCaches({
+                    ...triggerCaches, [_id]:
+                        triggers[trigger_ids[Math.floor(Math.random() * len)]]
+                })
+            }
+        }
+        return triggerCaches[_id] || { name: "Add a trigger to this event!" }
     }
 
     let event = generateEvent()

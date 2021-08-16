@@ -6,7 +6,7 @@ export default function subscribeToNotifications(dayStartTime, getAllEvents, not
     let notified = new Set()
     let interval = setInterval(() => {
         let min = getMin(), day = getDay(dayStartTime)
-        let allEvents = getAllEvents
+        let allEvents = getAllEvents()
         for (let _id in allEvents) {
             let eventRecord = allEvents[_id]
             if (eventIsActivated(eventRecord, day, min, dayStartTime) &&

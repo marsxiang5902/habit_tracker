@@ -20,7 +20,7 @@ function Habits(props) {
                 if (('history' in record) && ('0' in record.history)) {
                     checked = record.history['0'];
                 }
-                return <div className="habit-card" key={_id}>
+                return <div className="habit-list margin-middle" key={_id}>
                     <input type="checkbox" className="checkbox"
                         checked={checked}
                         onChange={async (e) => (props.setContext(await updateEventHistory(context, record, { 0: e.target.checked })))}>

@@ -179,7 +179,7 @@ select {
 }
 
 .data-table{
-    margin: 10px 10px 10% 10%;
+    margin: 0px 10px 10% 10%;
     width:80%;
 }
 
@@ -219,4 +219,17 @@ select {
 
 .pushed-spaced{
     margin-left: 5px
+}
+
+.margin-middle{
+    margin-left: 43%;
+}
+
+select{
+    width: 90%;
+    background-color: black;
+    color: white;
+    border-radius: 5px;
+    border-color: #000;
+    margin-bottom: 5px;
 }
