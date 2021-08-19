@@ -1,19 +1,23 @@
+import { getDay } from "./time"
+
 //assuming the habit starts on day 0
 function updatedHabitHistory(habits){
-    let updActivationDays = []
+    let updHistory = []
     let updObj = []
+    let d = new Date()
     for(let habit in habits){
         habit = habits[habit]
-        for(let i = 0, day = 0; i < Object.keys(habit.history).length; i++, day++){
+        let initialDate = getDay(d.setDate(d.getDate() - Object.keys(habit.history).length))
+        for(let i = 0, day = initialDate; i < Object.keys(habit.history).length; i++, day++){
             if(day == 7){
                 day = 0
             }
             if(habit.activationDays[day]){
-                updActivationDays.push(habit.history[i])
+                updHistory.push(habit.history[i])
             }
         }
-        updObj.push({'id': habit._id, 'name': habit.name,"activationDays" : updActivationDays})
-        updActivationDays = []
+        updObj.push({'id': habit._id, 'name': habit.name,"history" : updHistory})
+        updHistory = []
     }
     return updObj
 }
@@ -36,8 +40,12 @@ function streaks(habits){
         let keepChecking = true
         let streak = 0
         let currAll = {'currValue': 0, 'maxValue': 0,'name': habit.name}
-        for(let i = Object.keys(habit.activationDays).length; i >= 0; i--){
-            if(habit.activationDays[i]){
+        let buffer = 0
+        if(!habit.history[0]){
+            buffer = 1
+        }
+        for(let i = buffer; i <= Object.keys(habit.history).length; i++){
+            if(habit.history[i]){
                 streak += 1
             }
             else{
