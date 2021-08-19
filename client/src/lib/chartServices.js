@@ -16,8 +16,10 @@ function maxLength(habits){
 
 function dailyCompletion(habit){
     let completions = []
+    console.log(habit)
+    let habitArray = Object.values(habit.history).reverse()
     for (let value in habit.history){
-        if(habit.history[value]){
+        if(habitArray[value]){
             completions.push(100)
         }
         else{
@@ -29,7 +31,7 @@ function dailyCompletion(habit){
 
 function dailyPercentage(habit){
     let percentages = []
-    let habitArray = Object.values(habit.history)
+    let habitArray = Object.values(habit.history).reverse()
     for (let i = 0; i < Object.keys(habit.history).length; i++){
         let temp = calcPct(habitArray.slice(0, i))
         percentages.push(temp)
