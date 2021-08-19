@@ -4,7 +4,6 @@ const { extractTriggerMiddleware } = require('../database/extractRequestMiddlewa
 const { addTrigger, getTrigger, updateTrigger, removeTrigger } = require('../services/triggerServices')
 const { authorizeEndpoint: auth } = require('../permissions/permsMiddleware')
 
-
 let triggersRouter = express.Router()
 triggersRouter.use('/:_id', extractTriggerMiddleware)
 
@@ -18,7 +17,7 @@ const ENDPOINTS = [
 ENDPOINTS.forEach(ops => {
     triggersRouter[ops[0]](ops[1], auth(...ops[2]), async (req, res, next) => {
         try {
-            res.locals.data = await ops[3](...(req.resource || []), req.body)
+            res.locals.data = await ops[3](req.resource, req.body)
             next()
         } catch (err) { next(err) }
     })

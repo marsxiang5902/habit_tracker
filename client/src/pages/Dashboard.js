@@ -22,7 +22,7 @@ function DashboardContent(props) { // props: dayOfWeek, curMin
             if (eventIsActivated(eventRecord, props.day, props.min, dayStartTime) &&
                 (curEvent === null || timeSinceStart(curEvent.activationTime, dayStartTime) <
                     timeSinceStart(eventRecord.activationTime, dayStartTime))) {
-                if (eventRecord.type !== 'stack' || eventRecord.eventList.length > 0) {
+                if (eventRecord.type !== 'stack' || eventRecord.pointer < eventRecord.eventList.length) {
                     curEvent = eventRecord
                 }
             }

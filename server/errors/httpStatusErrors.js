@@ -5,7 +5,7 @@ const BaseError = require('./baseError')
 const httpStatusErrors = {
     BAD_REQUEST: class badRequestError extends BaseError {
         constructor(
-            name,
+            name = 'Data is invalid.',
             statusCode = 400,
             description = 'Bad Request',
             isOperational = true
@@ -15,7 +15,7 @@ const httpStatusErrors = {
     },
     UNAUTHORIZED: class unauthorizedError extends BaseError {
         constructor(
-            name,
+            name = 'Unauthorized',
             statusCode = 401,
             description = 'Unauthorized',
             isOperational = true
@@ -25,7 +25,7 @@ const httpStatusErrors = {
     },
     NOT_FOUND: class notFoundError extends BaseError {
         constructor(
-            name,
+            name = 'Resource not found',
             statusCode = 404,
             description = 'Not Found',
             isOperational = true
@@ -35,7 +35,7 @@ const httpStatusErrors = {
     },
     CONFLICT: class conflictError extends BaseError {
         constructor(
-            name,
+            name = 'Resource already exists',
             statusCode = 409,
             description = 'Conflict',
             isOperational = true
@@ -45,7 +45,7 @@ const httpStatusErrors = {
     },
     INTERNAL_SERVER: class internalServerError extends BaseError {
         constructor(
-            name,
+            name = 'Internal Error',
             statusCode = 500,
             description = 'Internal Error',
             isOperational = true

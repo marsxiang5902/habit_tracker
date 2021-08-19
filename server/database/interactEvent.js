@@ -19,7 +19,7 @@ async function addEvent(user, name, type, startDay, args) {
     return newEvent
 }
 function getEvent(_id) {
-    return get_events_col().findOne({ _id: _id })
+    return get_events_col().findOne({ _id })
 }
 async function getEvents(_ids) {
     httpAssert.BAD_REQUEST(Array.isArray(_ids), `Data is invalid.`)
@@ -31,7 +31,7 @@ async function getEvents(_ids) {
 async function updateEvent(_id, eventRecord, updObj) {
     httpAssert.NOT_FOUND(eventRecord, `Event with id ${_id} not found.`)
     httpAssert.BAD_REQUEST(typeof updObj == 'object' && !('_id' in updObj), `Data is invalid.`)
-    await get_events_col().updateOne({ _id: _id }, { "$set": updObj })
+    await get_events_col().updateOne({ _id }, { "$set": updObj })
     for (let key in updObj) {
         eventRecord[key] = updObj[key]
     }
@@ -41,7 +41,7 @@ async function removeEvent(_id, eventRecord) {
     httpAssert.NOT_FOUND(eventRecord, `Event with id ${_id} not found.`)
     let user = eventRecord.user, type = eventRecord.type
     await get_users_col().updateOne({ user: user }, { '$pull': { [`eventLists.${type}`]: _id } })
-    await get_events_col().deleteOne({ _id: _id })
+    await get_events_col().deleteOne({ _id })
     await get_triggers_col().deleteMany({ event_id: _id })
 }
 

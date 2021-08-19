@@ -3,9 +3,13 @@
 const httpStatusErrors = require("./httpStatusErrors")
 
 let httpAssert = Object.fromEntries(Object.entries(httpStatusErrors).map((([key, val]) =>
-    [key, (condition, name, ...args) => {
+    [key, (condition, name) => {
         if (!condition) {
-            throw new val(name, ...args)
+            if (name) {
+                throw new val(name)
+            } else {
+                throw new val()
+            }
         }
     }]
 )))

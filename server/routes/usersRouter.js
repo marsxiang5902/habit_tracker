@@ -5,7 +5,7 @@ const { getUser, getUserAuth, getUserEvents, removeUser, updateUser } = require(
 const { authorizeEndpoint: auth } = require('../permissions/permsMiddleware')
 
 let usersRouter = express.Router()
-usersRouter.use('/:user', extractUserMiddleware)
+usersRouter.use('/:user/', extractUserMiddleware)
 
 const ENDPOINTS = [
     ['get', '/:user', [['read:user']], getUser],
@@ -25,7 +25,7 @@ const ENDPOINTS = [
 ENDPOINTS.forEach(ops => {
     usersRouter[ops[0]](ops[1], auth(...ops[2]), async (req, res, next) => {
         try {
-            res.locals.data = await ops[3](...(req.resource || []), req.body)
+            res.locals.data = await ops[3](req.resource, req.body)
             next()
         } catch (err) { next(err) }
     })

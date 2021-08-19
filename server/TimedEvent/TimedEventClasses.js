@@ -6,6 +6,7 @@ const TimedTodo = require("./TimedTodo")
 const TimedRepeat = require("./TimedRepeat")
 const TimedReward = require("./TimedReward")
 const TimedStack = require("./TimedStack")
+const TimedForm = require("./TimedForm")
 
 module.exports = {
     superclass: TimedEvent,
@@ -14,6 +15,7 @@ module.exports = {
         todo: TimedTodo,
         repeat: TimedRepeat,
         reward: TimedReward,
-        stack: TimedStack
+        stack: TimedStack,
+        form: TimedForm
     }
 }

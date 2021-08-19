@@ -4,20 +4,30 @@ const TimedEvent = require('./TimedEvent')
 const { subclasses } = require('../HistoryManager/HistoryManagerClasses')
 const httpAssert = require('../errors/httpAssert')
 const { wrapObject } = require('../lib/wrapSliceObject')
+const { ObjectId } = require('mongodb')
 
 const DEFAULT_ARGS = {
-    historyManagerType: 'bitmask', activationDaysBit: 127
+    checkedHistoryManagerType: 'bitmask', activationDaysBit: 127,
+    eventList: [], pointer: 0
 }
 
 module.exports = class TimedReward extends TimedEvent {
     constructor(user, name, startDay, args) {
         httpAssert.BAD_REQUEST(typeof args == 'object', `Data is invalid.`)
         wrapObject(args, DEFAULT_ARGS, true)
-        let historyManagerType = args.historyManagerType
-        httpAssert.BAD_REQUEST(historyManagerType in subclasses, `Type ${historyManagerType} is not valid.`)
-        super(user, name, 'stack', startDay, new subclasses[historyManagerType](startDay))
+        let checkedHistoryManagerType = args.checkedHistoryManagerType
+        httpAssert.BAD_REQUEST(checkedHistoryManagerType in subclasses, `Type ${checkedHistoryManagerType} is not valid.`)
+        super(user, name, 'stack', startDay, new subclasses[checkedHistoryManagerType](startDay))
         this.eventList = []
-        this.pointer = 0
+        try {
+            for (let i = 0; i < args.eventList.length; i++) {
+                let _id = ObjectId(args.eventList[i])
+                this.eventList.push(ObjectId(args.eventList[i]))
+            }
+        } catch (err) {
+            this.eventList = []
+        }
+        this.pointer = Math.min(args.pointer, this.eventList.length)
     }
     static reset(eventRecord) {
         eventRecord.pointer = 0;

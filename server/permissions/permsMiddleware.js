@@ -30,7 +30,7 @@ function permSelf(perm) {
     return `${perm}_self`
 }
 function defaultGetTargetUser(req) {
-    return req.resource[1].user
+    return req.resource.user
 }
 function authorizeEndpoint(perms, getTargetUser = defaultGetTargetUser) {
     // if user does not have all these perms, error

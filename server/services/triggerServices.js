@@ -4,30 +4,37 @@ const { addTrigger: db_addTrigger, updateTrigger: db_updateTrigger, removeTrigge
 const { sliceObject } = require('../lib/wrapSliceObject')
 const httpAssert = require('../errors/httpAssert')
 const { ObjectId } = require('mongodb')
+const { includeTrigger } = require('../database/extractRequestMiddleware')
 
-async function addTrigger(config) {
+let notFoundAssert = r => {
+    httpAssert.NOT_FOUND(r.triggerRecord, `Trigger with ID "${r.trigger_id}" not found.`)
+}
+
+async function addTrigger(r, config) {
     let event_id = config.event_id
     try {
         event_id = ObjectId(event_id)
-    } catch (err) { } finally {
-        let res = await db_addTrigger(config.user, config.name, config.type, event_id, config.args || {})
-        return getTrigger(res._id, res)
+    } finally {
+        let _id = (await db_addTrigger(config.user, config.name, config.type, event_id, config.args || {}))._id
+        await includeTrigger(r, _id)
+        return getTrigger(r)
     }
 }
-const TRIGGER_SLICES = ['_id', 'user', 'name', 'type', 'event_id', 'resourceURL', 'topText', 'bottomText']
-function getTrigger(_id, triggerRecord) {
-    httpAssert.NOT_FOUND(triggerRecord, `Trigger with id ${_id} not found.`)
-    return sliceObject(triggerRecord, TRIGGER_SLICES);
+const GET_TRIGGER_SLICES = ['_id', 'user', 'name', 'type', 'event_id', 'resourceURL', 'topText', 'bottomText']
+function getTrigger(r) {
+    notFoundAssert(r)
+    return sliceObject(r.triggerRecord, GET_TRIGGER_SLICES);
 }
-async function updateTrigger(_id, triggerRecord, updObj) {
-    httpAssert.NOT_FOUND(triggerRecord, `Trigger with id ${_id} not found.`)
-    return await db_updateTrigger(_id, triggerRecord, sliceObject(updObj, ['name', 'resourceURL', 'topText', 'bottomText']))
+const UPD_TRIGGER_SLICES = ['name', 'resourceURL', 'topText', 'bottomText']
+async function updateTrigger(r, updObj) {
+    notFoundAssert(r)
+    return await db_updateTrigger(r.trigger_id, r.triggerRecord, sliceObject(updObj, UPD_TRIGGER_SLICES))
 }
-async function removeTrigger(_id, triggerRecord) {
-    httpAssert.NOT_FOUND(triggerRecord, `Trigger with id ${_id} not found.`)
-    await db_removeTrigger(_id, triggerRecord)
+async function removeTrigger(r) {
+    notFoundAssert(r)
+    await db_removeTrigger(r.trigger_id, r.triggerRecord)
 }
 
 module.exports = {
-    addTrigger, getTrigger, updateTrigger, removeTrigger, TRIGGER_SLICES
+    addTrigger, getTrigger, updateTrigger, removeTrigger, GET_TRIGGER_SLICES, UPD_TRIGGER_SLICES
 }
