@@ -16,6 +16,28 @@ async function updateEvent(context, event, updObj) {
         return update(context, { timedEvents: { [event.type]: { [event._id]: { "$set": res.data } } } })
     } return context
 }
+async function updateEventHistory(context, event, updObj) {
+    let res = await makeRequest(`events/${event._id}/history`, 'PUT', updObj, context.session.jwt)
+    if (!res.error) {
+        return update(context, { timedEvents: { [event.type]: { [event._id]: { "$set": res.data } } } })
+    } return context
+}
+async function updateEventFormLayout(context, event, updObj) {
+    if (event.type === 'form') {
+        let res = await makeRequest(`events/${event._id}/form/layout`, 'PUT', updObj, context.session.jwt)
+        if (!res.error) {
+            return update(context, { timedEvents: { form: { [event._id]: { "$set": res.data } } } })
+        } return context
+    }
+}
+async function updateEventFormHistory(context, event, updObj) {
+    if (event.type === 'form') {
+        let res = await makeRequest(`events/${event._id}/form`, 'PUT', updObj, context.session.jwt)
+        if (!res.error) {
+            return update(context, { timedEvents: { form: { [event._id]: { "$set": res.data } } } })
+        } return context
+    }
+}
 
 async function deleteEvent(context, event) {
     let res = await makeRequest(`events/${event._id}`, 'DELETE', {}, context.session.jwt)
@@ -25,11 +47,5 @@ async function deleteEvent(context, event) {
     } return context
 }
 
-async function updateEventHistory(context, event, updObj) {
-    let res = await makeRequest(`events/${event._id}/history`, 'PUT', updObj, context.session.jwt)
-    if (!res.error) {
-        return update(context, { timedEvents: { [event.type]: { [event._id]: { "$set": res.data } } } })
-    } return context
-}
 
-export { addEvent, updateEvent, deleteEvent, updateEventHistory }
+export { addEvent, updateEvent, updateEventFormLayout, updateEventFormHistory, deleteEvent, updateEventHistory }

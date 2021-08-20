@@ -16,6 +16,7 @@ import subscribeToNotifications from './notifications/notify';
 import { getAllEvents } from './lib/locateEvents';
 import DataRoom from './pages/Dataroom';
 import Stacks from './pages/Stacks';
+import Forms from './pages/Forms';
 
 class App extends React.Component {
   constructor(props) {
@@ -94,6 +95,9 @@ class App extends React.Component {
             )} />
             <Route path="/stacks" render={(props) => (
               <Stacks handleLogout={this.handleLogout} />
+            )} />
+            <Route path="/forms" render={(props) => (
+              <Forms handleLogout={this.handleLogout} />
             )} />
             <Route path="/user" render={(props) => (
               <User setContext={this.setContext} handleLogout={this.handleLogout} />

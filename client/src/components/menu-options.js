@@ -26,12 +26,12 @@ export const SidebarData = [
     icon: <Icons.FaStackOverflow />,
     cName: 'nav-text'
   },
-  // {
-  //   title: 'Updates',
-  //   path: '/updates',
-  //   icon: <Icons.FaClipboardList />,
-  //   cName: 'nav-text'
-  // },
+  {
+    title: 'Forms',
+    path: '/forms',
+    icon: <Icons.FaClipboardList />,
+    cName: 'nav-text'
+  },
   {
     title: 'Data Room',
     path: '/data',

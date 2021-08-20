@@ -1,45 +1,45 @@
 import { HabitObject } from "../components/HabitList"
 import { calcPct } from "../lib/dataServices"
 
-function maxLength(habits){
+function maxLength(habits) {
     let lengths = []
-    for(let habit in habits){
-        lengths.push(Object.keys(habits[habit].history).length)
+    for (let habit in habits) {
+        lengths.push(Object.keys(habits[habit].checkedHistory).length)
     }
     let max = Math.max(...lengths)
     let final = []
-    for (let i=0; i <= max; i+= 1){
+    for (let i = 0; i <= max; i += 1) {
         final.push(i)
     }
     return final
 }
 
-function dailyCompletion(habit){
+function dailyCompletion(habit) {
     let completions = []
     console.log(habit)
-    let habitArray = Object.values(habit.history).reverse()
-    for (let value in habit.history){
-        if(habitArray[value]){
+    let habitArray = Object.values(habit.checkedHistory).reverse()
+    for (let value in habit.checkedHistory) {
+        if (habitArray[value]) {
             completions.push(100)
         }
-        else{
+        else {
             completions.push(0)
         }
     }
     return completions
 }
 
-function dailyPercentage(habit){
+function dailyPercentage(habit) {
     let percentages = []
-    let habitArray = Object.values(habit.history).reverse()
-    for (let i = 0; i < Object.keys(habit.history).length; i++){
+    let habitArray = Object.values(habit.checkedHistory).reverse()
+    for (let i = 0; i < Object.keys(habit.checkedHistory).length; i++) {
         let temp = calcPct(habitArray.slice(0, i))
         percentages.push(temp)
     }
     return percentages
 }
 
-function createDatasets(habits, habitObj){
+function createDatasets(habits, habitObj) {
     let backgroundColors = [
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)',
@@ -57,15 +57,15 @@ function createDatasets(habits, habitObj){
         'rgba(255, 159, 64, 1)'
     ]
     let datasets = []
-    let i=0
-    for (let habit in habits){
+    let i = 0
+    for (let habit in habits) {
         let currHabit = habits[habit]
         let currHabitObj = habitObj[i]
-        if(currHabitObj.value){
+        if (currHabitObj.value) {
             let temp = {
-                type: currHabitObj.variable === "Daily Completion" ? 'bar': 'line',
+                type: currHabitObj.variable === "Daily Completion" ? 'bar' : 'line',
                 label: currHabit.name,
-                data: currHabitObj.variable === "Daily Completion" ? dailyCompletion(currHabit): dailyPercentage(currHabit),
+                data: currHabitObj.variable === "Daily Completion" ? dailyCompletion(currHabit) : dailyPercentage(currHabit),
                 backgroundColor: backgroundColors[i],
                 borderColor: borderColors[i],
                 borderWidth: 1
@@ -78,4 +78,4 @@ function createDatasets(habits, habitObj){
     return datasets
 }
 
-export {maxLength, createDatasets}
+export { maxLength, createDatasets }

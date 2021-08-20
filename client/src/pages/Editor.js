@@ -7,8 +7,7 @@ import Layout from "../components/layout";
 function Editor(props) {
     return (
         <div className="wrapper">
-            <Layout name="🗺 THE PLAN" handleLogout={props.handleLogout}>
-            </Layout>
+            <Layout name="🗺 THE PLAN" handleLogout={props.handleLogout} />
             <div className="formatter">
                 <div className="container" id="habit">
                     <EventList setContext={props.setContext} title="Daily Habits" type="habit" />
@@ -21,6 +20,9 @@ function Editor(props) {
                 </div>
                 <div className="container" id="stack">
                     <EventList setContext={props.setContext} title="Stacks" type="stack" />
+                </div>
+                <div className="container" id="stack">
+                    <EventList setContext={props.setContext} title="Forms" type="form" />
                 </div>
             </div>
         </div>

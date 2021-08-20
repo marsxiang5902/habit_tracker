@@ -17,8 +17,8 @@ function Habits(props) {
                     return null
                 }
                 let checked = false
-                if (('history' in record) && ('0' in record.history)) {
-                    checked = record.history['0'];
+                if (('checkedHistory' in record) && ('0' in record.checkedHistory)) {
+                    checked = record.checkedHistory['0'];
                 }
                 return <div className="habit-list margin-middle" key={_id}>
                     <input type="checkbox" className="checkbox"

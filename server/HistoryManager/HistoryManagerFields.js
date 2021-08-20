@@ -30,7 +30,7 @@ module.exports = class HistoryManagerFields extends HistoryManager {
             if (newKey < data.dayLimit) {
                 newHistory[newKey] = data.history[key]
             }
-        }
+        } newHistory[0] = DATA_TYPES_DEFAULTS[data.dataType]
         data.history = newHistory
     }
     static getHistory(data, curDay) {

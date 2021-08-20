@@ -125,7 +125,7 @@ function EventList(props) {
         return (
           <div className="card-2 border-2" key={_id}>
             <div className="habit habit-2 inline">
-              {props.type === 'habit' && <h4 className="habit no-padding-top">{pct(record.history)}%</h4>}
+              {props.type === 'habit' && <h4 className="habit no-padding-top">{pct(record.checkedHistory)}%</h4>}
               <h4 className="habit no-padding-top">{record.name}</h4>
             </div>
             <div>

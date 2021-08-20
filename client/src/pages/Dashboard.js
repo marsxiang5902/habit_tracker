@@ -3,12 +3,79 @@ import renderTrigger from '../lib/renderTrigger';
 import Layout from '../components/layout';
 import '../static/page.css'
 import * as Icons from "react-icons/fa";
-import { Button } from 'react-bootstrap';
+import { Button, Modal, Form } from 'react-bootstrap';
 import { appContext } from '../context/appContext';
 import { getAllEvents, getEventById } from '../lib/locateEvents';
 import { getDay, getMin } from '../lib/time';
 import { updateEvent, updateEventHistory } from '../services/eventServices';
 import { eventIsActivated, timeSinceStart } from '../lib/eventIsActivated';
+import { updateEventFormHistory } from "../services/eventServices";
+
+const convertTypes = {
+    num: Number,
+    str: x => x
+}
+
+function ModalBody(props) {
+    let record = props.record, layout = record.formLayout
+    const context = useContext(appContext)
+    const [formResponse, setFormResponse] = useState(layout.map(
+        formField => record.formData[formField[0]][0]))
+    const TYPES = { 'num': 'number', 'str': 'text' }
+    return <Form onSubmit={async e => {
+        e.preventDefault()
+        let updObj = {}
+        layout.forEach((formField, idx) => {
+            updObj[formField[0]] = { 0: formResponse[idx] }
+        })
+        context.setContext(await updateEventFormHistory(context, record, updObj))
+        props.hide()
+    }}>
+        {layout.map((formField, idx) => (
+            <Form.Group key={formField[0]}>
+                <Form.Label>{formField[0]}</Form.Label>
+                <Form.Control type={TYPES[formField[1]]} value={formResponse[idx]} onChange={e => {
+                    let newFormResponse = [...formResponse]
+                    newFormResponse[idx] = convertTypes[formField[1]](e.target.value)
+                    setFormResponse(newFormResponse)
+                }} />
+            </Form.Group>
+        ))}
+        <Button variant="success" type="submit">Submit</Button>
+    </Form>
+}
+
+function TimedForm(props) {
+    const [modalShown, setModalShown] = useState(false)
+    let record = props.record
+    if (record.type !== 'form') {
+        return null
+    }
+    return <>
+        <div className="pushed">
+            <h4>Form: {record.name}</h4>
+            <h5 className="pushed-spaced">
+                <Icons.FaClipboardList className="hover" onClick={() => { setModalShown(true) }} />
+            </h5>
+        </div>
+        <Modal
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+            show={modalShown}
+            onHide={() => setModalShown(false)}
+        >
+            <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">
+                    {record.name}
+                </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <ModalBody record={record} hide={() => { setModalShown(false) }} />
+            </Modal.Body>
+        </Modal>
+    </>
+}
 
 function DashboardContent(props) { // props: dayOfWeek, curMin
     const [triggerCaches, setTriggerCaches] = useState({})
@@ -62,6 +129,7 @@ function DashboardContent(props) { // props: dayOfWeek, curMin
                     </h5>
                     <h4 className="pushed-spaced">Stack: {event.name}</h4>
                 </div>
+                <TimedForm record={stackedEvent} />
                 <h3>Event: {stackedEvent.name}</h3>
                 <h1>Trigger: {trigger.name}</h1>
                 <Button onClick={async () => {
@@ -79,6 +147,7 @@ function DashboardContent(props) { // props: dayOfWeek, curMin
         } else {
             let trigger = generateTrigger(event)
             return <div className="dashboard">
+                <TimedForm record={event} />
                 <h3>Event: {event.name}</h3>
                 <h1>Trigger: {trigger.name}</h1>
                 <Button onClick={async () => {
