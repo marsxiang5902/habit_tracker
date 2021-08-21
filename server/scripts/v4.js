@@ -13,12 +13,11 @@
 */
 
 
-const { do_db_setup, get_events_col } = require('../database/db_setup')
-const { cleanEvents } = require('../database/cleanUnused');
+const { do_db_setup, get_events_col, get_users_col } = require('../database/db_setup');
 
 (async () => {
     await do_db_setup()
-    get_events_col.update({}, { "$rename": { historyManager: 'checkedHistory' } })
-
+    get_events_col().updateMany({}, { "$rename": { historyManager: 'checkedHistory' } })
+    get_users_col().updateMany({}, { "$set": { "eventLists.form": [] } })
     console.log('done')
 })()
