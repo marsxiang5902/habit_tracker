@@ -69,14 +69,14 @@ function Trigger(props) {
             onClick={() => { setPreviewShown(!previewShown) }}></Icons.FaEye>
     </div >
 
-    return <div className="card-2 border-2">
+    return <div className="card-2 border-2 trigger-list">
         {name}
         {overlay}
         {previewShown && renderTrigger(record)}
     </div>
 }
 
-function ModalBody(props) {
+function AddTriggerBody(props) {
     const context = useContext(appContext)
     const [name, setName] = useState('')
     const [type, setType] = useState('')
@@ -90,88 +90,95 @@ function ModalBody(props) {
     )
 
     return <>
-        <p>
-            Triggers are anything that put you in a certain mood or motivate you to do a certain habit. Add your own trigger
-            here through a link to music, text, an image or a youtube video! Make the trigger specific to the habit!
-        </p>
-        <Form onSubmit={async (e) => {
-            e.preventDefault()
-            if (type !== '') {
-                props.setContext(await addTrigger(context, name, type, props.event_id, { resourceURL, topText, bottomText }))
-            }
-            setName(''); setType(''); setResourceURL(''); setTopText(''); setBottomText(''); setPreviewShown(false);
-            props.hide();
-        }}>
-            <Form.Group>
-                <select onChange={(e) => setType(e.target.value)}>
-                    <option value="" disabled selected>Type of Trigger</option>
-                    <option value="video">Video</option>
-                    <option value="audio">Audio</option>
-                    <option value="image">Image</option>
-                    <option value="link">Link</option>
-                </select>
-            </Form.Group>
-            <Form.Group>
-                {option(name, setName, "Name of Trigger")}
-                {option(resourceURL, setResourceURL, "Link to Trigger")}
-                {type === "image" && <>
-                    {option(topText, setTopText, "Text to Place on Top of Image")}
-                    {option(bottomText, setBottomText, "Text to Place on the Bottom of Image")}
-                </>}
-                {previewShown && type !== "" && renderTrigger({
-                    name, type, resourceURL, topText, bottomText
-                })
+    <div className="card-2 border-2 trigger-list">
+        <div className="form-padding">
+            <h4>Add a Trigger</h4>
+            <p>
+                Triggers are anything that put you in a certain mood or motivate you to do a certain habit. Add your own trigger
+                here through a link to music, text, an image or a youtube video! Make the trigger specific to the habit!
+            </p>
+            <Form onSubmit={async (e) => {
+                e.preventDefault()
+                if (type !== '') {
+                    props.setContext(await addTrigger(context, name, type, props.event_id, { resourceURL, topText, bottomText }))
                 }
-                <Button className="button" variant="primary" type="button" value='preview' onClick={() => setPreviewShown(!previewShown)}>Preview</Button>
-                <Button className="button" variant="success" type="submit" value='change'>Create Trigger</Button>
-            </Form.Group>
-        </Form>
+                setName(''); setType(''); setResourceURL(''); setTopText(''); setBottomText(''); setPreviewShown(false);
+                props.hide();
+            }}>
+                <Form.Group>
+                    <select onChange={(e) => setType(e.target.value)}>
+                        <option value="" disabled selected>Type of Trigger</option>
+                        <option value="video">Video</option>
+                        <option value="audio">Audio</option>
+                        <option value="image">Image</option>
+                        <option value="link">Link</option>
+                    </select>
+                </Form.Group>
+                <Form.Group>
+                    {option(name, setName, "Name of Trigger")}
+                    {option(resourceURL, setResourceURL, "Link to Trigger")}
+                    {type === "image" && <>
+                        {option(topText, setTopText, "Text to Place on Top of Image")}
+                        {option(bottomText, setBottomText, "Text to Place on the Bottom of Image")}
+                    </>}
+                    {previewShown && type !== "" && renderTrigger({
+                        name, type, resourceURL, topText, bottomText
+                    })
+                    }
+                    <Button className="button" variant="primary" type="button" value='preview' onClick={() => setPreviewShown(!previewShown)}>Preview</Button>
+                    <Button className="button" variant="success" type="submit" value='change'>Create Trigger</Button>
+                    <Button className="button" variant="danger" type="button" value='change' onClick={() => props.hide()}>Cancel</Button>
+                </Form.Group>
+            </Form>
+        </div>
+    </div>
     </>
 }
 
 function Event(props) {
     const [modalShown, setModalShown] = useState(false)
 
-    let head = <div className="subheader triggers-head">
-        <h2>{props.record.name}</h2>
+    let head = <div className="subheader">
+        <h4>Edit Triggers</h4>
         {modalShown ?
             <Icons.FaRegWindowClose onClick={() => { setModalShown(false) }} className="hover"></Icons.FaRegWindowClose> :
             <Icons.FaRegPlusSquare onClick={() => { setModalShown(true) }} className="hover"></Icons.FaRegPlusSquare>
         }
     </div>
     let hr = <hr className="triggers-hr" />
-    let triggers = <div className="formatter">
+    let triggers = <div>
         {Object.keys(props.record.triggers).map(_id =>
             <Trigger record={props.record.triggers[_id]} setContext={props.setContext} key={_id} />
         )}
     </div>
 
-    let modalBody = modalShown && <Modal
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-        show={modalShown}
-        onHide={() => setModalShown(false)}
-    >
-        <Modal.Header closeButton>
-            <Modal.Title id="contained-modal-title-vcenter">
-                Add a Trigger
-            </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-            <ModalBody setContext={props.setContext} event_id={props.record._id} hide={() => { setModalShown(false) }} />
-        </Modal.Body>
-    </Modal>
+    // let modalBody = modalShown && <Modal
+    //     size="lg"
+    //     aria-labelledby="contained-modal-title-vcenter"
+    //     centered
+    //     show={modalShown}
+    //     onHide={() => setModalShown(false)}
+    // >
+    //     <Modal.Header closeButton>
+    //         <Modal.Title id="contained-modal-title-vcenter">
+    //             Add a Trigger
+    //         </Modal.Title>
+    //     </Modal.Header>
+    //     <Modal.Body>
+    //         <AddTriggerBody setContext={props.setContext} event_id={props.record._id} hide={() => { setModalShown(false) }} />
+    //     </Modal.Body>
+    // </Modal>
+    let modalBody = modalShown && <AddTriggerBody setContext={props.setContext} event_id={props.record._id} hide={() => { setModalShown(false) }} />
 
     return <>
-        {head}
         {hr}
+        {head}
         {triggers}
         {modalBody}
     </>
 }
 
-export default function TriggerList(props) {
+function TriggerList(props) {
     const context = useContext(appContext)
 
     let records = context.timedEvents[props.type]
@@ -179,3 +186,5 @@ export default function TriggerList(props) {
         <Event setContext={props.setContext} record={records[_id]} key={_id} />
     )
 }
+
+export {Event, TriggerList}

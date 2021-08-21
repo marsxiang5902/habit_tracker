@@ -1,6 +1,6 @@
 import React from 'react';
 import '../static/page.css'
-import TriggerList from '../components/TriggerList';
+import { TriggerList } from '../components/TriggerList2';
 import Layout from '../components/layout';
 
 export default function Triggers(props) {

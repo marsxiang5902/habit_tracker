@@ -64,7 +64,7 @@ function DashboardContent(props) { // props: dayOfWeek, curMin
                 </div>
                 <h3>Event: {stackedEvent.name}</h3>
                 <h1>Trigger: {trigger.name}</h1>
-                <Button onClick={async () => {
+                <Button style={{ marginBottom: "10px" }} onClick={async () => {
                     if (event.pointer === event.eventList.length - 1) {
                         context.setContext(await updateEventHistory(context, event, { "0": true }))
                     } else {
@@ -81,7 +81,7 @@ function DashboardContent(props) { // props: dayOfWeek, curMin
             return <div className="dashboard">
                 <h3>Event: {event.name}</h3>
                 <h1>Trigger: {trigger.name}</h1>
-                <Button onClick={async () => {
+                <Button style={{ marginBottom: "10px" }} onClick={async () => {
                     context.setContext(await updateEventHistory(context, event, { "0": true }))
                 }}>Next</Button>
                 <div className="parent">

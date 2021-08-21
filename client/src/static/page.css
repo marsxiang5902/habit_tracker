@@ -4,6 +4,11 @@
 
 }
 
+.custom-modal{
+    width: 100VW;
+    height: 100VH;
+}
+
 .formatter {
     display: grid;
     grid-template-areas:    "habit    todo" 
@@ -119,7 +124,7 @@ input[type=checkbox] {
 }
 
 .triggers-hr {
-    width: 80%;
+    width: 90%;
     border-top: 2px solid black;
     margin-top: 5px;
 }
@@ -215,6 +220,7 @@ select {
 
 .pushed{
     display: flex;
+    align-items: baseline;
 }
 
 .pushed-spaced{
@@ -232,4 +238,13 @@ select{
     border-radius: 5px;
     border-color: #000;
     margin-bottom: 5px;
+}
+
+.dropdown {
+    margin-bottom: 0px;
+    margin-right: 10px;
+}
+
+.trigger-list {
+    background-color: rgb(239, 244, 255);
 }

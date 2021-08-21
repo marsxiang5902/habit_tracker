@@ -21,7 +21,7 @@ let PreviewPopover = React.forwardRef((props, ref) => {
     </Popover>
 })
 
-function ModalBody(props) {
+function StackBody(props) {
     const context = useContext(appContext)
     const [ar, setAr] = useState(props.record.eventList)
     const [newElem, setNewElem] = useState(null)
@@ -38,6 +38,8 @@ function ModalBody(props) {
     }
 
     return <>
+        <hr></hr>
+        <h4>Edit Stacks</h4>
         <p>
             Add a list of events that will be shown in the dashboard instead of this stack.
         </p>
@@ -107,7 +109,7 @@ function Stack(props) {
             </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <ModalBody record={props.record} hide={() => { setModalShown(false) }} />
+            <StackBody record={props.record} hide={() => { setModalShown(false) }} />
         </Modal.Body>
     </Modal>
     return <>
@@ -131,7 +133,7 @@ function Stack(props) {
     </>
 }
 
-export default function StackList(props) {
+function StackList(props) {
     const context = useContext(appContext)
     let records = context.timedEvents.stack
     return <>
@@ -143,3 +145,5 @@ export default function StackList(props) {
         )}
     </>
 }
+
+export {StackList, StackBody}
