@@ -47,7 +47,7 @@ async function getEvent(r) {
     ret.activationDays = bit2obj(r.eventRecord.activationDaysBit, 7)
 
     if (r.eventRecord.type === 'form') {
-        ret.formData = getEventFormHistory(r)
+        ret = { ...ret, ...getEventFormHistory(r) }
     }
     return ret;
 }
@@ -58,7 +58,10 @@ async function getEventHistory(r) {
 }
 function getEventFormHistory(r) {
     notFoundAssert(r)
-    return TimedForm.getFormData(r.eventRecord, r.userRecord.lastLoginDay)
+    return {
+        formData: TimedForm.getFormData(r.eventRecord, r.userRecord.lastLoginDay),
+        formLayout: TimedForm.getFormLayout(r.eventRecord)
+    }
 }
 
 const EVENT_UPD_SLICES = ['name', 'activationDaysBit', 'activationTime', 'nextEvent', 'eventList', 'pointer']

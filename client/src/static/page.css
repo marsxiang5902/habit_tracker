@@ -218,6 +218,12 @@ select {
     flex-direction: column;
 }
 
+.stacked-free{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 .pushed{
     display: flex;
     align-items: baseline;

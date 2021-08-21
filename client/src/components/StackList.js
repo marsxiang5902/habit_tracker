@@ -10,7 +10,7 @@ let PreviewPopover = React.forwardRef((props, ref) => {
     let record = props.record
 
     return <Popover {...props} ref={ref} id="popover-basic">
-        <Popover.Title as="h3">{"Events in Stack"}</Popover.Title>
+        <Popover.Title as="h3">Events in Stack</Popover.Title>
         <Popover.Content>
             {record.eventList.map(_id => (
                 <p key={_id}>

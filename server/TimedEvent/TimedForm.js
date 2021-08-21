@@ -29,51 +29,43 @@ module.exports = class TimedForm extends TimedEvent {
     }
     static reset(eventRecord, dayDiff) {
         for (let field in eventRecord.formHistory) {
-            HistoryManagerFields.realignDate(eventRecord.formHistory[field], dayDiff)
+            HistoryManagerFields.realignDate(eventRecord.formHistory[field].data, dayDiff)
         }
         return ['formHistory']
     }
     static updateFieldsLayout(eventRecord, updObj, curDay) {
-        // {add: [[fieldN, typeN]], rename: [[oldNameN, newNameN]], remove: [fieldN], perm: [permutation]}
-        httpAssert.BAD_REQUEST(typeof updObj === 'object' && updObj !== null)
-        eventRecord.fields.forEach(field => {
-            httpAssert.INTERNAL_SERVER(field in eventRecord.formHistory)
-            HistoryManagerFields.checkFieldData(eventRecord.formHistory[field].data)
+        /*
+        [
+            [newNameN, fromPrevN?, fromPrevN ? nameN : typeN]
+        ]
+        */
+        httpAssert.BAD_REQUEST(Array.isArray(updObj))
+        updObj.forEach(ar => {
+            httpAssert.BAD_REQUEST(Array.isArray(ar) && typeof ar[0] === 'string' &&
+                typeof ar[1] === 'boolean' && typeof ar[2] === 'string')
         })
-        wrapObject(updObj, CHANGE_LAYOUT_FORMAT, true)
-        let history = eventRecord.formHistory
-        let [add, rename, remove, perm] = [updObj.add, updObj.rename, updObj.remove, updObj.perm]
-        for (let action in CHANGE_LAYOUT_FORMAT) {
-            for (let i = 0; i < updObj[action].length; i++) {
-                let elem = updObj[action][i]
-                httpAssert.BAD_REQUEST((action === 'perm' || action === 'remove') ||
-                    (Array.isArray(elem) && elem.length === 2), 'Data is invalid.')
+        httpAssert.BAD_REQUEST((new Set(updObj.map(ar => ar[0]))).size === updObj.length)
+        let formHistory = eventRecord.formHistory, newFormHistory = {}
+        updObj.forEach(ar => {
+            if (ar[1]) {
+                httpAssert.BAD_REQUEST(ar[2] in formHistory)
+                newFormHistory[ar[0]] = formHistory[ar[2]]
+            } else {
+                newFormHistory[ar[0]] = new HistoryManagerFields(curDay, ar[2], 32)
             }
-        }
-        for (let i = 0; i < add.length; i++) {
-            let elem = add[i]
-            history[elem[0]] = new HistoryManagerFields(curDay, elem[1], 32)
-        }
-        for (let i = 0; i < remove.length; i++) {
-            delete history[remove[i]]
-        }
-        let mergeObj = {}
-        for (let i = 0; i < rename.length; i++) {
-            let elem = rename[i]
-            mergeObj[elem[1]] = history[elem[0]]
-            delete history[elem[0]]
-        }
-        history = { ...history, ...mergeObj }
-        httpAssert.BAD_REQUEST(perm.length === Object.keys(history).length &&
-            (new Set(perm)).size === Object.keys(history).length, 'Data is invalid.')
-        for (let i = 0; i < perm.length; i++) {
-            httpAssert.BAD_REQUEST(perm[i] in history, 'Data is invalid.')
-        }
-        eventRecord.formHistory = history
-        eventRecord.fields = perm
+        })
+        eventRecord.formHistory = newFormHistory
+        eventRecord.fields = updObj.map(ar => ar[0])
     }
     static getFormData(eventRecord, curDay) {
-        return eventRecord.fields.map(field => [field, HistoryManagerFields.getHistory(eventRecord.formHistory[field].data, curDay)])
+        let ret = {}
+        eventRecord.fields.forEach(field => {
+            ret[field] = HistoryManagerFields.getHistory(eventRecord.formHistory[field].data, curDay)
+        })
+        return ret
+    }
+    static getFormLayout(eventRecord) {
+        return eventRecord.fields.map(field => [field, eventRecord.formHistory[field].data.dataType])
     }
     static updateFormData(eventRecord, updObj, curDay) {
         for (let field in updObj) {

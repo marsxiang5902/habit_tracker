@@ -60,7 +60,7 @@ async function newDay(r) {
                 await db_updateEvent(eventRecord._id, eventRecord, sliceObject(eventRecord, ['checkedHistory', ...subset]))
             }
         }
-        await db_updateUser(user, userRecord, { lastLoginDay: curDay, })
+        await db_updateUser(r.user, r.userRecord, { lastLoginDay: curDay, })
     }
     return { dayDiff }
 }
