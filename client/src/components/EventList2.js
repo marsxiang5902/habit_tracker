@@ -1,12 +1,9 @@
 import React, { useState, useContext } from 'react';
 import * as Icons from "react-icons/fa";
-import { Form, Row, Col, Popover, OverlayTrigger, Button, Modal, } from 'react-bootstrap'
+import { Form, Row, Col, Popover, OverlayTrigger, Button, } from 'react-bootstrap'
 import { addEvent, updateEvent, deleteEvent } from '../services/eventServices';
 import { appContext } from '../context/appContext';
 import { calcPct as pct } from '../lib/dataServices'
-import { DisplayHabit, HabitObject } from './HabitList';
-import { StackBody } from './StackList';
-import { Event, TriggerList } from './TriggerList';
 
 
 function capitalizeFirst(str) {
@@ -27,16 +24,18 @@ let EditPopover = React.forwardRef((props, ref) => {
     props.hidePopover()
   }
 
-  return <>
-  <h4>{`Edit Name`}</h4>
-  <Form onSubmit={e => handleEdit(e)}>
-    <Form.Group>
-      <Form.Control type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-      <Button className="button" variant="success" type="submit" value='change'>Change</Button>
-      <Button className="button" variant="danger" type="submit" value='delete' onClick={(e) => setDelete(true)}>Delete</Button>
-    </Form.Group>
-  </Form>
-  </>
+  return <Popover {...props} ref={ref} id="popover-basic">
+    <Popover.Title as="h3">{`Edit ${capitalizeFirst(props.type)}`}</Popover.Title>
+    <Popover.Content>
+      <Form onSubmit={e => handleEdit(e)}>
+        <Form.Group>
+          <Form.Control type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
+          <Button className="button" variant="success" type="submit" value='change'>Change</Button>
+          <Button className="button" variant="danger" type="submit" value='delete' onClick={(e) => setDelete(true)}>Delete</Button>
+        </Form.Group>
+      </Form>
+    </Popover.Content>
+  </Popover>
 })
 
 let ActivationPopover = React.forwardRef((props, ref) => {
@@ -55,11 +54,10 @@ let ActivationPopover = React.forwardRef((props, ref) => {
 
   const DAYS = ['M', 'T', 'W', 'Th', 'F', 'Sa', 'Su']
 
-  return <>
-  <hr className="triggers-hr"></hr>
-  <h4>Edit Activation Days</h4>
-  <div className="form-group">
-  <Form onSubmit={e => handleEdit(e)}>
+  return <Popover ref={ref} {...props} id="popover-basic">
+    <Popover.Title as="h3">{`Edit ${capitalizeFirst(props.type)}`}</Popover.Title>
+    <Popover.Content>
+      <Form onSubmit={e => handleEdit(e)}>
         <Form.Group>
           <Form.Label>Days</Form.Label>
           <Row style={{ paddingRight: "15px", paddingLeft: "15px" }}>
@@ -93,8 +91,8 @@ let ActivationPopover = React.forwardRef((props, ref) => {
 
         <Button className="button" variant="success" type="submit" value='change'>Change</Button>
       </Form>
-      </div>
-  </>
+    </Popover.Content>
+  </Popover>
 })
 
 function EventList(props) {
@@ -114,85 +112,62 @@ function EventList(props) {
     setName("")
   }
 
-  let modalBody = (record, _id) => <Modal
-        size="lg"
-        fullscreen={true}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-        show={editPopoverId === _id}        
-        onHide={() => setEditPopoverId("")}
-        dialogClassName="custom-modal"
-        bsClass="custom-modal"
-    >
-        <Modal.Header closeButton>
-            <Modal.Title id="contained-modal-title-vcenter">
-                Edit {capitalizeFirst(props.type)}
-            </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <EditPopover
-                    record={record}
-                    type={props.type}
-                    setContext={props.setContext}
-                    hidePopover={() => { setEditPopoverId("") }}/> 
-          {props.type !== 'todo' ?   
-          <ActivationPopover
-                    record={record}
-                    type={props.type}
-                    setContext={props.setContext}
-                    style={{ maxWidth: '350px' }}
-                    hidePopover={() => { setActivationPopoverId("") }}
-                  /> : null }   
-          {props.type === "stack" && <StackBody record={record} />}  
-          {props.type === "habit" && <Event setContext={props.setContext} key={_id} record={record}/>}      
-        </Modal.Body>
-      </Modal>
-  
-  if (!context.session.isAuthed){
-    return null
-  }
-  let habitObj = HabitObject(records, true);
-  if (props.type === 'habit' || props.type === 'todo'){
-    habitObj = HabitObject(records, true)
-  }
   return !context.timedEvents.loading && (
     <>
-
-    {/* header */}
       <div className="subheader">
         <h2>{props.title}</h2>
         {formVisible ?
           <Icons.FaRegWindowClose onClick={() => { setFormVisible(false) }} className="hover"></Icons.FaRegWindowClose> :
           <Icons.FaRegPlusSquare onClick={() => { setFormVisible(true) }} className="hover"></Icons.FaRegPlusSquare>}
       </div>
-
-      {/* events */}
-      {Object.keys(records).map((_id, index) => {
+      {Object.keys(records).map(_id => {
         let record = records[_id]
         return (
           <div className="card-2 border-2" key={_id}>
             <div className="habit habit-2 inline">
-              {props.type !== 'habit' && props.type !== 'todo' && <h4 className="habit no-padding-top">{record.name}</h4>}
-              {/* {props.type === 'habit' && <h4 className="habit no-padding-top">{pct(record.history)}%</h4>} */}
-              {(props.type === 'habit' || props.type === 'todo') && 
-              <DisplayHabit onChange={habitObj.edit.checkbox} 
-                            item={habitObj.value[index]} index={index} context={context} record={record}
-                            setContext={props.setContext} all={true}/>
-              }
+              {props.type === 'habit' && <h4 className="habit no-padding-top">{pct(record.history)}%</h4>}
+              <h4 className="habit no-padding-top">{record.name}</h4>
             </div>
             <div>
-              <Icons.FaPencilAlt
-                  className={"hover"}
+              {props.type !== 'todo' &&
+                <OverlayTrigger
+                  trigger="click"
+                  placement="left"
+                  overlay={<ActivationPopover
+                    record={record}
+                    type={props.type}
+                    setContext={props.setContext}
+                    style={{ maxWidth: '350px' }}
+                    hidePopover={() => { setActivationPopoverId("") }}
+                  />}
+                  show={activationPopoverId === _id}>
+                  <Icons.FaCalendarAlt
+                    className="hover"
+                    style={{ marginRight: '20px' }}
+                    onClick={() => { setActivationPopoverId(activationPopoverId === _id ? "" : _id) }} />
+                </OverlayTrigger>
+              }
+
+              <OverlayTrigger
+                trigger="click"
+                placement="left"
+                overlay={<EditPopover
+                  record={record}
+                  type={props.type}
+                  setContext={props.setContext}
+                  hidePopover={() => { setEditPopoverId("") }}
+                />}
+                show={editPopoverId === _id}>
+                <Icons.FaPencilAlt
+                  className="hover"
                   style={{ marginRight: '20px' }}
                   onClick={() => { setEditPopoverId(editPopoverId === _id ? "" : _id) }} />
-              {modalBody(record, _id)}
+              </OverlayTrigger>
             </div>
           </div>
         );
       }
       )}
-
-      {/* adding new items */}
       {formVisible && <div className="card-2 border-2">
         <div className="form-padding">
           <Form onSubmit={handleSubmit}>
@@ -203,6 +178,9 @@ function EventList(props) {
               <Button className="button" variant="danger" value='cancel' onClick={() => {
                 setName(""); setFormVisible(false);
               }}>Cancel</Button>
+              {/* <Form.Text className="text-muted">
+                                Example - Meditate 15 minutes per day
+                                </Form.Text> */}
             </Form.Group>
           </Form>
         </div>

@@ -8,7 +8,10 @@ function SideBar(props){
     return(
         <div>
         <h3>Viewable Habits</h3>
-        <DisplayHabit checked={props.habitObj.value} onChange={props.habitObj.edit.checkbox}/>
+        {props.habitObj.value.map((item, index) => {
+            console.log(item)
+            return <DisplayHabit all={false} onChange={props.habitObj.edit.checkbox} item={item} index={index}/>
+        })}
         <h3>Habit Varaibles</h3>
         {props.habitObj.value.map((item, index) => {
             if (item.value){
