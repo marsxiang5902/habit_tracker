@@ -1,15 +1,5 @@
 /*
-    for each event, if it is not a cue:
-        add a triggerList
-
-    for each event e, if it is a cue:
-        t := trigger(e)
-        add(t)
-
-    for each user:
-        delete user.eventLists.cue
-    
-    clean up unused events and triggers
+    add form, change history to checkedHistory
 */
 
 
