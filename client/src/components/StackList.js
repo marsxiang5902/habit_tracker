@@ -80,7 +80,7 @@ function StackBody(props) {
                 ))}
             </DropdownButton>
             <Button onClick={() => {
-                if (newElem !== null) {
+                if (newElem !== null && newElem._id) {
                     setAr([...ar, newElem])
                     setNewElem(null)
                 }
@@ -88,7 +88,6 @@ function StackBody(props) {
         </div>
         <Button className="button" variant="success" onClick={async () => {
             context.setContext(await updateEvent(context, props.record, { eventList: ar }))
-            props.hide()
         }}>Submit</Button>
     </>
 }
@@ -146,4 +145,4 @@ function StackList(props) {
     </>
 }
 
-export {StackList, StackBody}
+export { StackList, StackBody }

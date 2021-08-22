@@ -29,14 +29,14 @@ let EditPopover = React.forwardRef((props, ref) => {
   }
 
   return <>
-  <h4>{`Edit Name`}</h4>
-  <Form onSubmit={e => handleEdit(e)}>
-    <Form.Group>
-      <Form.Control type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-      <Button className="button" variant="success" type="submit" value='change'>Change</Button>
-      <Button className="button" variant="danger" type="submit" value='delete' onClick={(e) => setDelete(true)}>Delete</Button>
-    </Form.Group>
-  </Form>
+    <h4>{`Edit Name`}</h4>
+    <Form onSubmit={e => handleEdit(e)}>
+      <Form.Group>
+        <Form.Control type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
+        <Button className="button" variant="success" type="submit" value='change'>Change</Button>
+        <Button className="button" variant="danger" type="submit" value='delete' onClick={(e) => setDelete(true)}>Delete</Button>
+      </Form.Group>
+    </Form>
   </>
 })
 
@@ -57,10 +57,10 @@ let ActivationPopover = React.forwardRef((props, ref) => {
   const DAYS = ['M', 'T', 'W', 'Th', 'F', 'Sa', 'Su']
 
   return <>
-  <hr className="triggers-hr"></hr>
-  <h4>Edit Activation Days</h4>
-  <div className="form-group">
-  <Form onSubmit={e => handleEdit(e)}>
+    <hr className="triggers-hr"></hr>
+    <h4>Edit Activation Days</h4>
+    <div className="form-group">
+      <Form onSubmit={e => handleEdit(e)}>
         <Form.Group>
           <Form.Label>Days</Form.Label>
           <Row style={{ paddingRight: "15px", paddingLeft: "15px" }}>
@@ -94,7 +94,7 @@ let ActivationPopover = React.forwardRef((props, ref) => {
 
         <Button className="button" variant="success" type="submit" value='change'>Change</Button>
       </Form>
-      </div>
+    </div>
   </>
 })
 
@@ -116,49 +116,49 @@ function EventList(props) {
   }
 
   let modalBody = (record, _id) => <Modal
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        show={editPopoverId === _id}        
-        onHide={() => setEditPopoverId("")}
-        dialogClassName="custom-modal"
-        bsClass="custom-modal"
-    >
-        <Modal.Header closeButton>
-            <Modal.Title id="contained-modal-title-vcenter">
-                Edit {capitalizeFirst(props.type)}
-            </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <EditPopover
-                    record={record}
-                    type={props.type}
-                    setContext={props.setContext}
-                    hidePopover={() => { setEditPopoverId("") }}/> 
-          {props.type !== 'todo' ?   
-          <ActivationPopover
-                    record={record}
-                    type={props.type}
-                    setContext={props.setContext}
-                    style={{ maxWidth: '350px' }}
-                    hidePopover={() => { setActivationPopoverId("") }}
-                  /> : null }   
-          {props.type === "stack" && <StackBody record={record} />}  
-          {props.type === "habit" && <Event setContext={props.setContext} key={_id} record={record}/>}    
-          {props.type === "form" && <TimedForm record={record} key={_id}/>}  
-        </Modal.Body>
-      </Modal>
-  
-  if (!context.session.isAuthed){
+    size="lg"
+    aria-labelledby="contained-modal-title-vcenter"
+    show={editPopoverId === _id}
+    onHide={() => setEditPopoverId("")}
+    dialogClassName="custom-modal"
+    bsClass="custom-modal"
+  >
+    <Modal.Header closeButton>
+      <Modal.Title id="contained-modal-title-vcenter">
+        Edit {capitalizeFirst(props.type)}
+      </Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+      <EditPopover
+        record={record}
+        type={props.type}
+        setContext={props.setContext}
+        hidePopover={() => { setEditPopoverId("") }} />
+      {props.type !== 'todo' ?
+        <ActivationPopover
+          record={record}
+          type={props.type}
+          setContext={props.setContext}
+          style={{ maxWidth: '350px' }}
+          hidePopover={() => { setActivationPopoverId("") }}
+        /> : null}
+      {props.type !== "todo" && <Event setContext={props.setContext} key={_id} record={record} />}
+      {props.type === "stack" && <StackBody record={record} />}
+      {props.type === "form" && <TimedForm record={record} key={_id} />}
+    </Modal.Body>
+  </Modal>
+
+  if (!context.session.isAuthed) {
     return null
   }
   let habitObj = HabitObject(records, true);
-  if (props.type === 'habit' || props.type === 'todo'){
+  if (props.type === 'habit' || props.type === 'todo') {
     habitObj = HabitObject(records, true)
   }
   return !context.timedEvents.loading && (
     <>
 
-    {/* header */}
+      {/* header */}
       <div className="subheader">
         <h2>{props.title}</h2>
         {formVisible ?
@@ -172,19 +172,19 @@ function EventList(props) {
         return (
           <div className="card-2 border-2" key={_id}>
             <div className="habit habit-2 inline">
-              {props.type !== 'habit' && props.type !== 'todo' && <h4 className="habit no-padding-top">{record.name}</h4>}
-              {/* {props.type === 'habit' && <h4 className="habit no-padding-top">{pct(record.history)}%</h4>} */}
-              {(props.type === 'habit' || props.type === 'todo') && 
-              <DisplayHabit onChange={habitObj.edit.checkbox} 
-                            item={habitObj.value[index]} index={index} context={context} record={record}
-                            setContext={props.setContext} all={true}/>
+              {props.type === 'todo' ?
+                <h5 className="habit no-padding-top">{record.name}</h5> :
+                <DisplayHabit onChange={habitObj.edit.checkbox}
+                  item={habitObj.value[index]} index={index} context={context} record={record}
+                  setContext={props.setContext} all={true} />
               }
+              {/* {props.type === 'habit' && <h4 className="habit no-padding-top">{pct(record.history)}%</h4>} */}
             </div>
             <div>
               <Icons.FaPencilAlt
-                  className={"hover"}
-                  style={{ marginRight: '20px' }}
-                  onClick={() => { setEditPopoverId(editPopoverId === _id ? "" : _id) }} />
+                className={"hover"}
+                style={{ marginRight: '20px' }}
+                onClick={() => { setEditPopoverId(editPopoverId === _id ? "" : _id) }} />
               {modalBody(record, _id)}
             </div>
           </div>
