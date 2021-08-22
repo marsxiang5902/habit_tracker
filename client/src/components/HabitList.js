@@ -46,7 +46,7 @@ let DisplayHabit = (props) => {
             />
 
             <div className="habit">
-                <h5 style={{ marginBottom: "0px" }}>{props.record.name}</h5>
+                <h5 style={{ marginBottom: "0px" }}>{props.record ? props.record.name : props.item.name}</h5>
             </div>
         </div >
     )
