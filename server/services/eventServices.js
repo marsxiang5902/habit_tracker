@@ -68,7 +68,7 @@ const EVENT_UPD_SLICES = ['name', 'activationDaysBit', 'activationTime', 'nextEv
 async function updateEvent(r, updObj) {
     notFoundAssert(r)
     if ('activationDays' in updObj) {
-        wrapObject(updObj.activationDays, bit2obj(eventRecord.activationDaysBit, 7))
+        wrapObject(updObj.activationDays, bit2obj(r.eventRecord.activationDaysBit, 7))
         updObj.activationDaysBit = obj2bit(updObj.activationDays, 7)
     }
     return await getEvent({
