@@ -16,7 +16,7 @@ function updatedHabitHistory(habits) {
                 updHistory.push(habit.checkedHistory[i])
             }
         }
-        updObj.push({ 'id': habit._id, 'name': habit.name, "history": updHistory })
+        updObj.push({ 'id': habit._id, 'name': habit.name, "checkedHistory": updHistory })
         updHistory = []
     }
     return updObj

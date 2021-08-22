@@ -8,30 +8,30 @@ export const SidebarData = [
     icon: <Icons.FaHome />,
     cName: 'nav-text'
   },
-  {
-    title: 'Habits',
-    path: '/habits',
-    icon: <Icons.FaRegCheckSquare />,
-    cName: 'nav-text'
-  },
-  {
-    title: 'Triggers',
-    path: '/triggers',
-    icon: <Icons.FaBullhorn />,
-    cName: 'nav-text'
-  },
-  {
-    title: 'Stacks',
-    path: '/stacks',
-    icon: <Icons.FaStackOverflow />,
-    cName: 'nav-text'
-  },
-  {
-    title: 'Forms',
-    path: '/forms',
-    icon: <Icons.FaClipboardList />,
-    cName: 'nav-text'
-  },
+  // {
+  //   title: 'Habits',
+  //   path: '/habits',
+  //   icon: <Icons.FaRegCheckSquare />,
+  //   cName: 'nav-text'
+  // },
+  // {
+  //   title: 'Triggers',
+  //   path: '/triggers',
+  //   icon: <Icons.FaBullhorn />,
+  //   cName: 'nav-text'
+  // },
+  // {
+  //   title: 'Stacks',
+  //   path: '/stacks',
+  //   icon: <Icons.FaStackOverflow />,
+  //   cName: 'nav-text'
+  // },
+  // {
+  //   title: 'Forms',
+  //   path: '/forms',
+  //   icon: <Icons.FaClipboardList />,
+  //   cName: 'nav-text'
+  // },
   {
     title: 'Data Room',
     path: '/data',

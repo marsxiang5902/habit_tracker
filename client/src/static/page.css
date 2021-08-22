@@ -216,6 +216,7 @@ select {
 .stacked{
     display: flex;
     flex-direction: column;
+    font-size: 12px;
 }
 
 .stacked-free{
@@ -226,7 +227,7 @@ select {
 
 .pushed{
     display: flex;
-    align-items: baseline;
+    align-items: stretch;
 }
 
 .pushed-spaced{

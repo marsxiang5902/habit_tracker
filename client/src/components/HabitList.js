@@ -7,9 +7,8 @@ function HabitObject(habits, basedOnState=false){
     if (checked.length < Object.keys(habits).length){
         for (let i in habits){
             let temp = checked
-            console.log(habits[i].history['0'])
             if(basedOnState){
-                temp.push({'name': habits[i].name, 'value': habits[i].history['0'], 'id': habits[i]._id, 'variable': "Daily Completion"})
+                temp.push({'name': habits[i].name, 'value': habits[i].checkedHistory['0'], 'id': habits[i]._id, 'variable': "Daily Completion"})
             }
             else{
                 temp.push({'name': habits[i].name, 'value': false, 'id': habits[i]._id, 'variable': "Daily Completion"})

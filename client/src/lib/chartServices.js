@@ -16,7 +16,6 @@ function maxLength(habits) {
 
 function dailyCompletion(habit) {
     let completions = []
-    console.log(habit)
     let habitArray = Object.values(habit.checkedHistory).reverse()
     for (let value in habit.checkedHistory) {
         if (habitArray[value]) {
@@ -74,7 +73,6 @@ function createDatasets(habits, habitObj) {
         }
         i++;
     }
-    console.log(datasets)
     return datasets
 }
 
