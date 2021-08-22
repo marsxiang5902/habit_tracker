@@ -35,9 +35,8 @@ function ModalBody(props) {
         {submitFailed && <p>
             Submit failed. Field names must be unique.
         </p>}
-        <div className="border-2 trigger-list">
         {perm.map((field, idx) => (
-            <div className="card-2 trigger-list border-2" key={perm[idx][1] ? perm[idx][2] : idx} style={{padding: "20px"}}>
+            <div className="card-2" key={perm[idx][1] ? perm[idx][2] : idx}>
                 <div className="pushed">
                     <div className="stacked-free">
                         {/* reorder */}
@@ -61,8 +60,7 @@ function ModalBody(props) {
                     <div className="pushed-spaced">
                         {/* display */}
                         <Form.Group className="mb-3" controlId="editName">
-                            {/* <Form.Label>{perm[idx][1] ? perm[idx][2] + " new label" : 'New field'}</Form.Label> */}
-                            <Form.Label>Edit Field</Form.Label>
+                            <Form.Label>{perm[idx][1] ? perm[idx][2] + " new label" : 'New field'}</Form.Label>
                             <Form.Control type="text" placeholder="Field Name" value={perm[idx][0]} onChange={e => {
                                 // rename
                                 setPerm([...perm.slice(0, idx), [e.target.value, perm[idx][1], perm[idx][2]], ...perm.slice(idx + 1, perm.length)])
@@ -76,7 +74,6 @@ function ModalBody(props) {
                 }} />
             </div>
         ))}
-        </div>
         <Form.Group className="mb-3" controlId="newFieldName">
             <Form.Label>New Field Name</Form.Label>
             <div className="pushed">
@@ -113,16 +110,25 @@ function ModalBody(props) {
 function TimedForm(props) {
     let [modalShown, setModalShown] = useState(false)
     let record = props.record
-
-    let modalBody = 
-        <div className="form-padding">
-        <ModalBody record={props.record} hide={() => { setModalShown(false) }} />
-        </div>
-
+    let modalBody = modalShown && <Modal
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        show={modalShown}
+        onHide={() => setModalShown(false)}
+    >
+        <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title-vcenter">
+                Edit {record.name}
+            </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            <ModalBody record={props.record} hide={() => { setModalShown(false) }} />
+        </Modal.Body>
+    </Modal>
     return <>
-        <hr className="triggers-hr" />
-        <h4>Edit Form</h4>
-        {/* <div className="card-2 border-2 trigger-list">
+        {modalBody}
+        <div className="card-2 border-2">
             <div className="habit habit-2 inline">
                 <h4 className="habit no-padding-top">{record.name}</h4>
             </div>
@@ -137,12 +143,11 @@ function TimedForm(props) {
                         onClick={() => { setModalShown(true) }} />
                 </OverlayTrigger>
             </div>
-        </div> */}
-        {modalBody}
+        </div>
     </>
 }
 
-function FormList(props) {
+export default function FormList(props) {
     const context = useContext(appContext)
     let records = context.timedEvents.form
     return <>
@@ -154,5 +159,3 @@ function FormList(props) {
         )}
     </>
 }
-
-export {FormList, TimedForm}

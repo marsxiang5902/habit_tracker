@@ -9,7 +9,6 @@ function SideBar(props){
         <div>
         <h3>Viewable Habits</h3>
         {props.habitObj.value.map((item, index) => {
-            console.log(item)
             return <DisplayHabit all={false} onChange={props.habitObj.edit.checkbox} item={item} index={index}/>
         })}
         <h3>Habit Varaibles</h3>

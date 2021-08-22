@@ -7,6 +7,7 @@ import { calcPct as pct } from '../lib/dataServices'
 import { DisplayHabit, HabitObject } from './HabitList';
 import { StackBody } from './StackList';
 import { Event, TriggerList } from './TriggerList';
+import { TimedForm } from './FormList';
 
 
 function capitalizeFirst(str) {
@@ -116,9 +117,7 @@ function EventList(props) {
 
   let modalBody = (record, _id) => <Modal
         size="lg"
-        fullscreen={true}
         aria-labelledby="contained-modal-title-vcenter"
-        centered
         show={editPopoverId === _id}        
         onHide={() => setEditPopoverId("")}
         dialogClassName="custom-modal"
@@ -144,7 +143,8 @@ function EventList(props) {
                     hidePopover={() => { setActivationPopoverId("") }}
                   /> : null }   
           {props.type === "stack" && <StackBody record={record} />}  
-          {props.type === "habit" && <Event setContext={props.setContext} key={_id} record={record}/>}      
+          {props.type === "habit" && <Event setContext={props.setContext} key={_id} record={record}/>}    
+          {props.type === "form" && <TimedForm record={record} key={_id}/>}  
         </Modal.Body>
       </Modal>
   
