@@ -10,7 +10,7 @@ Most `perms` have two versions - `self`, the `perm` to perform an action on a re
 * `read:user`
 * `delete:event_self`
 
-Upon successful login, a [`JWT`](https://jwt.io/)(`string`) will be sent. The `JWT` can be decoded, but not changed on the client side. When decoded, it contains:
+Upon successful login, a [`JWT`](https://jwt.io/)(`string`) will be sent. The `JWT` can be decoded, but not changed, on the client side. When decoded, it contains:
 
 ```
 {
