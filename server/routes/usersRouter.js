@@ -1,7 +1,7 @@
 "use strict";
 const express = require('express')
 const { extractUserMiddleware } = require('../database/extractRequestMiddleware')
-const { getUser, getUserAuth, getUserEvents, removeUser, updateUser } = require('../services/userServices')
+const { getUser, getUserAuth, getUserEvents, removeUser, updateUser, getPartnerUncompletedEvents } = require('../services/userServices')
 const { authorizeEndpoint: auth } = require('../permissions/permsMiddleware')
 
 let usersRouter = express.Router()
@@ -10,6 +10,7 @@ usersRouter.use('/:user/', extractUserMiddleware)
 const ENDPOINTS = [
     ['get', '/:user', [['read:user']], getUser],
     ['get', '/:user/events', [['read:user']], getUserEvents],
+    ['get', '/:user/partner', [['read:user']], getPartnerUncompletedEvents],
     ['get', '/:user/auth', [['read:user_auth']], getUserAuth],
     ['put', '/:user', [['update:user']], updateUser],
     ['delete', '/:user', [['delete:user']], removeUser]
