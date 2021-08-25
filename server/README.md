@@ -67,8 +67,8 @@ Events are habits, todos, daily things, rewards, accountability responses, and a
   * A reward (often `stack`ed)
 * `stack`
   * A versatile collection of events that renders each sequentially in the dashboard
-  * `eventList = []`: the list of events
-  * `pointer = 0`: the currently active event in the list
+  * `eventList = []`: the list of `event` `_id`s, in order
+  * `pointer = 0`: the index of the current `event`. `pointer` is equal to `eventList.length` if all the `event`s are done
 * `form`
   * A form for data collection
   * `fields = []`: the fields in the form. This data is given in the format `[["fieldName1", "fieldType1"], ..., ["fieldNameN", "fieldTypeN"]]`, where `fieldTypeX` is a type in `HistoryManager<fields>` and `fieldName`s are unique.
@@ -216,7 +216,7 @@ Omitted fields are blank.
   "type": "<the event type>",
   "name": "<the name>",
   "history": <the history>,
-  "triggers": [<the triggers>]
+  "triggers": {<the triggers, indexed by their _ids>}
 }
 ```
 * The `history` object is the same as the one returned from [Get Event's History](#get-events-history)
