@@ -21,7 +21,6 @@ module.exports = class TimedReward extends TimedEvent {
         this.eventList = []
         try {
             for (let i = 0; i < args.eventList.length; i++) {
-                let _id = ObjectId(args.eventList[i])
                 this.eventList.push(ObjectId(args.eventList[i]))
             }
         } catch (err) {

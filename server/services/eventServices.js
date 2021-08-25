@@ -24,6 +24,11 @@ let assertFormMiddleware = (req, res, next) => {
 
 async function addEvent(r, config) {
     await includeUser(r, config.user)
+
+    if ('activationDays' in config.args) {
+        config.args.activationDaysBit = obj2bit(config.args.activationDays, 7)
+    }
+
     let _id = (await db_addEvent(config.user, config.name, config.type,
         r.userRecord.lastLoginDay, config.args || {}))._id
     await includeEvent(r, _id)
