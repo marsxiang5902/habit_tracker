@@ -10,7 +10,7 @@ Most `perms` have two versions - `self`, the `perm` to perform an action on a re
 * `read:user`
 * `delete:event_self`
 
-Upon successful login, a [`JWT`](https://jwt.io/)(`string`) will be sent. The `JWT` can be decoded, but not changed on the client side. When decoded, it contains:
+Upon successful login, a [`JWT`](https://jwt.io/)(`string`) will be sent. The `JWT` can be decoded, but not changed, on the client side. When decoded, it contains:
 
 ```
 {
@@ -58,15 +58,27 @@ When an error occurs, a non-`200` status code is given:
 
 ### Events
 
-Events are habits, todos, daily things, rewards, accountability responses, and anything to track. Each `event` object has additional arguments that can be specified when created and that are returned when the event is fetched. There are three types:
+Events are habits, todos, daily things, rewards, accountability responses, and anything to track. Each `event` object has additional arguments that can be specified when created and that are returned when the event is fetched. There are five types:
 * `habit`
-  * `historyManagerType = bitmask`: `"<the type of history manager to use>"`
+  * A basic daily habit
 * `todo`
-* `repeat`
+  * A todo that should be deleted when completed
+* `reward`
+  * A reward (often `stack`ed)
+* `stack`
+  * A versatile collection of events that renders each sequentially in the dashboard
+  * `eventList = []`: the list of `event` `_id`s, in order
+  * `pointer = 0`: the index of the current `event`. `pointer` is equal to `eventList.length` if all the `event`s are done
+* `form`
+  * A form for data collection
+  * `fields = []`: the fields in the form. This data is given in the format `[["fieldName1", "fieldType1"], ..., ["fieldNameN", "fieldTypeN"]]`, where `fieldTypeX` is a type in `HistoryManager<fields>` and `fieldName`s are unique.
+
+Each non-`todo` `event` has a `checkedHistoryManagerType = "bitmask"` to record the history of event checking, and `activationDays = {[0:6]: true}` to record which days the `event` should be displayed in the dashboard in `args`.
+
 
 ### History Managers
 
-History Managers are objects that manage an event's completion or activation history. Each type has a `get` and a `set` function, each in the following form:
+`HistoryManagers` are objects that manage an event's completion or activation history. Each type has a `get` and a `set` function, each in the following form:
 ```
 {
   "daysBefore1": <value1>,
@@ -74,12 +86,14 @@ History Managers are objects that manage an event's completion or activation his
   ...
 }
 ```
-There are two types:
+There are three types:
 * `bitmask`
   * Stores up to 32 previous days (including the current day). Each day can be either `true` or `false`.
+* `fields`
+  * Stores up to 32 previous days (including the current day). Each day can be a `num` or a `str`, but all types must be the same for a single `HistoryManager`.
 * `none`
 
-The data is reset at the end of each day, which is checked upon login.
+The data is reset at the end of each day, which is checked upon events including login.
 
 ### Triggers
 
@@ -92,6 +106,11 @@ Triggers are resources that may be displayed prior to start of an event to incre
   * `resourceURL = ""`: `"<a link to the video>"`
 * `link`
   * `resourceURL = ""`: `"<a link>"`
+
+
+### Users
+
+Each user has an accountability partner, whose uncompleted events from the previous day they will be able to read.
 
 ## Endpoints
 
@@ -197,12 +216,45 @@ Omitted fields are blank.
   "type": "<the event type>",
   "name": "<the name>",
   "history": <the history>,
-  "triggers": [<the triggers>]
+  "triggers": {<the triggers, indexed by their _ids>}
 }
 ```
 * The `history` object is the same as the one returned from [Get Event's History](#get-events-history)
 * Each element in the `triggers` array is the same as the one returned from [Get Trigger](#get-trigger)
 
+
+#### Get Form Event's Form History
+
+* Verb: **GET**
+* URL: `/:_id/form`
+* Perms: {`read:event`}
+* Returned Data:
+```
+{
+  "formData": {
+    "field1": {
+      "daysBefore1": <value1>,
+      "daysBefore2": <value2>,
+      ...
+    },
+    "field2": {
+      "daysBefore1": <value1>,
+      "daysBefore2": <value2>,
+      ...
+    },
+    ...
+  },
+  "formLayout":{
+    ["<fieldName1>", "<fieldType1>"],
+    ["<fieldName2>", "<fieldType2>"],
+    ...
+  }
+}
+```
+* The `event` must be a `form`
+* Each of `formData`'s entries is in the same format as `HistoryManager<fields>`'s [Get Event's History](#get-events-history)
+* The layout of `formLayout` is the same as the [constructor](#events)
+* `formLayout` fields are returned in order
 
 #### Update Event
 
@@ -212,11 +264,9 @@ Omitted fields are blank.
 * Request Body:
 ```
 {
-  "updObj": {
-    field1: <value1>,
-    field2: <value2>,
-    ...
-  }
+  "field1": <value1>,
+  "field2": <value2>,
+  ...
 }
 ```
 * Returned Data:
@@ -236,18 +286,68 @@ Omitted fields are blank.
 * Request Body:
 ```
 {
-  "updObj": {
-    "daysBefore1": <value1>,
-    "daysBefore2": <value2>,
-    ...
-  }
+  "daysBefore1": <value1>,
+  "daysBefore2": <value2>,
+  ...
 }
 ```
 * Returned Data:
 ```
-  <the new history>
+  <the new event>
 ```
-* The `history` object is the same as the one returned from [Get Event's History](#get-events-history)
+* The `event` returned is the same as the one returned from [Get Event](#get-event) 
+
+
+#### Update Form Event's Form History
+
+* Verb: **PUT**
+* URL: `/:_id/form`
+* Perms: {`udpate:event`}
+* Request Body:
+```
+{
+  "field1": {
+    "daysBefore1": <value1>,
+    "daysBefore2": <value2>,
+    ...
+  },
+  "field2": {
+    "daysBefore1": <value1>,
+    "daysBefore2": <value2>,
+    ...
+  },
+  ...
+}
+```
+* Returned Data:
+```
+  <the new event>
+```
+* The `event` returned is the same as the one returned from [Get Event](#get-event) 
+
+
+#### Update Form Event's Form Layout
+
+* Verb: **PUT**
+* URL: `/:_id/form/layout`
+* Perms: {`udpate:event`}
+* Request Body:
+```
+[
+    ["<newLayoutField1>", <fromPrev1?>, <fromPrev1 ? "name1" : "type1">],
+    ["<newLayoutField2>", <fromPrev2?>, <fromPrev2 ? "name2" : "type2">],
+    ...
+]
+```
+* Returned Data:
+```
+  <the new event>
+```
+* `newLayoutField`s must be unique
+* `fromPrev` is a `boolean`
+* If `fromPrev`, the third argument is the name of the previous field; else, it is the type of the new field
+* `name`s must be unique among all elements where `fromPrev` is `true`
+* The `event` returned is the same as the one returned from [Get Event](#get-event) 
 
 
 #### Delete Event
@@ -310,11 +410,9 @@ Omitted fields are blank.
 * Request Body:
 ```
 {
-  "updObj": {
-    field1: <value1>,
-    field2: <value2>,
-    ...
-  }
+  "field1": <value1>,
+  "field2": <value2>,
+  ...
 }
 ```
 * Returned Data:
@@ -347,7 +445,8 @@ Omitted fields are blank.
   "user": "<the username>",
   "perms": [<the perms>],
   "email": "<the email>",
-  "dayStartTime": "<the time a new day starts>"
+  "dayStartTime": "<the time a new day starts>",
+  "partner": "<their accountability partner>"
 }
 ```
 
@@ -366,6 +465,7 @@ Omitted fields are blank.
 ```
 * Refer to [Get Event](#get-event) for the returned events.
 
+
 #### Get User Authentication Information
 
 * Verb: **GET**
@@ -378,6 +478,20 @@ Omitted fields are blank.
 }
 ```
 
+#### Get Partner's Missed Events
+
+* Verb: **GET**
+* URL: `/:user/partner`
+* Perms: {`read:user`}
+* Returned Data:
+```
+{
+  "habit": [<habit events' names>],
+  "todo": [<todo events' names>],
+  ...
+}
+```
+
 #### Update User
 
 * Verb: **PUT**
@@ -386,7 +500,9 @@ Omitted fields are blank.
 * Request Body:
 ```
 {
-  *""
+  "field1": <value1>,
+  "field2": <value2>,
+  ...
 }
 ```
 * Returned Data:

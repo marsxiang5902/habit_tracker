@@ -1,7 +1,7 @@
 'use strict'
 
 const httpAssert = require('../errors/httpAssert')
-const { updateUser: db_updateUser, removeUser: db_removeUser, getUserByEmail } = require('../database/interactUser')
+const { getUser: db_getUser, updateUser: db_updateUser, removeUser: db_removeUser, getUserByEmail } = require('../database/interactUser')
 const { getEvents: db_getEvents, updateEvent: db_updateEvent } = require('../database/interactEvent')
 const { ObjectId } = require('mongodb')
 const { sliceObject } = require('../lib/wrapSliceObject')
@@ -15,7 +15,7 @@ let notFoundAssert = r => {
     httpAssert.NOT_FOUND(r.userRecord, `User "${r.user}" not found.`)
 }
 
-const USER_GET_SLICES = ['user', 'email', 'dayStartTime']
+const USER_GET_SLICES = ['user', 'email', 'dayStartTime', 'partner']
 function getUser(r) {
     notFoundAssert(r)
     return { ...sliceObject(r.userRecord, USER_GET_SLICES), perms: Array.from(getPerms(r.userRecord.roles)) }
@@ -37,6 +37,27 @@ async function getUserEvents(r) {
         })
     }
     return ret;
+}
+async function getPartnerUncompletedEvents(r) {
+    notFoundAssert(r)
+    let partner = r.userRecord.partner
+    if (!partner) {
+        return {}
+    }
+    let partnerR = { user: partner, userRecord: await db_getUser(partner) }
+    await newDay(partnerR)
+    partnerR.userRecord = await db_getUser(partner)
+    let partnerEvents = await getUserEvents(partnerR), uncompleted = {}
+    for (let type in partnerEvents) {
+        uncompleted[type] = []
+        for (let _id in partnerEvents[type]) {
+            let eventRecord = partnerEvents[type][_id]
+            if (('1' in eventRecord.checkedHistory) && !eventRecord.checkedHistory[1]) {
+                uncompleted[type].push(eventRecord.name)
+            }
+        }
+    }
+    return uncompleted
 }
 const USER_UPD_SLICES = ['email', 'dayStartTime']
 async function updateUser(r, updObj) {
@@ -70,5 +91,5 @@ async function removeUser(r) {
 }
 
 module.exports = {
-    getUser, getUserAuth, getUserEvents, updateUser, newDay, removeUser
+    getUser, getUserAuth, getUserEvents, getPartnerUncompletedEvents, updateUser, newDay, removeUser
 }

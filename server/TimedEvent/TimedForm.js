@@ -5,6 +5,7 @@ const { subclasses } = require('../HistoryManager/HistoryManagerClasses')
 const httpAssert = require('../errors/httpAssert')
 const { wrapObject } = require('../lib/wrapSliceObject')
 const HistoryManagerFields = require('../HistoryManager/HistoryManagerFields')
+const hasRepeat = require('../lib/hasRepeat')
 
 const DEFAULT_ARGS = {
     checkedHistoryManagerType: 'bitmask', activationDaysBit: 127,
@@ -18,9 +19,12 @@ module.exports = class TimedForm extends TimedEvent {
     constructor(user, name, startDay, args) {
         httpAssert.BAD_REQUEST(typeof args == 'object', `Data is invalid.`)
         wrapObject(args, DEFAULT_ARGS, true)
+
         let checkedHistoryManagerType = args.checkedHistoryManagerType
         httpAssert.BAD_REQUEST(checkedHistoryManagerType in subclasses, `Type ${checkedHistoryManagerType} is not valid.`)
         super(user, name, 'form', startDay, new subclasses[checkedHistoryManagerType](startDay))
+
+        httpAssert.BAD_REQUEST(!hasRepeat(args.fields.map(ar => ar[0])))
         this.fields = args.fields.map(fieldData => fieldData[0])
         this.formHistory = {}
         args.fields.forEach(fieldData => {
@@ -44,7 +48,9 @@ module.exports = class TimedForm extends TimedEvent {
             httpAssert.BAD_REQUEST(Array.isArray(ar) && typeof ar[0] === 'string' &&
                 typeof ar[1] === 'boolean' && typeof ar[2] === 'string')
         })
-        httpAssert.BAD_REQUEST((new Set(updObj.map(ar => ar[0]))).size === updObj.length)
+        httpAssert.BAD_REQUEST(!hasRepeat(updObj.map(ar => ar[0])))
+        httpAssert.BAD_REQUEST(!hasRepeat(updObj.filter(ar => ar[1]).map(ar => ar[2])))
+
         let formHistory = eventRecord.formHistory, newFormHistory = {}
         updObj.forEach(ar => {
             if (ar[1]) {

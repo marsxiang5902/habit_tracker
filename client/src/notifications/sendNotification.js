@@ -1,6 +1,6 @@
 function sendNotification(title, icon, body, callback) {
     let run = () => {
-        const notification = new Notification(title, { icon, body })
+        const notification = new Notification(title, { icon, body, requireInteraction: true })
         notification.onclick = () => {
             window.parent.parent.focus();
             callback()
