@@ -6,10 +6,12 @@ import { Nav } from 'react-bootstrap'
 import DisplayOverview from "../components/ProgressOverview";
 import { LineChart } from "../components/Chart";
 import { Calendar } from "../components/Calendar";
+import { getAllEvents, getSomeEvents } from "../lib/locateEvents";
 
 function DataRoom(props) {
 
     let context = useContext(appContext)
+    let events = getSomeEvents(context, ['habit', 'form'])
 
     let navOptions = ['Overview', 'Graphs', 'Calendar']
 
@@ -37,7 +39,7 @@ function DataRoom(props) {
         renderContent = <DisplayOverview context={context} />
     }
     else if (navPage === "Graphs") {
-        renderContent = <LineChart habits={context.timedEvents.habit}></LineChart>
+        renderContent = <LineChart habits={context.timedEvents.habit} forms={context.timedEvents.form} events={events}></LineChart>
     }
     else{
         // renderContent = <Calendar habits={context.timedEvents.habit}></Calendar>

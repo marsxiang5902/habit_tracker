@@ -21,7 +21,7 @@ function ModalBody(props) {
     const context = useContext(appContext)
     const [formResponse, setFormResponse] = useState(layout.map(
         formField => record.formData[formField[0]][0]))
-    const TYPES = { 'num': 'number', 'str': 'text' }
+    const TYPES = { 'num': 'number', 'str': 'textarea' }
     return <Form onSubmit={async e => {
         e.preventDefault()
         let updObj = {}
@@ -34,11 +34,16 @@ function ModalBody(props) {
         {layout.map((formField, idx) => (
             <Form.Group key={formField[0]}>
                 <Form.Label>{formField[0]}</Form.Label>
-                <Form.Control type={TYPES[formField[1]]} value={formResponse[idx]} onChange={e => {
+                {(TYPES[formField[1]] === 'textarea') ?
+                <Form.Control as="textarea" value={formResponse[idx]} onChange={e => {
                     let newFormResponse = [...formResponse]
                     newFormResponse[idx] = convertTypes[formField[1]](e.target.value)
                     setFormResponse(newFormResponse)
-                }} />
+                }} />:<Form.Control type="number" value={formResponse[idx]} onChange={e => {
+                    let newFormResponse = [...formResponse]
+                    newFormResponse[idx] = convertTypes[formField[1]](e.target.value)
+                    setFormResponse(newFormResponse)
+                }} />}
             </Form.Group>
         ))}
         <Button variant="success" type="submit">Submit</Button>
@@ -184,4 +189,4 @@ function Dashboard(props) {
     )
 }
 
-export default Dashboard;
+export {Dashboard, TimedForm};

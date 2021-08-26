@@ -15,4 +15,15 @@ function getAllEvents(context) {
         }
     } return ret
 }
-export { getEventById, getAllEvents }
+function getSomeEvents(context, types) {
+    let ret = {}
+    for (let type in context.timedEvents) {
+        if (types.includes(type)){
+            let ar = context.timedEvents[type]
+            for (let _id in ar) {
+                ret[_id] = ar[_id]
+            }
+        }
+    } return ret
+}
+export { getEventById, getAllEvents, getSomeEvents }

@@ -33,18 +33,18 @@ export const SidebarData = [
   //   cName: 'nav-text'
   // },
   {
+    title: 'Editor',
+    path: '/editor',
+    icon: <Icons.FaPencilAlt />,
+    cName: 'nav-text',
+  },
+  {
     title: 'Data Room',
     path: '/data',
     icon: <Icons.FaDatabase />,
     cName: 'nav-text'
   },
   // nothing to see here
-  {
-    title: 'Editor',
-    path: '/editor',
-    icon: <Icons.FaPencilAlt />,
-    cName: 'nav-text',
-  },
   {
     title: 'User',
     path: '/user',

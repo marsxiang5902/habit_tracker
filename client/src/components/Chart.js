@@ -5,21 +5,39 @@ import { DisplayHabit, HabitObject } from './HabitList'
 import { createDatasets, maxLength } from '../lib/chartServices'
 
 function SideBar(props){
+
     return(
-        <div>
-        <h3>Viewable Habits</h3>
+        <div style={{marginBottom: "30px"}}>
+        <h3>Habits</h3>
         {props.habitObj.value.map((item, index) => {
+            if (item.type === "habit"){
             return <DisplayHabit all={false} onChange={props.habitObj.edit.checkbox} item={item} index={index}/>
+            }
         })}
-        <h3>Habit Varaibles</h3>
+        <h3>Form Fields</h3>
+        {props.habitObj.value.map((item, index) => {
+            if (item.type === "form"){
+            return <DisplayHabit all={false} onChange={props.habitObj.edit.checkbox} item={item} index={index}/>
+            }
+        })}
+        <h3>Varaibles</h3>
         {props.habitObj.value.map((item, index) => {
             if (item.value){
                 return(
                 <>
                     <p style={{'marginBottom': '2px', 'marginTop': '10px'}}>{item.name}</p>
                     <select onChange={(e) => props.habitObj.edit.varaible(e, index)}>
-                        <option selected value="Daily Completion">Daily Completion</option>
+                        {item.type === "habit" ? <>
                         <option value="Completion Percentage">Completion Percentage</option>
+                        <option selected value="Daily Completion">Daily Completion</option>
+                        </> : <>
+                        <option value="Daily Value">Daily Value</option>
+                        <option value="Max">Max</option>
+                        <option value="Min">Min</option>
+                        <option value="Sum">Sum</option>
+                        <option value="Avg">Average</option>
+
+                        </>}
                     </select>
                 </>
                 )
@@ -30,16 +48,16 @@ function SideBar(props){
 }
 
 function LineChart(props){
-    let habitObj = HabitObject(props.habits)
-
+    let habitObj = HabitObject(props.events)
+    console.log(props.forms)
     return(
     <div className="wrapper">
-        <div className="data-grid">
+        <div className="data-grid" style={{marginTop: "20px", marginBottom: "20px"}}>
             <div className="data-chart">
                 <Line
                     data={{
-                        labels: maxLength(props.habits),
-                        datasets: createDatasets(props.habits, habitObj.value)
+                        labels: maxLength(props.events),
+                        datasets: createDatasets(props.events, habitObj.value)
                     }}
                     height={40}
                     width={80}
@@ -57,7 +75,7 @@ function LineChart(props){
                 >
                 </Line>
             </div>
-            <SideBar habits={props.habits} habitObj={habitObj}/>
+            <SideBar habitObj={habitObj}/>
         </div>
     </div>
     )

@@ -75,6 +75,7 @@ function streaks(habits) {
 
 }
 
+//avg
 function calcPct(items) {
     try {
         let percent = 0;
@@ -90,8 +91,7 @@ function pct(habits) {
     let all = []
     for (let habit in habits) {
         habit = habits[habit]
-        //what to do about habit history
-        let currPct = calcPct(habit.checkedHistory)
+        let currPct = calcPct(habit['checkedHistory'])
         max = checkMax(currPct, habit.name, max)
         all.push({ 'value': currPct, 'name': habit.name })
     }
@@ -111,6 +111,38 @@ function totalDayCompletion(habits) {
     return obj
 }
 
+//max
+function formMax(form){
+    let max = 0;
+    let currMax = 0;
+    for (let i=0; i < form.length; i++){
+        currMax = form[i]
+        max = checkMax(currMax, 'none', {'value': max, 'name': null}).value
+    }
+    return max
+}
+//min
+function formMin(form){
+    let min = 0;
+    let currMin = 0;
+    for (let i=0; i < form.length; i++){
+        currMin = -(form[i])
+        min = -(checkMax(currMin, 'none', {'value': -min, 'name': null}).value)
+    }
+    return min
+}
+//sum
+function formSum(form){
+    let sum = 0;
+    for (let i=0; i < form.length; i++){
+        if(!isNaN(form[i])) sum += form[i]
+    }
+    return sum
+}
+//avg
+function formAvg(form){
+    return Math.floor(100 * formSum(form) / form.length)
+}
 
 
-export { streaks, pct, calcPct, totalDayCompletion }
+export { streaks, pct, calcPct, totalDayCompletion, formMax, formMin, formSum, formAvg }

@@ -8,15 +8,23 @@ function HabitObject(habits, basedOnState = false) {
         for (let i in habits) {
             let temp = checked
             if (basedOnState) {
-                temp.push({ 'name': habits[i].name, 'value': habits[i].checkedHistory['0'], 'id': habits[i]._id, 'variable': "Daily Completion" })
+                temp.push({ 'name': habits[i].name, 'value': habits[i].checkedHistory['0'], 'id': habits[i]._id, 'variable': "Daily Completion", 'type': habits[i].type, 'data': habits[i].checkedHistory })
+            }
+            else if (habits[i].type === "form"){
+                for (let field in habits[i].formLayout){
+                    let currFormField = habits[i].formLayout[field]
+                    if (currFormField[1] === "num"){
+                        temp.push({ 'name': currFormField[0], 'value': false, 'id': habits[i]._id, 'variable': "Daily Value", 'type': habits[i].type, 'data': habits[i].formData[currFormField[0]] })
+                    }
+                }
             }
             else {
-                temp.push({ 'name': habits[i].name, 'value': false, 'id': habits[i]._id, 'variable': "Daily Completion" })
+                temp.push({ 'name': habits[i].name, 'value': false, 'id': habits[i]._id, 'variable': "Daily Completion", 'type': habits[i].type, 'data': habits[i].checkedHistory })
             }
             setChecked(temp)
         }
     }
-
+    console.log(checked)
     let checkboxChange = async (event, index, context = null, record = null, setContext = null) => {
         let temp = [...checked]
         temp[index].value = event.target.checked

@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import Editor from './pages/Editor';
-import Dashboard from './pages/Dashboard';
+import { Dashboard } from './pages/Dashboard';
 import Habits from './pages/Habits'
 import Triggers from './pages/Triggers';
 import Signup from './auth/Signup';
@@ -72,8 +72,8 @@ class App extends React.Component {
   }
 
   render() {
+    // console.log(this.state.context)
     return (
-      // <appContext.Provider value={[this.state.context, this.setContext]}>
       <appContext.Provider value={{ ...this.state.context, setContext: this.setContext, getContext: this.getContext }}>
         <div className="App">
           <Switch>

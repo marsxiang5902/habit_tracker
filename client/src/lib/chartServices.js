@@ -1,25 +1,40 @@
-import { HabitObject } from "../components/HabitList"
-import { calcPct } from "../lib/dataServices"
+import { EventObject } from "../components/EventList"
+import { calcPct, formAvg, formMax, formMin, formSum } from "../lib/dataServices"
 
 function maxLength(habits) {
     let lengths = []
     for (let habit in habits) {
-        lengths.push(Object.keys(habits[habit].checkedHistory).length)
+        lengths.push(Object.keys(habits[habit]['checkedHistory']).length)
     }
     let max = Math.max(...lengths)
     let final = []
-    for (let i = 0; i <= max; i += 1) {
+    for (let i = 0; i < max; i += 1) {
         final.push(i)
     }
     return final
 }
 
+function fillArray(events, event){
+    let length = maxLength(events).length
+    let temp = {};
+        for(let i = 0; i < length - 1; i++){
+            if(event.data[i]===undefined){
+                temp[i] = NaN
+            }
+            else{
+                temp[i] = event.data[i]
+            }
+        }
+    event.data = temp
+    return event
+}
+
 function dailyCompletion(habit) {
     let completions = []
-    let habitArray = Object.values(habit.checkedHistory).reverse()
-    for (let value in habit.checkedHistory) {
+    let habitArray = Object.values(habit.data).reverse()
+    for (let value in habit.data) {
         if (habitArray[value]) {
-            completions.push(100)
+            completions.push(10)
         }
         else {
             completions.push(0)
@@ -30,15 +45,35 @@ function dailyCompletion(habit) {
 
 function dailyPercentage(habit) {
     let percentages = []
-    let habitArray = Object.values(habit.checkedHistory).reverse()
-    for (let i = 0; i < Object.keys(habit.checkedHistory).length; i++) {
+    let habitArray = Object.values(habit.data).reverse()
+    for (let i = 0; i < Object.keys(habit.data).length; i++) {
         let temp = calcPct(habitArray.slice(0, i))
         percentages.push(temp)
     }
     return percentages
 }
 
-function createDatasets(habits, habitObj) {
+function iterator(event, func){
+    let max = []
+    let eventArray = Object.values(event.data).reverse()
+    for (let i = 0; i < Object.keys(event.data).length; i++) {
+        let temp = func(eventArray.slice(0, i))
+        max.push(temp)
+    }
+    return max
+}
+
+function min(event){
+    let min = []
+    let eventArray = Object.values(event.data).reverse()
+    for (let i = 0; i < Object.keys(event.data).length; i++) {
+        let temp = formMin(eventArray.slice(0, i))
+        min.push(temp)
+    }
+    return min
+}
+
+function createDatasets(events, eventsObj) {
     let backgroundColors = [
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)',
@@ -56,22 +91,55 @@ function createDatasets(habits, habitObj) {
         'rgba(255, 159, 64, 1)'
     ]
     let datasets = []
-    let i = 0
-    for (let habit in habits) {
-        let currHabit = habits[habit]
-        let currHabitObj = habitObj[i]
-        if (currHabitObj.value) {
+    for (let i in eventsObj) {
+        let currEvent = events[eventsObj[i].id]
+        let currEventObj = eventsObj[i]
+        let data, type;
+
+        if (currEvent.type === "habit"){
+            data = currEventObj.variable === "Daily Completion" ? dailyCompletion(currEventObj) : dailyPercentage(currEventObj)
+            type = currEventObj.variable === "Daily Completion" ? 'bar' : 'line'
+
+        }
+        else {
+            switch(currEventObj.variable){
+                case("Daily Value"):
+                    data = Object.values(fillArray(events, currEventObj).data).reverse()
+                    console.log(data)
+                    type = 'line'
+                    break;
+                case('Max'):
+                    data = iterator(currEventObj, formMax)
+                    type = 'line'
+                    break;
+                case('Min'):
+                    data = iterator(currEventObj, formMin)
+                    type = 'line'
+                    break;
+                case('Sum'):
+                    data = iterator(currEventObj, formSum)
+                    type = 'line'
+                    break;
+                case('Avg'):
+                    data = iterator(currEventObj, formAvg)
+                    type = 'line'
+                    break;
+                default:
+                    break;
+            }
+        }
+        console.log(data)
+        if (currEventObj.value) {
             let temp = {
-                type: currHabitObj.variable === "Daily Completion" ? 'bar' : 'line',
-                label: currHabit.name,
-                data: currHabitObj.variable === "Daily Completion" ? dailyCompletion(currHabit) : dailyPercentage(currHabit),
+                type: type,
+                label: currEventObj.name,
+                data: data,
                 backgroundColor: backgroundColors[i],
                 borderColor: borderColors[i],
                 borderWidth: 1
             }
             datasets.push(temp)
         }
-        i++;
     }
     return datasets
 }
