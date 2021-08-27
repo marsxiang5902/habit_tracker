@@ -141,7 +141,9 @@ function formSum(form){
 }
 //avg
 function formAvg(form){
-    return Math.floor(100 * formSum(form) / form.length)
+    let scale = 100;
+    if(formMax(form) <= 10) scale = 1
+    return Math.floor(scale * formSum(form) / form.length)
 }
 
 

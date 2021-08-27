@@ -46,6 +46,10 @@ function DataRoom(props) {
         renderContent = null
     }
 
+    if (!context.session.isAuthed) {
+        return null
+    }
+
 
     return (
         <div className="wrapper">

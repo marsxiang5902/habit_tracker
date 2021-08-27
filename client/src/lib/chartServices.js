@@ -63,16 +63,6 @@ function iterator(event, func){
     return max
 }
 
-function min(event){
-    let min = []
-    let eventArray = Object.values(event.data).reverse()
-    for (let i = 0; i < Object.keys(event.data).length; i++) {
-        let temp = formMin(eventArray.slice(0, i))
-        min.push(temp)
-    }
-    return min
-}
-
 function createDatasets(events, eventsObj) {
     let backgroundColors = [
         'rgba(255, 99, 132, 0.2)',
@@ -105,7 +95,6 @@ function createDatasets(events, eventsObj) {
             switch(currEventObj.variable){
                 case("Daily Value"):
                     data = Object.values(fillArray(events, currEventObj).data).reverse()
-                    console.log(data)
                     type = 'line'
                     break;
                 case('Max'):
@@ -128,7 +117,6 @@ function createDatasets(events, eventsObj) {
                     break;
             }
         }
-        console.log(data)
         if (currEventObj.value) {
             let temp = {
                 type: type,

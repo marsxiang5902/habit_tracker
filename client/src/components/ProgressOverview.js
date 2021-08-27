@@ -1,5 +1,6 @@
-import { pct, streaks, totalDayCompletion } from "../lib/dataServices"
+import { formAvg, formMax, formMin, formSum, pct, streaks, totalDayCompletion } from "../lib/dataServices"
 import { Table } from "react-bootstrap"
+import { getNumFormFields, getSomeEvents } from "../lib/locateEvents"
 
 function DisplayOverview(props){
 
@@ -17,7 +18,7 @@ function DisplayOverview(props){
         )
     }
 
-    let table = 
+    let habitTable = 
     <Table striped bordered hover variant="dark">
         <thead>
         <tr>
@@ -42,6 +43,35 @@ function DisplayOverview(props){
         </tbody>
     </Table>
 
+    let fields = getNumFormFields(props.context)
+    let fieldNames = Object.keys(getNumFormFields(props.context))
+
+    let formTable = 
+    <Table striped bordered hover variant="dark">
+        <thead>
+        <tr>
+            <th>Field</th>
+            <th>Max</th>
+            <th>Min</th>
+            <th>Sum</th>
+            <th>Average</th>
+        </tr>
+        </thead>
+        <tbody>
+        {Object.values(fields).map((item, index) => {
+            console.log(item)
+            return(
+            <tr>
+                <td>{fieldNames[index]}</td>
+                <td>{`${formMax(Object.values(item))}`}</td>
+                <td>{`${formMin(Object.values(item))}`}</td>
+                <td>{`${formSum(Object.values(item))}`}</td>
+                <td>{`${formAvg(Object.values(item))}`}</td>
+            </tr>)
+        })}
+        </tbody>
+    </Table>
+
     return(
         <>
             <div className="data-grid">
@@ -56,7 +86,8 @@ function DisplayOverview(props){
                 </div>
             </div>
             <div className="data-table">
-                {table}
+                {formTable}
+                {habitTable}
             </div>
         </>
     )
