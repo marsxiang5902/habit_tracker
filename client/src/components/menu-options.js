@@ -46,6 +46,12 @@ export const SidebarData = [
     cName: 'nav-text',
   },
   {
+    title: 'Partner',
+    path: '/accountability',
+    icon: <Icons.FaUsers />,
+    cName: 'nav-text'
+  },
+  {
     title: 'User',
     path: '/user',
     icon: <Icons.FaUserAlt />,

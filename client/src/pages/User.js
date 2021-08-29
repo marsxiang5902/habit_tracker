@@ -34,6 +34,11 @@ function User(props) {
                                     onChange={(e) => setDayStartMin(parseInt(e.target.value))} />
                             </Col>
                         </Row>
+
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Partner</Form.Label>
+                        <Form.Control type="text" placeholder={context.session.partner || 'None'} readOnly />
                     </Form.Group>
 
                     <Button variant="primary" type="submit">

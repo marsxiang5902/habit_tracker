@@ -7,7 +7,6 @@ import "../static/layout.css";
 import AuthButtons from "../auth/AuthButtons";
 import { appContext } from "../context/appContext";
 import fetchData from "../api/fetchData";
-import update from "immutability-helper"
 
 function Layout(props) {
     const [menu, setMenu] = useState(false);
@@ -52,8 +51,7 @@ function Layout(props) {
                 <h4>
                     <Icons.FaRedo className="hover button" onClick={async () => {
                         if (context.session.isAuthed) {
-                            let timedEvents = await fetchData(context.session)
-                            context.setContext(update(context, { timedEvents: { "$merge": { ...timedEvents } } }))
+                            context.setContext(await fetchData(context.session.user, context.session.jwt))
                         }
                     }} />
                 </h4>

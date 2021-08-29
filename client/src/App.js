@@ -17,6 +17,7 @@ import { getAllEvents } from './lib/locateEvents';
 import DataRoom from './pages/Dataroom';
 import Stacks from './pages/Stacks';
 import Forms from './pages/Forms';
+import Accountability from './pages/Accountability';
 
 class App extends React.Component {
   constructor(props) {
@@ -41,23 +42,10 @@ class App extends React.Component {
     if (token) {
       let decoded = jwt.decode(token)
       if ('user' in decoded && 'perms' in decoded) {
+        let context = await fetchData(decoded.user, token)
+        this.setContext(context)
 
-        let userRecord = (await makeRequest(`users/${decoded.user}`, 'get', {}, token)).data
-        let session = {
-          isAuthed: true,
-          jwt: token,
-          ...userRecord
-        }
-
-        let timedEvents = await fetchData(session)
-        this.setState({
-          context: {
-            session: session,
-            timedEvents: timedEvents,
-          }
-        })
-
-        this.unsubscribeToNotifications = subscribeToNotifications(userRecord.dayStartTime, () => (
+        this.unsubscribeToNotifications = subscribeToNotifications(context.session.dayStartTime, () => (
           getAllEvents(this.state.context)
         ), () => { this.props.history.push('/') })
         this.props.history.push('/')
@@ -90,17 +78,11 @@ class App extends React.Component {
             <Route path="/habits" render={(props) => (
               <Habits setContext={this.setContext} handleLogout={this.handleLogout} />
             )} />
-            <Route path="/triggers" render={(props) => (
-              <Triggers setContext={this.setContext} handleLogout={this.handleLogout} />
-            )} />
-            <Route path="/stacks" render={(props) => (
-              <Stacks handleLogout={this.handleLogout} />
-            )} />
-            <Route path="/forms" render={(props) => (
-              <Forms handleLogout={this.handleLogout} />
-            )} />
             <Route path="/user" render={(props) => (
               <User setContext={this.setContext} handleLogout={this.handleLogout} />
+            )} />
+            <Route path="/accountability" render={(props) => (
+              <Accountability setContext={this.setContext} handleLogout={this.handleLogout} />
             )} />
             <Route path="/data" render={(props) => (
               <DataRoom setContext={this.setContext} handleLogout={this.handleLogout} />
