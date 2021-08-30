@@ -92,7 +92,8 @@ function pct(habits) {
     let all = []
     for (let habit in habits) {
         habit = habits[habit]
-        let currPct = calcPct(habit['checkedHistory'])
+        console.log(Object.values(habit['checkedHistory']))
+        let currPct = calcPct(Object.values(habit['checkedHistory']))
         max = checkMax(currPct, habit.name, max)
         all.push({ 'value': currPct, 'name': habit.name })
     }
