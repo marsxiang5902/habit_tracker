@@ -24,7 +24,6 @@ function HabitObject(habits, basedOnState = false) {
             setChecked(temp)
         }
     }
-    console.log(checked)
     let checkboxChange = async (event, index, context = null, record = null, setContext = null) => {
         let temp = [...checked]
         temp[index].value = event.target.checked

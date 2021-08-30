@@ -49,7 +49,6 @@ function SideBar(props){
 
 function LineChart(props){
     let habitObj = HabitObject(props.events)
-    console.log(props.forms)
     return(
     <div className="wrapper">
         <div className="data-grid" style={{marginTop: "20px", marginBottom: "20px"}}>

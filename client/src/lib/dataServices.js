@@ -77,6 +77,7 @@ function streaks(habits) {
 
 //avg
 function calcPct(items) {
+    items = items.filter(val => !isNaN(val))
     try {
         let percent = 0;
         for (let key in items) {
@@ -142,6 +143,7 @@ function formSum(form){
 //avg
 function formAvg(form){
     let scale = 100;
+    form = form.filter(x => !isNaN(x))
     if(formMax(form) <= 10) scale = 1
     return Math.floor(scale * formSum(form) / form.length)
 }
