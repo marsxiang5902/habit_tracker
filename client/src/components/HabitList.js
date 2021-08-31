@@ -1,7 +1,7 @@
 import { React, useState } from 'react'
 import { updateEventHistory } from '../services/eventServices'
 
-function HabitObject(habits, basedOnState = false) {
+function HabitObject(habits, basedOnState = false, numOnly = true) {
 
     let [checked, setChecked] = useState([])
     if (checked.length < Object.keys(habits).length) {
@@ -15,6 +15,10 @@ function HabitObject(habits, basedOnState = false) {
                     let currFormField = habits[i].formLayout[field]
                     if (currFormField[1] === "num"){
                         temp.push({ 'name': currFormField[0], 'value': false, 'id': habits[i]._id, 'variable': "Daily Value", 'type': habits[i].type, 'data': habits[i].formData[currFormField[0]] })
+                    }
+                    else if (!numOnly){
+                        temp.push({ 'name': currFormField[0], 'value': false, 'id': habits[i]._id, 'variable': "Daily Value", 'type': habits[i].type, 'data': habits[i].formData[currFormField[0]] })
+
                     }
                 }
             }

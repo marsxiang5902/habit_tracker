@@ -4,11 +4,16 @@ import { calcPct, formAvg, formMax, formMin, formSum } from "../lib/dataServices
 function maxLength(habits) {
     let lengths = []
     for (let habit in habits) {
-        lengths.push(Object.keys(habits[habit]['checkedHistory']).length)
+        try{
+            lengths.push(Object.keys(habits[habit]['checkedHistory']).length)
+        }
+        catch(err){
+            lengths.push(Object.keys(habits[habit]['data']).length)
+        }
     }
     let max = Math.max(...lengths)
     let final = []
-    for (let i = 0; i < max - 1; i += 1) {
+    for (let i = 0; i < max; i += 1) {
         final.push(i)
     }
     return final
@@ -132,4 +137,4 @@ function createDatasets(events, eventsObj) {
     return datasets
 }
 
-export { maxLength, createDatasets }
+export { maxLength, createDatasets, fillArray }

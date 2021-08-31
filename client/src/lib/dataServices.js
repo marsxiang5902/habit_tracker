@@ -1,14 +1,11 @@
-import { getDay } from "./time"
-
-//assuming the habit starts on day 0
 function updatedHabitHistory(habits) {
     let updHistory = []
     let updObj = []
     let d = new Date()
     for (let habit in habits) {
         habit = habits[habit]
-        let initialDate = getDay(d.setDate(d.getDate() - Object.keys(habit.checkedHistory).length))
-        for (let i = 0, day = initialDate; i < Object.keys(habit.checkedHistory).length; i++, day++) {
+        d.setDate(d.getDate() - Object.keys(habit.checkedHistory).length)
+        for (let i = 0, day = d.getDay(); i < Object.keys(habit.checkedHistory).length; i++, day++) {
             if (day == 7) {
                 day = 0
             }

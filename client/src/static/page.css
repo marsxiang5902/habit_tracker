@@ -18,6 +18,15 @@
     gap: 10px 50px;
 }
 
+.log-formatter {
+    display: grid;
+    grid-template-areas:    "1 2 3" 
+                            "1 2 3";
+    padding-left: 10%;
+    padding-right: 10%;
+    gap: 10px 50px;
+}
+
 .data-grid {
     display: flex;
     align-items: center;
@@ -81,7 +90,7 @@
     width: clamp(fit-content, 40%, 40%);
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: baseline;
 }
 
 .fullheader {
@@ -255,4 +264,12 @@ select{
 
 .trigger-list {
     background-color: rgb(239, 244, 255);
+}
+
+.log-card {
+    width: 18rem; 
+    margin-left: 5%;
+    margin-top: 20px; 
+    background-color: white;
+    padding: 20px 20px 10px 20px;
 }

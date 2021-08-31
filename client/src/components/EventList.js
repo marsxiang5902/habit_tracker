@@ -193,7 +193,7 @@ function EventList(props) {
           <div className="card-2 border-2" key={_id}>
             <div className="habit habit-2 inline">
               {props.type === '1' ?
-                <h5 className="habit no-padding-top">{record.name}</h5> :
+                <p className="habit no-padding-top">{record.name}</p> :
                 <DisplayHabit onChange={habitObj.edit.checkbox}
                   item={habitObj.value[index]} index={index} context={context} record={record}
                   setContext={props.setContext} all={true} />
