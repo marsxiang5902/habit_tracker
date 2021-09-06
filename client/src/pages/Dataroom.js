@@ -7,6 +7,7 @@ import DisplayOverview from "../components/ProgressOverview";
 import { LineChart } from "../components/Chart";
 import { Calendar } from "../components/Calendar";
 import { getAllEvents, getSomeEvents } from "../lib/locateEvents";
+import { DisplayEntries } from "../components/Log";
 
 function DataRoom(props) {
 
@@ -28,9 +29,9 @@ function DataRoom(props) {
             <Nav.Item>
                 <Nav.Link eventKey="1">Graphs</Nav.Link>
             </Nav.Item>
-            {/* <Nav.Item>
-                <Nav.Link eventKey="2">Calendar</Nav.Link>
-            </Nav.Item> */}
+            <Nav.Item>
+                <Nav.Link eventKey="2">Log</Nav.Link>
+            </Nav.Item>
         </Nav>
 
 
@@ -42,8 +43,7 @@ function DataRoom(props) {
         renderContent = <LineChart habits={context.timedEvents.habit} forms={context.timedEvents.form} events={events}></LineChart>
     }
     else{
-        // renderContent = <Calendar habits={context.timedEvents.habit}></Calendar>
-        renderContent = null
+        renderContent = <DisplayEntries context={context} />
     }
 
     if (!context.session.isAuthed) {

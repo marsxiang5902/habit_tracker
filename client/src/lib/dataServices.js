@@ -1,14 +1,11 @@
-import { getDay } from "./time"
-
-//assuming the habit starts on day 0
 function updatedHabitHistory(habits) {
     let updHistory = []
     let updObj = []
     let d = new Date()
     for (let habit in habits) {
         habit = habits[habit]
-        let initialDate = getDay(d.setDate(d.getDate() - Object.keys(habit.checkedHistory).length))
-        for (let i = 0, day = initialDate; i < Object.keys(habit.checkedHistory).length; i++, day++) {
+        d.setDate(d.getDate() - Object.keys(habit.checkedHistory).length)
+        for (let i = 0, day = d.getDay(); i < Object.keys(habit.checkedHistory).length; i++, day++) {
             if (day == 7) {
                 day = 0
             }
@@ -77,6 +74,7 @@ function streaks(habits) {
 
 //avg
 function calcPct(items) {
+    items = items.filter(val => !isNaN(val))
     try {
         let percent = 0;
         for (let key in items) {
@@ -91,7 +89,7 @@ function pct(habits) {
     let all = []
     for (let habit in habits) {
         habit = habits[habit]
-        let currPct = calcPct(habit['checkedHistory'])
+        let currPct = calcPct(Object.values(habit['checkedHistory']))
         max = checkMax(currPct, habit.name, max)
         all.push({ 'value': currPct, 'name': habit.name })
     }
@@ -142,6 +140,7 @@ function formSum(form){
 //avg
 function formAvg(form){
     let scale = 100;
+    form = form.filter(x => !isNaN(x))
     if(formMax(form) <= 10) scale = 1
     return Math.floor(scale * formSum(form) / form.length)
 }

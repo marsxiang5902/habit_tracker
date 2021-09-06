@@ -110,7 +110,7 @@ function ModalBody(props) {
     </>
 }
 
-function TimedForm(props) {
+function EditForm(props) {
     let [modalShown, setModalShown] = useState(false)
     let record = props.record
 
@@ -150,9 +150,9 @@ function FormList(props) {
             <h2>Forms</h2>
         </div>
         {records && Object.keys(records).map(_id =>
-            <TimedForm record={records[_id]} key={_id} />
+            <EditForm record={records[_id]} key={_id} />
         )}
     </>
 }
 
-export {FormList, TimedForm}
+export {FormList, EditForm}

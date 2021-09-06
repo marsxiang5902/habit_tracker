@@ -4,7 +4,12 @@ import { calcPct, formAvg, formMax, formMin, formSum } from "../lib/dataServices
 function maxLength(habits) {
     let lengths = []
     for (let habit in habits) {
-        lengths.push(Object.keys(habits[habit]['checkedHistory']).length)
+        try{
+            lengths.push(Object.keys(habits[habit]['checkedHistory']).length)
+        }
+        catch(err){
+            lengths.push(Object.keys(habits[habit]['data']).length)
+        }
     }
     let max = Math.max(...lengths)
     let final = []
@@ -17,7 +22,7 @@ function maxLength(habits) {
 function fillArray(events, event){
     let length = maxLength(events).length
     let temp = {};
-        for(let i = 0; i < length - 1; i++){
+        for(let i = 0; i < length; i++){
             if(event.data[i]===undefined){
                 temp[i] = NaN
             }
@@ -29,9 +34,9 @@ function fillArray(events, event){
     return event
 }
 
-function dailyCompletion(habit) {
+function dailyCompletion(events, habit) {
     let completions = []
-    let habitArray = Object.values(habit.data).reverse()
+    let habitArray = Object.values(fillArray(events, habit).data).reverse()
     for (let value in habit.data) {
         if (habitArray[value]) {
             completions.push(10)
@@ -43,9 +48,9 @@ function dailyCompletion(habit) {
     return completions
 }
 
-function dailyPercentage(habit) {
+function dailyPercentage(events, habit) {
     let percentages = []
-    let habitArray = Object.values(habit.data).reverse()
+    let habitArray = Object.values(fillArray(events, habit).data).reverse()
     for (let i = 0; i < Object.keys(habit.data).length; i++) {
         let temp = calcPct(habitArray.slice(0, i))
         percentages.push(temp)
@@ -54,13 +59,13 @@ function dailyPercentage(habit) {
 }
 
 function iterator(event, func){
-    let max = []
+    let ret = []
     let eventArray = Object.values(event.data).reverse()
     for (let i = 0; i < Object.keys(event.data).length; i++) {
         let temp = func(eventArray.slice(0, i))
-        max.push(temp)
+        ret.push(temp)
     }
-    return max
+    return ret
 }
 
 function createDatasets(events, eventsObj) {
@@ -87,7 +92,7 @@ function createDatasets(events, eventsObj) {
         let data, type;
 
         if (currEvent.type === "habit"){
-            data = currEventObj.variable === "Daily Completion" ? dailyCompletion(currEventObj) : dailyPercentage(currEventObj)
+            data = currEventObj.variable === "Daily Completion" ? dailyCompletion(events, currEventObj) : dailyPercentage(events, currEventObj)
             type = currEventObj.variable === "Daily Completion" ? 'bar' : 'line'
 
         }
@@ -132,4 +137,4 @@ function createDatasets(events, eventsObj) {
     return datasets
 }
 
-export { maxLength, createDatasets }
+export { maxLength, createDatasets, fillArray }

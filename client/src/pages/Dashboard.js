@@ -189,4 +189,4 @@ function Dashboard(props) {
     )
 }
 
-export {Dashboard, TimedForm};
+export {Dashboard, TimedForm, ModalBody};

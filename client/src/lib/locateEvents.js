@@ -31,10 +31,8 @@ function getNumFormFields(context){
     let forms = getSomeEvents(context, ['form'])
     let ret = {}
     for (let form in forms){
-        console.log(form)
         form = forms[form]
         for (let field in form.formLayout){
-            console.log(field)
             let currFormField = form.formLayout[field]
             if (currFormField[1] === "num"){
                 ret[currFormField[0]] = form.formData[currFormField[0]]

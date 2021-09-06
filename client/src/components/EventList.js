@@ -7,7 +7,8 @@ import { calcPct as pct } from '../lib/dataServices'
 import { DisplayHabit, HabitObject } from './HabitList';
 import { StackBody } from './StackList';
 import { Event, TriggerList } from './TriggerList';
-import { TimedForm } from './FormList';
+import { EditForm } from './FormList';
+import { ModalBody as FormEntry } from '../pages/Dashboard';
 import noCheckedHistory from '../lib/noCheckedHistory';
 
 
@@ -103,6 +104,8 @@ let ActivationPopover = React.forwardRef((props, ref) => {
 function EventList(props) {
   const [editPopoverId, setEditPopoverId] = useState("")
   const [activationPopoverId, setActivationPopoverId] = useState("")
+  const [formModalShown, setFormModalShown] = useState(false)
+
 
   const [name, setName] = useState("")
   const [formVisible, setFormVisible] = useState(false)
@@ -116,6 +119,23 @@ function EventList(props) {
     setFormVisible(false)
     setName("")
   }
+
+  let formModal = (record) => <Modal
+    size="lg"
+    aria-labelledby="contained-modal-title-vcenter"
+    centered
+    show={formModalShown}
+    onHide={() => setFormModalShown(false)}
+  >
+    <Modal.Header closeButton>
+      <Modal.Title id="contained-modal-title-vcenter">
+        {record.name}
+      </Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+      <FormEntry record={record} hide={() => { setFormModalShown(false) }} />
+    </Modal.Body>
+  </Modal>
 
   let modalBody = (record, _id) => <Modal
     size="lg"
@@ -146,7 +166,7 @@ function EventList(props) {
         />}
       {!noCheckedHistory.has(props.type) && <Event setContext={props.setContext} key={_id} record={record} />}
       {props.type === "stack" && <StackBody record={record} />}
-      {props.type === "form" && <TimedForm record={record} key={_id} />}
+      {props.type === "form" && <EditForm record={record} key={_id} />}
     </Modal.Body>
   </Modal>
 
@@ -172,7 +192,7 @@ function EventList(props) {
           <div className="card-2 border-2" key={_id}>
             <div className="habit habit-2 inline">
               {props.type === '1' ?
-                <h5 className="habit no-padding-top">{record.name}</h5> :
+                <p className="habit no-padding-top">{record.name}</p> :
                 <DisplayHabit onChange={habitObj.edit.checkbox}
                   item={habitObj.value[index]} index={index} context={context} record={record}
                   setContext={props.setContext} all={true} />
@@ -180,11 +200,14 @@ function EventList(props) {
               {/* {props.type === 'habit' && <h4 className="habit no-padding-top">{pct(record.history)}%</h4>} */}
             </div>
             <div>
+              {record.type === "form" ? <Icons.FaClipboardList className="hover" style={{ marginRight: '20px' }}
+                onClick={() => { setFormModalShown(true) }} /> : null}
               <Icons.FaPencilAlt
                 className={"hover"}
                 style={{ marginRight: '20px' }}
                 onClick={() => { setEditPopoverId(editPopoverId === _id ? "" : _id) }} />
               {modalBody(record, _id)}
+              {formModal(record)}
             </div>
           </div>
         );

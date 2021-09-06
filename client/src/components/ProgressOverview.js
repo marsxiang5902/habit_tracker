@@ -2,6 +2,8 @@ import { formAvg, formMax, formMin, formSum, pct, streaks, totalDayCompletion } 
 import { Table } from "react-bootstrap"
 import { getNumFormFields, getSomeEvents } from "../lib/locateEvents"
 
+//streaks are messed up, constantly changing
+
 function DisplayOverview(props){
 
     let strk = streaks(props.context.timedEvents.habit)
@@ -59,7 +61,6 @@ function DisplayOverview(props){
         </thead>
         <tbody>
         {Object.values(fields).map((item, index) => {
-            console.log(item)
             return(
             <tr>
                 <td>{fieldNames[index]}</td>
