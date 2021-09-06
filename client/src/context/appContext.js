@@ -5,13 +5,11 @@ const defaultAppContext = {
         isAuthed: false,
         jwt: "",
         user: null,
-        perms: [],
+        perms: []
     },
     timedEvents: {
-        loading: true,
-        habit: [],
-        todo: []
-    },
+        loading: true
+    }
 }
 
 const appContext = React.createContext(defaultAppContext)

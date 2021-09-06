@@ -15,6 +15,9 @@ function Editor(props) {
                 <div className="container" id="todo">
                     <EventList setContext={props.setContext} title="Todos" type="todo" />
                 </div>
+                <div className="container" id="goal">
+                    <EventList setContext={props.setContext} title="Goals" type="goal" />
+                </div>
                 <div className="container" id="reward">
                     <EventList setContext={props.setContext} title="Rewards" type="reward" />
                 </div>

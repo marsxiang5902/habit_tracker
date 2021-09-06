@@ -4,6 +4,7 @@ import { Form, Row, Col, Popover, OverlayTrigger, Button, } from 'react-bootstra
 import { addEvent, updateEvent, deleteEvent } from '../services/eventServices';
 import { appContext } from '../context/appContext';
 import { calcPct as pct } from '../lib/dataServices'
+import noCheckedHistory from '../lib/noCheckedHistory';
 
 
 function capitalizeFirst(str) {
@@ -129,7 +130,7 @@ function EventList(props) {
               <h4 className="habit no-padding-top">{record.name}</h4>
             </div>
             <div>
-              {props.type !== 'todo' &&
+              {!(props.type in noCheckedHistory) &&
                 <OverlayTrigger
                   trigger="click"
                   placement="left"

@@ -4,6 +4,7 @@ import '../static/page.css'
 import Layout from '../components/layout';
 import { updateEventHistory } from '../services/eventServices';
 import { getAllEvents } from '../lib/locateEvents';
+import noCheckedHistory from '../lib/noCheckedHistory';
 
 function Habits(props) {
     const context = useContext(appContext)
@@ -13,7 +14,7 @@ function Habits(props) {
             <Layout name="🗺 THE LITTLE THINGS" handleLogout={props.handleLogout} />
             {Object.keys(allEvents).map(_id => {
                 let record = allEvents[_id]
-                if (record.type === 'todo') {
+                if (noCheckedHistory.has(record.type)) {
                     return null
                 }
                 let checked = false

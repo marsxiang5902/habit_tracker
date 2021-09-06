@@ -4,6 +4,7 @@ import { Modal, OverlayTrigger, Popover, Dropdown, DropdownButton, Button } from
 import * as Icons from "react-icons/fa";
 import { getEventById } from "../lib/locateEvents";
 import { updateEvent } from "../services/eventServices";
+import noCheckedHistory from "../lib/noCheckedHistory";
 
 let PreviewPopover = React.forwardRef((props, ref) => {
     let context = useContext(appContext)
@@ -29,11 +30,11 @@ function StackBody(props) {
     const noItem = { _id: null, name: "New Event" }
     let dropdownContents = { null: noItem }
     for (let type in context.timedEvents) {
-        if (type === 'todo' || type === 'stack') {
-            continue;
-        }
-        for (let _id in context.timedEvents[type]) {
-            dropdownContents[_id] = context.timedEvents[type][_id]
+        console.log(type, noCheckedHistory, type in noCheckedHistory)
+        if (!noCheckedHistory.has(type) && type !== 'stack') {
+            for (let _id in context.timedEvents[type]) {
+                dropdownContents[_id] = context.timedEvents[type][_id]
+            }
         }
     }
 

@@ -8,6 +8,7 @@ import { DisplayHabit, HabitObject } from './HabitList';
 import { StackBody } from './StackList';
 import { Event, TriggerList } from './TriggerList';
 import { TimedForm } from './FormList';
+import noCheckedHistory from '../lib/noCheckedHistory';
 
 
 function capitalizeFirst(str) {
@@ -21,6 +22,7 @@ let EditPopover = React.forwardRef((props, ref) => {
 
   async function handleEdit(event) {
     event.preventDefault();
+    console.log(props.record)
     props.setContext(await (del ? deleteEvent(context, props.record) :
       updateEvent(context, props.record, { name }))
     )
@@ -134,15 +136,15 @@ function EventList(props) {
         type={props.type}
         setContext={props.setContext}
         hidePopover={() => { setEditPopoverId("") }} />
-      {props.type !== 'todo' ?
+      {!noCheckedHistory.has(props.type) &&
         <ActivationPopover
           record={record}
           type={props.type}
           setContext={props.setContext}
           style={{ maxWidth: '350px' }}
           hidePopover={() => { setActivationPopoverId("") }}
-        /> : null}
-      {props.type !== "todo" && <Event setContext={props.setContext} key={_id} record={record} />}
+        />}
+      {!noCheckedHistory.has(props.type) && <Event setContext={props.setContext} key={_id} record={record} />}
       {props.type === "stack" && <StackBody record={record} />}
       {props.type === "form" && <TimedForm record={record} key={_id} />}
     </Modal.Body>
@@ -152,9 +154,6 @@ function EventList(props) {
     return null
   }
   let habitObj = HabitObject(records, true);
-  if (props.type === 'habit' || props.type === 'todo') {
-    habitObj = HabitObject(records, true)
-  }
   return !context.timedEvents.loading && (
     <>
 

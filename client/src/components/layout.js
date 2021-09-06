@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import * as Icons from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { SidebarData } from "./menu-options";
+import getSidebarData from "./menu-options";
 import { IconContext } from "react-icons";
 import "../static/layout.css";
 import AuthButtons from "../auth/AuthButtons";
@@ -29,7 +29,7 @@ function Layout(props) {
                                     <Icons.FaRegWindowClose />
                                 </Link>
                             </li>
-                            {SidebarData.map((item, index) => {
+                            {getSidebarData(context).map((item, index) => {
                                 return (
                                     <li key={index} className={item.cName}>
                                         <Link to={item.path}>

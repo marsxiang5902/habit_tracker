@@ -12,7 +12,8 @@
 .formatter {
     display: grid;
     grid-template-areas:    "habit    todo" 
-                            "reward    stack";
+                            "goal     reward"
+                            "stack    form";
     padding-left: 10%;
     padding-right: 10%;
     gap: 10px 50px;
