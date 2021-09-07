@@ -1,8 +1,8 @@
 import { React, useState } from 'react'
+import noCheckedHistory from '../lib/noCheckedHistory'
 import { updateEventHistory } from '../services/eventServices'
 
 function HabitObject(habits, basedOnState = false, numOnly = true) {
-
     let [checked, setChecked] = useState([])
     if (checked.length < Object.keys(habits).length) {
         for (let i in habits) {
@@ -51,11 +51,13 @@ let DisplayHabit = (props) => {
     return (
         <div className="habit-list" key={props.index}>
 
-            <input type="checkbox" className="checkbox"
-                checked={props.item.value}
-                onChange={(e) => props.all ? props.onChange(e, props.index, props.context, props.record, props.setContext)
-                    : props.onChange(e, props.index)}
-            />
+            {!noCheckedHistory.has(props.record.type) &&
+                <input type="checkbox" className="checkbox"
+                    checked={props.item.value}
+                    onChange={(e) => props.all ? props.onChange(e, props.index, props.context, props.record, props.setContext)
+                        : props.onChange(e, props.index)}
+                />
+            }
 
             <div className="habit">
                 <h5 style={{ marginBottom: "0px" }}>{props.record ? props.record.name : props.item.name}</h5>
