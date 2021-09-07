@@ -47,6 +47,7 @@ function DisplayOverview(props){
 
     let fields = getNumFormFields(props.context)
     let fieldNames = Object.keys(getNumFormFields(props.context))
+    console.log(fields)
 
     let formTable = 
     <Table striped bordered hover variant="dark">

@@ -54,7 +54,6 @@ function DisplayEntries(props){
     let length = maxLength(events)
     let numFields = getNumFormFields(props.context)
     numFields = HabitObject(numFields).value
-    console.log(numFields)
     events = HabitObject(events, false, false).value
 
     for (let event in events){
@@ -84,7 +83,7 @@ function DisplayEntries(props){
             <ModalBody day={idx} events={events} hide={() => { setModalShown(false) }} />
         </Modal.Body>
       </Modal>)
-      
+
 
     let DayCard = (props) => <div className="border-2 log-card">
     <div className="subheader">
@@ -104,7 +103,16 @@ function DisplayEntries(props){
                 return <>
                 <input type="checkbox" id="box" checked={data[props.day]}/>
                 <label for="box" style={{paddingLeft: "10px"}}>{item.name}</label>
-                <hr />
+                <hr></hr>
+                </>
+            }
+            else if(typeof(data[props.day]) === "number"){
+                return <>
+                <div style={{display: "flex", justifyContent: "space-between"}}>
+                <p style={{marginBottom: "0px"}}>{item.name}</p>
+                <p style={{marginBottom: "0px"}}>{data[props.day]}</p>
+                </div>
+                <hr></hr>
                 </>
             }
         }
