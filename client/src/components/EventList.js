@@ -106,7 +106,6 @@ function EventList(props) {
   const [activationPopoverId, setActivationPopoverId] = useState("")
   const [formModalShown, setFormModalShown] = useState(false)
 
-
   const [name, setName] = useState("")
   const [formVisible, setFormVisible] = useState(false)
 

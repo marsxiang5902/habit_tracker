@@ -34,7 +34,7 @@ class EditPopover extends React.Component {
                 <Form onSubmit={(e) => { e.preventDefault() }}>
                     <Form.Group>
                         {Object.keys(renderedFields).map(key => (
-                            <Form.Control className="text-form" type="text" placeholder={renderedFields[key]}
+                            <Form.Control key={key} className="text-form" type="text" placeholder={renderedFields[key]}
                                 value={this.state[key]} onChange={(e) => { this.setState({ [key]: e.target.value }) }} />
                             // HARDCODE: ASSUMED ALL VALUES ARE STRINGS
                         ))}
@@ -180,4 +180,4 @@ function TriggerList(props) {
     )
 }
 
-export {Event, TriggerList}
+export { Event, TriggerList }
