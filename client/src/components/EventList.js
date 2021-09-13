@@ -105,6 +105,7 @@ function EventList(props) {
   const [editPopoverId, setEditPopoverId] = useState("")
   const [activationPopoverId, setActivationPopoverId] = useState("")
   const [formModalShown, setFormModalShown] = useState(false)
+  const [formRecord, setFormRecord] = useState({})
 
   const [name, setName] = useState("")
   const [formVisible, setFormVisible] = useState(false)
@@ -119,7 +120,7 @@ function EventList(props) {
     setName("")
   }
 
-  let formModal = (record) => <Modal
+  let formModal = () => <Modal
     size="lg"
     aria-labelledby="contained-modal-title-vcenter"
     centered
@@ -128,11 +129,11 @@ function EventList(props) {
   >
     <Modal.Header closeButton>
       <Modal.Title id="contained-modal-title-vcenter">
-        {record.name}
+        {formRecord.name}
       </Modal.Title>
     </Modal.Header>
     <Modal.Body>
-      <FormEntry record={record} hide={() => { setFormModalShown(false) }} />
+      <FormEntry record={formRecord} hide={() => { setFormModalShown(false) }} />
     </Modal.Body>
   </Modal>
 
@@ -200,7 +201,7 @@ function EventList(props) {
             </div>
             <div>
               {record.type === "form" ? <Icons.FaClipboardList className="hover" style={{ marginRight: '20px' }}
-                onClick={() => { setFormModalShown(true) }} /> : null}
+                onClick={() => { setFormModalShown(true); setFormRecord(record) }} /> : null}
               <Icons.FaPencilAlt
                 className={"hover"}
                 style={{ marginRight: '20px' }}
