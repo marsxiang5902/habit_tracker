@@ -30,7 +30,6 @@ function StackBody(props) {
     const noItem = { _id: null, name: "New Event" }
     let dropdownContents = { null: noItem }
     for (let type in context.timedEvents) {
-        console.log(type, noCheckedHistory, type in noCheckedHistory)
         if (!noCheckedHistory.has(type) && type !== 'stack') {
             for (let _id in context.timedEvents[type]) {
                 dropdownContents[_id] = context.timedEvents[type][_id]
@@ -81,7 +80,7 @@ function StackBody(props) {
                 ))}
             </DropdownButton>
             <Button onClick={() => {
-                if (newElem !== null && newElem._id) {
+                if (newElem !== null) {
                     setAr([...ar, newElem])
                     setNewElem(null)
                 }
