@@ -42,7 +42,6 @@ async function updateEventFormHistory(context, event, updObj) {
 async function deleteEvent(context, event) {
     let res = await makeRequest(`events/${event._id}`, 'DELETE', {}, context.session.jwt)
     if (!res.error) {
-        console.log(event)
         return update(context, { timedEvents: { [event.type]: { "$unset": [event._id] } } })
     } return context
 }
