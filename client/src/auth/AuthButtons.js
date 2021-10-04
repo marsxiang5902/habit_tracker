@@ -15,8 +15,8 @@ function AuthButtons(props) {
     } else {
         return (
             <div>
-                <Button style={{ marginRight: "5px" }}><Link to="/login" style={{ color: 'white' }}>Login</Link></Button>
-                <Button style={{ marginRight: "5px" }}><Link to="/signup" style={{ color: 'white' }}>Signup</Link></Button>
+                <Button style={{ marginRight: "5px" }}><Link to="/app/login" style={{ color: 'white' }}>Login</Link></Button>
+                <Button style={{ marginRight: "5px" }}><Link to="/app/signup" style={{ color: 'white' }}>Signup</Link></Button>
             </div>
         )
     }

@@ -64,7 +64,7 @@ class App extends React.Component {
       <appContext.Provider value={{ ...this.state.context, setContext: this.setContext, getContext: this.getContext }}>
         <div className="App">
           <Switch>
-            <Route path="/app/" exact render={(props) => {
+            <Route path="/app" exact render={(props) => {
               return (
                 <Dashboard handleLogout={this.handleLogout} />
               )
