@@ -7,6 +7,7 @@ import "../static/layout.css";
 import AuthButtons from "../auth/AuthButtons";
 import { appContext } from "../context/appContext";
 import fetchData from "../api/fetchData";
+import path from 'path';
 
 function Layout(props) {
     const [menu, setMenu] = useState(false);
@@ -32,7 +33,7 @@ function Layout(props) {
                             {getSidebarData(context).map((item, index) => {
                                 return (
                                     <li key={index} className={item.cName}>
-                                        <Link to={item.path}>
+                                        <Link to={path.join('/app/', item.path)}>
                                             {item.icon}
                                             <span>{item.title}</span>
                                         </Link>

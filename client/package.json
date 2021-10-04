@@ -23,7 +23,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "(if exist \"./build\" rmdir /s /q \"./build\") && set \"INLINE_RUNTIME_CHUNK=false\" && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -44,5 +44,7 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "homepage": "/app",
+  "proxy": "/api"
 }
