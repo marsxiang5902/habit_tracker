@@ -87,7 +87,7 @@ class App extends React.Component {
               <DataRoom setContext={this.setContext} handleLogout={this.handleLogout} />
             )} />
 
-            <Route path="app//signup">
+            <Route path="/app/signup">
               <Signup handleLogin={this.handleLogin} />
             </Route>
             <Route path="/app/login">
