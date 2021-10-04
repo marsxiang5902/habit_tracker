@@ -45,6 +45,24 @@ node app.js
 npm run dev
 ```
 
+## Hosting Together
+
+* Follow the [installation](#installation) instructions
+
+* Build the static client (in `client`)
+```
+npm run build
+```
+
+* Run the server (in `server`)
+```
+node app.js
+```
+or
+```
+npm run dev
+```
+
 ## API Documentation
 
 See the API Documentation in the `server` folder.
