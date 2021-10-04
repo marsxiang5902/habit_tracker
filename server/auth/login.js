@@ -27,7 +27,7 @@ async function login(user, password) {
     return generateJWT({ user: user, perms: Array.from(getPerms(userRecord.roles)) })
 }
 
-function generateJWT(data, exp = 3600 * 12) {
+function generateJWT(data, exp = 3600 * 24) {
     return jwt.sign(data, jwt_secret, { algorithm: jwt_alg, expiresIn: exp })
 }
 
