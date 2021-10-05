@@ -18,7 +18,7 @@ app.use(cors())
 app.use(morgan('combined'))
 
 app.get('/', (req, res) => {
-    res.send('front page')
+    res.redirect('/app')
 })
 
 app.use('/app/', express.static(path.join(__dirname, '../client/build')))
