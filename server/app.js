@@ -6,6 +6,8 @@ const morgan = require('morgan')
 const { do_db_setup, close_db } = require('./database/db_setup');
 const apiRouter = require('./routes/apiRouter');
 const path = require('path')
+const { expressCspHeader, INLINE, NONE, SELF } = require('express-csp-header');
+const { logError, isOperationalError } = require('./errors/errorHandler')
 
 do_db_setup()
 const app = express()
@@ -16,6 +18,13 @@ app.use(helmet())
 app.use(express.json())
 app.use(cors())
 app.use(morgan('combined'))
+app.use(expressCspHeader({
+    directives: {
+        'img-src': ['*', 'data:'],
+        'media-src': ['*', 'data:'],
+    }
+}))
+
 
 app.get('/', (req, res) => {
     res.redirect('/app')
@@ -34,6 +43,7 @@ process.on('unhandledRejection', err => {
 process.on('uncaughtException', err => {
     logError(err)
     if (!isOperationalError(err)) {
+        console.log(err)
         process.exit(1)
     }
 })
