@@ -25,12 +25,17 @@ app.use(expressCspHeader({
     }
 }))
 
-
-app.get('/', (req, res) => {
-    res.redirect('/app')
+app.get('/', (req, res)=>{
+    res.redirect('/home')
 })
 
-app.use('/app/', express.static(path.join(__dirname, '../client/build')))
+app.use('/home/', express.static(path.join(__dirname, '../front_page')));
+app.get('/home/*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../front_page', 'index.html'));
+});
+
+
+app.use('/app/', express.static(path.join(__dirname, '../client/build')));
 app.get('/app/*', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
