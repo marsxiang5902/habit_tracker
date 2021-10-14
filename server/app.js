@@ -9,7 +9,7 @@ const path = require('path')
 const { expressCspHeader, INLINE, NONE, SELF } = require('express-csp-header');
 const { logError, isOperationalError } = require('./errors/errorHandler')
 
-do_db_setup()
+// do_db_setup()
 const app = express()
 const port = process.env.PORT || 8080
 
@@ -25,14 +25,17 @@ app.use(expressCspHeader({
     }
 }))
 
-app.get('/', (req, res)=>{
+app.get('/', (req, res) => {
     res.redirect('/home')
 })
 
 app.use('/home/', express.static(path.join(__dirname, '../front_page')));
-app.get('/home/*', (req, res) => {
+app.get('/home/', (req, res) => {
     res.sendFile(path.join(__dirname, '../front_page', 'index.html'));
 });
+app.get('/join/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../front_page', 'form.html'));
+})
 
 
 app.use('/app/', express.static(path.join(__dirname, '../client/build')));
