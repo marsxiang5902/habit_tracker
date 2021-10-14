@@ -9,7 +9,7 @@ const path = require('path')
 const { expressCspHeader, INLINE, NONE, SELF } = require('express-csp-header');
 const { logError, isOperationalError } = require('./errors/errorHandler')
 
-// do_db_setup()
+do_db_setup()
 const app = express()
 const port = process.env.PORT || 8080
 
