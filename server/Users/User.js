@@ -14,9 +14,14 @@ module.exports = class User {
         this.roles = ['default']
         this.password = password
         this.email = email
-        this.dayStartTime = 0
-        this.lastLoginDay = getDay(this.dayStartTime)
         this.partner = null
+        this.preferences = {
+            dayStartTime: 0,
+            theme: "light",
+            defaultShowSidebar: true,
+            sidebarOrientation: "left"
+        }
+        this.lastLoginDay = getDay(this.preferences.dayStartTime)
     }
     async init() {
         this.password_hashed = await argon2.hash(this.password)

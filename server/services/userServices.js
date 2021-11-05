@@ -15,7 +15,7 @@ let notFoundAssert = r => {
     httpAssert.NOT_FOUND(r.userRecord, `User "${r.user}" not found.`)
 }
 
-const USER_GET_SLICES = ['user', 'email', 'dayStartTime', 'partner']
+const USER_GET_SLICES = ['user', 'email', 'preferences', 'partner']
 function getUser(r) {
     notFoundAssert(r)
     return { ...sliceObject(r.userRecord, USER_GET_SLICES), perms: Array.from(getPerms(r.userRecord.roles)) }
@@ -59,7 +59,7 @@ async function getPartnerUncompletedEvents(r) {
     }
     return uncompleted
 }
-const USER_UPD_SLICES = ['email', 'dayStartTime']
+const USER_UPD_SLICES = ['email', 'preferences']
 async function updateUser(r, updObj) {
     notFoundAssert(r)
     if ('email' in updObj) {
@@ -69,7 +69,7 @@ async function updateUser(r, updObj) {
 }
 async function newDay(r) {
     notFoundAssert(r)
-    let curDay = getDay(r.userRecord.dayStartTime), dayDiff = curDay - r.userRecord.lastLoginDay
+    let curDay = getDay(r.userRecord.preferences.dayStartTime), dayDiff = curDay - r.userRecord.lastLoginDay
     if (dayDiff > 0) {
         for (let type in r.userRecord.eventLists) {
             let eventsAr = await db_getEvents(r.userRecord.eventLists[type].map(_id => ObjectId(_id)))

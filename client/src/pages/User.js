@@ -8,12 +8,16 @@ import { updateUser } from "../services/userServices";
 
 function User(props) {
     let context = useContext(appContext)
-    let [dayStartMin, setDayStartMin] = useState(context.session.dayStartTime % 60)
-    let [dayStartHour, setDayStartHour] = useState(Math.floor(context.session.dayStartTime / 60))
+    let [dayStartMin, setDayStartMin] = useState(context.session.preferences.dayStartTime % 60)
+    let [dayStartHour, setDayStartHour] = useState(Math.floor(context.session.preferences.dayStartTime / 60))
+    let [theme, setTheme] = useState(context.session.preferences.theme)
+    let [defaultShowSidebar, setDefaultShowSidebar] = useState(context.session.preferences.defaultShowSidebar)
+    let [sidebarOrientation, setSidebarOrientation] = useState(context.session.preferences.sidebarOrientation)
+
 
     async function handleSubmit(e) {
         e.preventDefault()
-        context.setContext(await updateUser(context, { dayStartTime: dayStartMin + dayStartHour * 60 }))
+        context.setContext(await updateUser(context, { preferences: { dayStartTime: dayStartMin + dayStartHour * 60, theme, defaultShowSidebar, sidebarOrientation } }))
     }
 
     return (
@@ -34,8 +38,33 @@ function User(props) {
                                     onChange={(e) => setDayStartMin(parseInt(e.target.value))} />
                             </Col>
                         </Row>
-
                     </Form.Group>
+
+                    <Form.Group>
+                        <Form.Label>Theme</Form.Label>
+                        <Row>
+                            {["light", "dark"].map(opt => <Col key={opt}>
+                                <Button variant={`${opt === theme ? "" : "outline-"}primary`} onClick={() => { setTheme(opt) }}>{opt}</Button>
+                            </Col>)}
+                        </Row>
+                    </Form.Group>
+
+                    <Form.Group>
+                        <Form.Label>Show Sidebar By Default</Form.Label>
+                        <Row>
+                            <Button variant={`${defaultShowSidebar ? "" : "outline-"}primary`} onClick={() => { setDefaultShowSidebar(!defaultShowSidebar) }}>Show Sidebar by Default</Button>
+                        </Row>
+                    </Form.Group>
+
+                    <Form.Group>
+                        <Form.Label>Sidebar Orientation</Form.Label>
+                        <Row>
+                            {["top", "down", "left", "right"].map(opt => <Col key={opt}>
+                                <Button variant={`${opt === sidebarOrientation ? "" : "outline-"}primary`} onClick={() => { setSidebarOrientation(opt) }}>{opt}</Button>
+                            </Col>)}
+                        </Row>
+                    </Form.Group>
+
                     <Form.Group>
                         <Form.Label>Partner</Form.Label>
                         <Form.Control type="text" placeholder={context.session.partner || 'None'} readOnly />

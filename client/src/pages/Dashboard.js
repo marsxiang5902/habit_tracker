@@ -35,15 +35,15 @@ function ModalBody(props) {
             <Form.Group key={formField[0]}>
                 <Form.Label>{formField[0]}</Form.Label>
                 {(TYPES[formField[1]] === 'textarea') ?
-                <Form.Control as="textarea" value={formResponse[idx]} onChange={e => {
-                    let newFormResponse = [...formResponse]
-                    newFormResponse[idx] = convertTypes[formField[1]](e.target.value)
-                    setFormResponse(newFormResponse)
-                }} />:<Form.Control type="number" value={formResponse[idx]} onChange={e => {
-                    let newFormResponse = [...formResponse]
-                    newFormResponse[idx] = convertTypes[formField[1]](e.target.value)
-                    setFormResponse(newFormResponse)
-                }} />}
+                    <Form.Control as="textarea" value={formResponse[idx]} onChange={e => {
+                        let newFormResponse = [...formResponse]
+                        newFormResponse[idx] = convertTypes[formField[1]](e.target.value)
+                        setFormResponse(newFormResponse)
+                    }} /> : <Form.Control type="number" value={formResponse[idx]} onChange={e => {
+                        let newFormResponse = [...formResponse]
+                        newFormResponse[idx] = convertTypes[formField[1]](e.target.value)
+                        setFormResponse(newFormResponse)
+                    }} />}
             </Form.Group>
         ))}
         <Button variant="success" type="submit">Submit</Button>
@@ -88,7 +88,7 @@ function DashboardContent(props) { // props: dayOfWeek, curMin
 
     let generateEvent = () => {
         let curEvent = null, allEvents = getAllEvents(context)
-        let dayStartTime = context.session.dayStartTime
+        let dayStartTime = context.session.preferences.dayStartTime
         for (let _id in allEvents) {
             let eventRecord = allEvents[_id]
             if (eventIsActivated(eventRecord, props.day, props.min, dayStartTime) &&
@@ -171,12 +171,12 @@ function DashboardContent(props) { // props: dayOfWeek, curMin
 function Dashboard(props) {
     let context = useContext(appContext)
     const [min, setMin] = useState(getMin())
-    const [day, setDay] = useState(getDay(context.session.dayStartTime))
+    const [day, setDay] = useState(getDay(context.session.isAuthed && context.session.preferences.dayStartTime))
 
     useEffect(() => {
         let interval = setInterval(() => {
             setMin(getMin())
-            setDay(getDay(context.session.dayStartTime))
+            setDay(getDay(context.session.preferences.dayStartTime))
         }, 1000 * 10)
         return () => clearInterval(interval)
     }, [])
@@ -189,4 +189,4 @@ function Dashboard(props) {
     )
 }
 
-export {Dashboard, TimedForm, ModalBody};
+export { Dashboard, TimedForm, ModalBody };
