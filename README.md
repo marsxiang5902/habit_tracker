@@ -2,7 +2,7 @@
 
 ## Description
 
-An app for tracking and displaying events and implementing ideas from researched sources.
+An app for tracking and displaying events and implementing ideas from researched sources. It is publically hosted at https://growthify.herokuapp.com/.
 
 ## Installation
 
