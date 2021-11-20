@@ -10,11 +10,13 @@ import { getDay, getMin } from '../lib/time';
 import { updateEvent, updateEventHistory } from '../services/eventServices';
 import { eventIsActivated, timeSinceStart } from '../lib/eventIsActivated';
 import { updateEventFormHistory } from "../services/eventServices";
+import useGAEvent from '../analytics/useGAEvent';
 
 const convertTypes = {
     num: Number,
     str: x => x
 }
+
 
 function ModalBody(props) {
     let record = props.record, layout = record.formLayout
@@ -85,6 +87,7 @@ function TimedForm(props) {
 function DashboardContent(props) { // props: dayOfWeek, curMin
     const [triggerCaches, setTriggerCaches] = useState({})
     const context = useContext(appContext)
+    const GAEvent = useGAEvent("Next Button")
 
     let generateEvent = () => {
         let curEvent = null, allEvents = getAllEvents(context)
@@ -144,6 +147,7 @@ function DashboardContent(props) { // props: dayOfWeek, curMin
                         context.setContext(await updateEvent(context, event, { pointer: event.pointer + 1 }))
                     }
                     context.setContext(await updateEventHistory(context.getContext(), stackedEvent, { "0": true }))
+                    GAEvent("Next Clicked", stackedEvent.name)
                 }}>Next</Button>
                 <div className="parent">
                     {renderTrigger(trigger)}
@@ -157,6 +161,7 @@ function DashboardContent(props) { // props: dayOfWeek, curMin
                 <h1>Trigger: {trigger.name}</h1>
                 <Button style={{ marginBottom: "10px" }} onClick={async () => {
                     context.setContext(await updateEventHistory(context, event, { "0": true }))
+                    GAEvent(event.name, "Next Clicked")
                 }}>Next</Button>
                 <div className="parent">
                     {renderTrigger(trigger)}
