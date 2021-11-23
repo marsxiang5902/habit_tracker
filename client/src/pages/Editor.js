@@ -3,8 +3,10 @@ import '../static/page.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import EventList from '../components/EventList'
 import Layout from "../components/layout";
+import useGAEvent from "../analytics/useGAEvent";
 
 function Editor(props) {
+    const GAEventTracker = useGAEvent("Habit Clicked")
     return (
         <div className="wrapper">
             <Layout name="🗺 THE PLAN" handleLogout={props.handleLogout} />
