@@ -19,6 +19,9 @@ import Stacks from './pages/Stacks';
 import Forms from './pages/Forms';
 import Accountability from './pages/Accountability';
 import AuthRoute from './routes/AuthRoute';
+import FullStory from 'react-fullstory';
+import amplitude from 'amplitude-js';
+
 
 class App extends React.Component {
   constructor(props) {
@@ -58,9 +61,12 @@ class App extends React.Component {
   }
 
   render() {
+    const fullstory_id = '16S35F'
+    // amplitude.getInstance().logEvent('test5')
     return (
       <appContext.Provider value={{ ...this.state.context, setContext: this.setContext, getContext: this.getContext }}>
         <div className="App">
+          <FullStory org={this.fullstory_id} />
           <Switch>
             <AuthRoute path="/app" exact render={(props) => {
               return (
