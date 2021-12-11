@@ -57,6 +57,9 @@ class App extends React.Component {
   handleLogout = () => {
     this.unsubscribeToNotifications()
     this.setState({ context: defaultAppContext })
+    if (localStorage.getItem('jwt')) {
+      localStorage.removeItem('jwt')
+    }
     this.props.history.push('/app/login')
   }
 

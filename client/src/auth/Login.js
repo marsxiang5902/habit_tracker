@@ -41,9 +41,22 @@ export default class Login extends React.Component {
             user: this.state.user, password: this.state.password
         })
         if (!loginResult.error) {
+            localStorage.setItem('jwt', loginResult.data.jwt)
             this.props.handleLogin(loginResult.data.jwt)
         } else {
             this.setState({ loginFailed: true })
+        }
+    }
+
+    async componentDidMount() {
+        let jwt = localStorage.getItem('jwt')
+        if (jwt != null) {
+            let loginResult = await makeRequest('/newDay', 'post', {}, jwt)
+            if (!loginResult.error) {
+                this.props.handleLogin(loginResult.data.jwt)
+            } else {
+                localStorage.removeItem('jwt')
+            }
         }
     }
 

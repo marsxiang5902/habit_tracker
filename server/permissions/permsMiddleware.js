@@ -51,4 +51,4 @@ function authorizeEndpoint(perms, getTargetUser = defaultGetTargetUser) {
     }
 }
 
-module.exports = { authorizeEndpoint }
+module.exports = { addPermsMiddleware, authorizeEndpoint }
