@@ -3,6 +3,7 @@
 const { subclasses } = require('../TimedEvent/TimedEventClasses')
 const argon2 = require('argon2')
 const { getDay } = require('../lib/time')
+const HistoryManagerFields = require('../HistoryManager/HistoryManagerFields')
 
 module.exports = class User {
     constructor(user, password, email) {
@@ -22,6 +23,9 @@ module.exports = class User {
             sidebarOrientation: "left"
         }
         this.lastLoginDay = getDay(this.preferences.dayStartTime)
+        this.groups = []
+        this.pointsHistory = new HistoryManagerFields()
+        this.notificationHistory = []
     }
     async init() {
         this.password_hashed = await argon2.hash(this.password)

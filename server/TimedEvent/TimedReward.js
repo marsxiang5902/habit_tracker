@@ -6,7 +6,7 @@ const httpAssert = require('../errors/httpAssert')
 const { wrapObject } = require('../lib/wrapSliceObject')
 
 const DEFAULT_ARGS = {
-    checkedHistoryManagerType: 'bitmask', activationDaysBit: 127
+    checkedHistoryManagerType: 'bitmask',
 }
 
 module.exports = class TimedReward extends TimedEvent {

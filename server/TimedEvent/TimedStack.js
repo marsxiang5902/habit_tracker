@@ -7,7 +7,7 @@ const { wrapObject } = require('../lib/wrapSliceObject')
 const { ObjectId } = require('mongodb')
 
 const DEFAULT_ARGS = {
-    checkedHistoryManagerType: 'bitmask', activationDaysBit: 127,
+    checkedHistoryManagerType: 'bitmask',
     eventList: [], pointer: 0
 }
 

@@ -1,9 +1,9 @@
 const assert = require('assert');
 const httpAssert = require('../errors/httpAssert');
 
-function wrapObject(obj, wrap, check = false) {
+function wrapObject(obj, wrap, checkType = false) {
     assert(typeof obj == 'object' && typeof wrap == 'object')
-    if (check) {
+    if (checkType) {
         for (let field in wrap) {
             httpAssert.BAD_REQUEST(!(field in obj) || typeof obj[field] == typeof wrap[field])
         }

@@ -8,8 +8,7 @@ const HistoryManagerFields = require('../HistoryManager/HistoryManagerFields')
 const hasRepeat = require('../lib/hasRepeat')
 
 const DEFAULT_ARGS = {
-    checkedHistoryManagerType: 'bitmask', activationDaysBit: 127,
-    fields: []
+    checkedHistoryManagerType: 'bitmask', fields: []
 }
 const CHANGE_LAYOUT_FORMAT = {
     add: [], remove: [], rename: [], perm: []
@@ -76,7 +75,7 @@ module.exports = class TimedForm extends TimedEvent {
     static updateFormData(eventRecord, updObj, curDay) {
         for (let field in updObj) {
             httpAssert.BAD_REQUEST(field in eventRecord.formHistory)
-            HistoryManagerFields.setHistory(eventRecord.formHistory[field].data, updObj[field], curDay)
+            HistoryManagerFields.setHistory(eventRecord.formHistory[field].data, curDay, updObj[field])
         }
     }
 }

@@ -10,15 +10,23 @@ const { getEvent } = require('./eventServices')
 const { getDay } = require('../lib/time')
 const { subclasses: TimedEventSubclasses } = require('../TimedEvent/TimedEventClasses')
 const { subclasses: HistoryManagerSubclasses } = require('../HistoryManager/HistoryManagerClasses')
+const HistoryManagerFields = require('../HistoryManager/HistoryManagerFields')
+const httpStatusErrors = require('../errors/httpStatusErrors')
+const { includeGroup } = require('../database/extractRequestMiddleware')
+const { updateGroup: db_updateGroup } = require('../database/interactGroup')
 
 let notFoundAssert = r => {
     httpAssert.NOT_FOUND(r.userRecord, `User "${r.user}" not found.`)
 }
 
-const USER_GET_SLICES = ['user', 'email', 'preferences', 'partner']
+const USER_GET_SLICES = ['user', 'email', 'preferences', 'groups', 'notificationHistory']
 function getUser(r) {
     notFoundAssert(r)
-    return { ...sliceObject(r.userRecord, USER_GET_SLICES), perms: Array.from(getPerms(r.userRecord.roles)) }
+    return {
+        ...sliceObject(r.userRecord, USER_GET_SLICES),
+        pointsHistory: getUserPointsHistory(r),
+        perms: Array.from(getPerms(r.userRecord.roles))
+    }
 }
 function getUserAuth(r) {
     notFoundAssert(r)
@@ -38,27 +46,12 @@ async function getUserEvents(r) {
     }
     return ret;
 }
-async function getPartnerUncompletedEvents(r) {
+function getUserPointsHistory(r) {
     notFoundAssert(r)
-    let partner = r.userRecord.partner
-    if (!partner) {
-        return {}
-    }
-    let partnerR = { user: partner, userRecord: await db_getUser(partner) }
-    await newDay(partnerR)
-    partnerR.userRecord = await db_getUser(partner)
-    let partnerEvents = await getUserEvents(partnerR), uncompleted = {}
-    for (let type in partnerEvents) {
-        uncompleted[type] = []
-        for (let _id in partnerEvents[type]) {
-            let eventRecord = partnerEvents[type][_id]
-            if (('1' in eventRecord.checkedHistory) && !eventRecord.checkedHistory[1]) {
-                uncompleted[type].push(eventRecord.name)
-            }
-        }
-    }
-    return uncompleted
+    let ph = r.userRecord.pointsHistory
+    return HistoryManagerFields.getHistory(ph.data, r.userRecord.lastLoginDay)
 }
+
 const USER_UPD_SLICES = ['email', 'preferences']
 async function updateUser(r, updObj) {
     notFoundAssert(r)
@@ -81,9 +74,38 @@ async function newDay(r) {
                 await db_updateEvent(eventRecord._id, eventRecord, sliceObject(eventRecord, ['checkedHistory', ...subset]))
             }
         }
+        HistoryManagerFields.realignDate(r.userRecord.pointsHistory, dayDiff)
         await db_updateUser(r.user, r.userRecord, { lastLoginDay: curDay, })
     }
     return { dayDiff }
+}
+async function updateUserPointsHistory(r, updObj) {
+    notFoundAssert(r)
+    let ph = r.userRecord.pointsHistory
+    HistoryManagerFields.setHistory(ph.data, r.userRecord.lastLoginDay, updObj)
+    return getUser({
+        ...r, userRecord:
+            await db_updateUser(r.user, r.userRecord, { pointsHistory: ph })
+    })
+}
+async function joinGroup(r, config) {
+    notFoundAssert(r)
+    let user = r.user, _id = config.group_id
+    try {
+        _id = ObjectId(_id)
+    } catch { throw new httpStatusErrors.BAD_REQUEST('_id invalid.') }
+    httpAssert.BAD_REQUEST(await includeGroup(r, _id), `Group with id ${_id} not found.`)
+    let invites = r.groupRecord.invites
+    if (invites.includes(user)) {
+        invites.splice(invites.indexOf(user), 1)
+        await db_updateGroup(r.group_id, r.groupRecord, {
+            invites,
+            members: { ...r.groupRecord.members, [user]: [] },
+            roles: { ...r.groupRecord.roles, [user]: ['default'] }
+        })
+        r.userRecord = await db_updateUser(user, r.userRecord, { groups: r.userRecord.groups.concat([_id]) })
+    }
+    return getUser(r)
 }
 async function removeUser(r) {
     notFoundAssert(r)
@@ -91,5 +113,6 @@ async function removeUser(r) {
 }
 
 module.exports = {
-    getUser, getUserAuth, getUserEvents, getPartnerUncompletedEvents, updateUser, newDay, removeUser
+    getUser, getUserAuth, getUserEvents, getUserPointsHistory, updateUser, newDay,
+    updateUserPointsHistory, joinGroup, removeUser
 }

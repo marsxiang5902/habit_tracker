@@ -3,7 +3,7 @@ const express = require('express')
 const { extractEventMiddleware } = require('../database/extractRequestMiddleware')
 const { addEvent, getEvent, getEventHistory, getEventFormHistory, updateEvent, updateEventHistory,
     updateEventFormLayout, updateEventFormHistory, removeEvent, assertFormMiddleware } = require('../services/eventServices')
-const { authorizeEndpoint: auth } = require('../permissions/permsMiddleware')
+const { addPermsMiddleware, authorizeEndpoint } = require('../permissions/permsMiddleware')
 
 let eventsRouter = express.Router()
 eventsRouter.use('/:_id/', extractEventMiddleware)
@@ -22,7 +22,7 @@ const ENDPOINTS = [
 ]
 
 ENDPOINTS.forEach(ops => {
-    eventsRouter[ops[0]](ops[1], auth(...ops[2]), async (req, res, next) => {
+    eventsRouter[ops[0]](ops[1], addPermsMiddleware, authorizeEndpoint(...ops[2]), async (req, res, next) => {
         try {
             res.locals.data = await ops[3](req.resource, req.body)
             next()

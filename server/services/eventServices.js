@@ -1,6 +1,6 @@
 'use strict'
 
-const { addEvent: db_addEvent, updateEvent: db_updateEvent, removeEvent: db_removeEvent } = require('../database/interactEvent')
+const { addEvent: db_addEvent, getEvent: db_getEvent, updateEvent: db_updateEvent, removeEvent: db_removeEvent } = require('../database/interactEvent')
 const { getTriggers: db_getTriggers } = require('../database/interactTrigger')
 const { getTrigger } = require('./triggerServices')
 const { subclasses: historyManagerSubclasses } = require('../HistoryManager/HistoryManagerClasses')
@@ -25,7 +25,7 @@ let assertFormMiddleware = (req, res, next) => {
 async function addEvent(r, config) {
     await includeUser(r, config.user)
 
-    if ('activationDays' in config.args) {
+    if (config.args && 'activationDays' in config.args) {
         config.args.activationDaysBit = obj2bit(config.args.activationDays, 7)
     }
 
@@ -34,12 +34,13 @@ async function addEvent(r, config) {
     await includeEvent(r, _id)
     return await getEvent(r)
 }
-const EVENT_GET_SLICES = ['_id', 'user', 'name', 'type', 'activationTime', 'nextEvent', 'eventList', 'pointer']
+const EVENT_GET_SLICES = ['_id', 'user', 'name', 'type', 'activationTime', 'eventList',
+    'pointer', 'color', 'starred', 'points', 'goalTarget', 'endDay']
 async function getEvent(r) {
     notFoundAssert(r)
     let ret = sliceObject(r.eventRecord, EVENT_GET_SLICES)
 
-    ret.checkedHistory = await getEventHistory(r)
+    ret.checkedHistory = getEventHistory(r)
     let triggerList = r.eventRecord.triggerList
 
     let ar = await db_getTriggers(triggerList.map(_id => ObjectId(_id)))
@@ -53,10 +54,21 @@ async function getEvent(r) {
 
     if (r.eventRecord.type === 'form') {
         ret = { ...ret, ...getEventFormHistory(r) }
+    } else if (r.eventRecord.type === 'goal') {
+        try {
+            let targetEventRecord = await db_getEvent(ObjectId(r.eventRecord.goalTarget.event_id))
+            if (targetEventRecord.user === r.user && targetEventRecord.type !== 'goal') {
+                ret = {
+                    ...ret, endDay: r.eventRecord.endDay - r.userRecord.lastLoginDay, targetEvent: await getEvent({
+                        ...r, event_id: targetEventRecord._id, eventRecord: targetEventRecord
+                    })
+                }
+            }
+        } catch { }
     }
     return ret;
 }
-async function getEventHistory(r) {
+function getEventHistory(r) {
     notFoundAssert(r)
     let ch = r.eventRecord.checkedHistory
     return historyManagerSubclasses[ch.type].getHistory(ch.data, r.userRecord.lastLoginDay)
@@ -69,16 +81,27 @@ function getEventFormHistory(r) {
     }
 }
 
-const EVENT_UPD_SLICES = ['name', 'activationDaysBit', 'activationTime', 'nextEvent', 'eventList', 'pointer']
+const EVENT_UPD_SLICES = ['name', 'activationDaysBit', 'activationTime', 'eventList',
+    'pointer', 'color', 'starred', 'points', 'goalTarget', 'endDay']
 async function updateEvent(r, updObj) {
     notFoundAssert(r)
     if ('activationDays' in updObj) {
         wrapObject(updObj.activationDays, bit2obj(r.eventRecord.activationDaysBit, 7))
         updObj.activationDaysBit = obj2bit(updObj.activationDays, 7)
     }
+    let res = sliceObject(updObj, EVENT_UPD_SLICES)
+    if (r.eventRecord.type === 'goal') {
+        if ('endDay' in res) {
+            res.endDay += r.userRecord.lastLoginDay
+        }
+        if ('goalTarget' in res) {
+            wrapObject(res.goalTarget, { event_id: '', value: 0, formField: '' }, true)
+            res.goalTarget = sliceObject(res.goalTarget, ['event_id', 'value', 'formField'])
+        }
+    }
     return await getEvent({
         ...r,
-        eventRecord: await db_updateEvent(r.event_id, r.eventRecord, sliceObject(updObj, EVENT_UPD_SLICES))
+        eventRecord: await db_updateEvent(r.event_id, r.eventRecord, res)
     })
 }
 async function updateEventHistory(r, updObj) {
@@ -92,7 +115,7 @@ async function updateEventHistory(r, updObj) {
 }
 async function updateEventFormLayout(r, updObj) {
     notFoundAssert(r)
-    TimedForm.updateFieldsLayout(r.eventRecord, updObj, r.userRecord.curDay)
+    TimedForm.updateFieldsLayout(r.eventRecord, updObj, r.userRecord.lastLoginDay)
     return await getEvent({
         ...r, eventRecord:
             await db_updateEvent(r.event_id, r.eventRecord, { fields: r.eventRecord.fields, formHistory: r.eventRecord.formHistory })

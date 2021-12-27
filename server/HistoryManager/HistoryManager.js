@@ -1,6 +1,5 @@
 'use strict'
 
-
 const assert = require('assert')
 const { getDay } = require('../lib/time')
 

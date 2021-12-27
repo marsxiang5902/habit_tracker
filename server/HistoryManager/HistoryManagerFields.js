@@ -39,7 +39,7 @@ module.exports = class HistoryManagerFields extends HistoryManager {
         assert(checkData(data.history, daysPassed))
         return data.history;
     }
-    static setHistory(data, updObj, curDay) {
+    static setHistory(data, curDay, updObj) {
         this.checkFieldData(data)
         let daysPassed = curDay - data.startDay + 1
         httpAssert.BAD_REQUEST(checkData(updObj, daysPassed), `Data is invalid.`)
