@@ -5,7 +5,7 @@ const { getDay } = require('../lib/time');
 const httpAssert = require('../errors/httpAssert')
 const assert = require('assert');
 
-const DATA_TYPES_DEFAULTS = { num: 0, str: '', select: '' }
+const DATA_TYPES_DEFAULTS = { num: 0, str: '', check: false, select: '' }
 
 module.exports = class HistoryManagerFields extends HistoryManager {
     constructor(startDay = getDay(), dataType = 'num', dayLimit = 32) {
