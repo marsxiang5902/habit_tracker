@@ -37,7 +37,7 @@ All responses are of the following format:
 ```
 {
   "data": <the data>,
-  "error": "<the errors, if any>",
+  "error": <the errors, if any>,
   "error_description": "<error description>"
 }
 ```
@@ -63,18 +63,29 @@ Events are habits, todos, daily things, rewards, accountability responses, and a
   * A basic daily habit
 * `todo`
   * A todo that should be deleted when completed
-* `reward`
-  * A reward (often `stack`ed)
+* `goal`
+  * A long-term goal
+  * `goalTarget`: information about the goal if related to another event:
+    ```
+    {
+      "event_id" = "": "<the id of the target event>",
+      "value" = 0: <the target value>,
+      "formField" = "": "<the name of the form field, if a form field is targetted, otherwise "">"
+    }
+    ```
 * `stack`
   * A versatile collection of events that renders each sequentially in the dashboard
   * `eventList = []`: the list of `event` `_id`s, in order
   * `pointer = 0`: the index of the current `event`. `pointer` is equal to `eventList.length` if all the `event`s are done
+* `reward`
+  * A reward (often `stack`ed with other habits)
 * `form`
   * A form for data collection
   * `fields = []`: the fields in the form. This data is given in the format `[["fieldName1", "fieldType1"], ..., ["fieldNameN", "fieldTypeN"]]`, where `fieldTypeX` is a type in `HistoryManager<fields>` and `fieldName`s are unique.
 
-Each non-`todo` `event` has a `checkedHistoryManagerType = "bitmask"` to record the history of event checking, and `activationDays = {[0:6]: true}` to record which days the `event` should be displayed in the dashboard in `args`.
+Each non-`todo` and non-`goal` `event` has a `checkedHistoryManagerType = "bitmask"` to record the history of event checking, `activationDays = {[0:6]: true}` to record which days the `event` should be displayed in the dashboard in `args`, and `activationTime = 0`, the time the user should be notified about the event.
 
+Each event has three additional fields: `color`, to assigned by the `user` to group and categorize `events`, `starred`, to indicate whether this `event` is of a high priority, and `points` upon completion.
 
 ### History Managers
 
@@ -90,10 +101,10 @@ There are three types:
 * `bitmask`
   * Stores up to 32 previous days (including the current day). Each day can be either `true` or `false`.
 * `fields`
-  * Stores up to 32 previous days (including the current day). Each day can be a `num` or a `str`, but all types must be the same for a single `HistoryManager`.
+  * Stores up to 32 previous days (including the current day). `fields` is further split into three types, which determine the data type of the each day's value: `num` (type `number`), `str` (type `string`), or `check` (type `boolean`). All types must be the same for a single `HistoryManager`.
 * `none`
 
-The data is reset at the end of each day, which is checked upon events including login.
+The data is reset at the end of each day, which is checked upon certain events including login.
 
 ### Triggers
 
@@ -107,17 +118,27 @@ Triggers are resources that may be displayed prior to start of an event to incre
 * `link`
   * `resourceURL = ""`: `"<a link>"`
 
+### Groups
 
-### Users
+Each `user` can be in many `group`s, and each `group` can contain many users. For each `group`, a `user` chooses to share a subset of their `events`, which the entire `group` may read but not edit.
 
-Each user has an accountability partner, whose uncompleted events from the previous day they will be able to read.
+Similar to a `user`'s normal [`roles`](#authentication-and-authorization), each `user` has a set of `roles` in each `group` that decide the `user`'s `perms` for that `group`, or what they can and cannot do. Endpoints associated with `group`s therefore may also have a set of `group perms`.
+
+### Notifications
+
+Each `user` has a list of notifications they have been sent for various purposes. Each notification has a `name` and some supplementary `text`. There are two types of notifications:
+* `text`: conveys a text message
+* `group`: a join invite from a `group`
+  * `group_id`: the `id` of the `group`
+
 
 ## Endpoints
 
-All documentation is in the following format:
+All documentation about endpoints is in the following format:
 * Verb: The [HTTP verb](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods) to use
 * URL: The URL. URL segments that have `:` before them are parameters, usually to specify a specific user or event. For example, if `/users/:user/events` was given as an URL, visiting `/users/mars/events` would fetch the events specific to `mars`.
 * Perms: the set of permissions required to access the endpoint. All `perms` are given in global format, but users with the `self` `perm` can use the endpoint if they themselves are the owner of the resource.
+  * Group perms: preceeded with `group:` and may end with `self`
 * Request body: a JSON object that should be sent within the request body. Keys with `*` are optional.
 * Returned data: the data to be returned. Keys with `*` are sometimes returned, depending on factors like the type of event.
 * Other notes
@@ -186,7 +207,38 @@ Omitted fields are blank.
   <the newly created event>
 ```
 * Refer to the [events](#events) for the `args`. All of them are optional.
-* Refer to [Get Event](#get-event) for the returned event.
+* Refer to [Get Event](#get-event) for the returned `event`.
+
+
+#### Get Event
+
+* Verb: **GET**
+* URL: `/:_id`
+* Perms: {`read:event`}
+* Returned Data:
+```
+{
+  "_id": "<the id>",
+  "user": "<the user it belongs to>",
+  "type": "<the event type>",
+  "name": "<the name>",
+  "activationTime": "<the activation time>",
+  "activationDays": {
+    "0": <whether this event should activate on Monday>,
+    "1": <whether this event should activate on Tuesday>,
+    ...
+  },
+  "history": <the history>,
+  "triggers": {<the triggers, indexed by their _ids>},
+  "color": <the color as an integer>,
+  "starred": <whether the event is starred>,
+  "points": <the number of points the event is worth>,
+  *<additional fields specific to each event>
+}
+```
+* The `history` object is the same as the one returned from [Get Event's History](#get-events-history)
+* Each element in the `triggers` array is the same as the one returned from [Get Trigger](#get-trigger)
+* The additional fields specific to each event can be found in [Events](#events)
 
 
 #### Get Event's History
@@ -202,25 +254,6 @@ Omitted fields are blank.
   ...
 }
 ```
-
-#### Get Event
-
-* Verb: **GET**
-* URL: `/:_id`
-* Perms: {`read:event`}
-* Returned Data:
-```
-{
-  "_id": "<the id>",
-  "user": "<the user it belongs to>",
-  "type": "<the event type>",
-  "name": "<the name>",
-  "history": <the history>,
-  "triggers": {<the triggers, indexed by their _ids>}
-}
-```
-* The `history` object is the same as the one returned from [Get Event's History](#get-events-history)
-* Each element in the `triggers` array is the same as the one returned from [Get Trigger](#get-trigger)
 
 
 #### Get Form Event's Form History
@@ -275,7 +308,13 @@ Omitted fields are blank.
 ```
 * Sets the specified fields to their respective values and leaves everything else the same. The allowed fields to change in this function are:
   * `name`
-* The `event` returned is the same as the one returned from [Get Event](#get-event) 
+  * `activationTime`
+  * `activationDays`
+  * `color`
+  * `starred`
+  * `points`
+  * Additional [type-specific](#events) fields
+* Both the format for the values and the `event` returned are the same as from [Get Event](#get-event) 
 
 
 #### Update Event's History
@@ -295,7 +334,7 @@ Omitted fields are blank.
 ```
   <the new event>
 ```
-* The `event` returned is the same as the one returned from [Get Event](#get-event) 
+* The `event` returned is the same as the one returned from [Get Event](#get-event)
 
 
 #### Update Form Event's Form History
@@ -443,12 +482,20 @@ Omitted fields are blank.
 ```
 {
   "user": "<the username>",
-  "perms": [<the perms>],
   "email": "<the email>",
-  "dayStartTime": "<the time a new day starts>",
-  "partner": "<their accountability partner>"
+  "perms": [<the perms>],
+  "preferences": {
+    dayStartTime: <when events' histories and activations are reset>,
+    theme: "<either light or dark>",
+    defaultShowSidebar: <whether the sidebar shows by default>,
+    sidebarOrientation: <the sidebar orientation>
+  },
+  "groups": [<list of ids of groups>]
+  "notificationHistory": [<list of notifications>]
 }
 ```
+* The notifications returned follow the format described in [Notifications](#notifications)
+
 
 #### Get User Events
 
@@ -466,6 +513,22 @@ Omitted fields are blank.
 * Refer to [Get Event](#get-event) for the returned events.
 
 
+#### Get User Points History
+
+* Verb: **GET**
+* URL: `/:user/points`
+* Perms: {`read:user`}
+* Returned Data:
+```
+{
+  "daysBefore1": <value1>,
+  "daysBefore2": <value2>,
+  ...
+}
+```
+* The format is the same as that of a `HistoryManager` of type `fields`
+
+
 #### Get User Authentication Information
 
 * Verb: **GET**
@@ -478,19 +541,6 @@ Omitted fields are blank.
 }
 ```
 
-#### Get Partner's Missed Events
-
-* Verb: **GET**
-* URL: `/:user/partner`
-* Perms: {`read:user`}
-* Returned Data:
-```
-{
-  "habit": [<habit events' names>],
-  "todo": [<todo events' names>],
-  ...
-}
-```
 
 #### Update User
 
@@ -515,12 +565,219 @@ Omitted fields are blank.
 * The `user` returned is the same as the one returned from [Get Event](#get-trigger) 
 
 
+#### Update User Points History
+
+* Verb: **PUT**
+* URL: `/:user/points`
+* Perms: {`udpate:user`}
+* Request Body:
+```
+{
+  "daysBefore1": <value1>,
+  "daysBefore2": <value2>,
+  ...
+}
+```
+* Returned Data:
+```
+  <the new user>
+```
+* The `user` returned is the same as the one returned from [Get Event](#get-trigger) 
+
+
+#### Join Group
+
+* Verb: **PUT**
+* URL: `/:user/join`
+* Perms: {`udpate:user`}
+* Request Body:
+```
+{
+  "group_id": "<the id of the group>"
+}
+```
+* Returned Data:
+```
+  <the new user>
+```
+* The `user` must have been invited by the `group` or nothing will happen
+* The `user` returned is the same as the one returned from [Get Event](#get-trigger) 
+
+
 #### Delete a User
 
 * Verb: **DELETE**
 * URL: `/:user`
 * Perms: {`delete:user`}
 
+
+### Groups: `/groups`
+
+#### Create Group
+
+* Verb: **POST**
+* URL: `/`
+* Perms: {`create:group`}
+* Request Body:
+```
+{
+  "user": "<the user it belongs to>",
+  "name": "<the name of the group>"
+}
+```
+* Returned Data:
+```
+  <the newly created group>
+```
+* Refer to [Get Group](#get-group) for the returned `group`.
+
+
+#### Get Group
+
+* Verb: **GET**
+* URL: `/:_id`
+* Perms: {`read:group`}
+* Returned Data:
+```
+{
+  "_id": "<the id>",
+  "user": "<the user it belongs to>",
+  "name": "<the name>",
+  "members": {
+    "<member 1>": [<list of shared event ids>],
+    "<member 2>": [<list of shared event ids>],
+    ...
+  },
+  "roles": {
+    "<member 1>": [<list of roles>],
+    "<member 2>": [<list of roles>],
+    ...
+  },
+  "invites": [<list of invited users>]
+}
+```
+
+
+#### Get Group Shared Event Data
+
+* Verb: **GET**
+* URL: `/:_id/data`
+* Perms: {`read:group`}
+  * Group Perms: {`group:read:group`}
+* Returned Data:
+```
+{
+  "<member 1>": {
+    "pointsHistory": <HistoryManager of member 1's points>,
+    "events": {
+      "<id 1>": <event 1>,
+      "<id 2>": <event 2>,
+      ...
+    }
+  }
+  "<member 2>": {
+    "pointsHistory": <HistoryManager of member 2's points>,
+    "events": {
+      "<id 1>": <event 1>,
+      "<id 2>": <event 2>,
+      ...
+    }
+  }
+  ...
+}
+```
+* The `pointsHistory`s are the same as those returned from [Get User Points History](#get-user-points-history)
+* The `events` are the same those returned from [Get Event](#get-event)
+
+
+#### Update Group
+
+* Verb: **PUT**
+* URL: `/:_id`
+* Perms: {`update:group`}
+  * Group Perms: {`group:update:info`}
+* Request Body:
+```
+{
+  "field1": <value1>,
+  "field2": <value2>,
+  ...
+}
+```
+* Returned Data:
+```
+  <the new group>
+```
+* Sets the specified fields to their respective values and leaves everything else the same. The allowed fields to change in this function are:
+  * `name`
+* Both the format for the values and the `group` returned are the same as from [Get Group](#get-group) 
+
+
+#### Invite User To Group
+
+* Verb: **PUT**
+* URL: `/:_id/invite`
+* Perms: {`update:group`}
+  * Group Perms: {`group:update:invite`}
+* Request Body:
+```
+{
+  "user": "<the user to invite>"
+}
+```
+* Returned Data:
+```
+  <the new group>
+```
+* The `group` returned is the same as the one returned from [Get Group](#get-group)
+
+
+#### Remove User From Group
+
+* Verb: **PUT**
+* URL: `/:_id/remove`
+* Perms: {`update:group`}
+  * Group Perms: {`group:update:remove_self`}
+* Request Body:
+```
+{
+  "user": "<the user to invite>"
+}
+```
+* Returned Data:
+```
+  <the new group>
+```
+* No matter which `perms` a user has, it is impossible to `remove` the owner (returned in the `user` field)
+* By default, `user`s have the `group:update_remove_self` `perm` in each group
+* The `group` returned is the same as the one returned from [Get Group](#get-group)
+
+
+#### Share Events To Group
+
+* Verb: **PUT**
+* URL: `/:_id/share`
+* Perms: {`update:group`}
+* Request Body:
+```
+{
+  "event_ids": [<list of event ids>]
+}
+```
+* Returned Data:
+```
+  <the new group>
+```
+* Overwrites your current shared events with the the new ones described by `event_ids`
+* The `group` returned is the same as the one returned from [Get Group](#get-group)
+
+
+#### Delete Group
+
+* Verb: **DELETE**
+* URL: `/:_id`
+* Perms: {`delete:group`}
+  * Group Perms: {`group:delete:group`}
 
 
 

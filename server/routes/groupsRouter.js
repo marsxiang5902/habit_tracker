@@ -9,7 +9,7 @@ let groupsRouter = express.Router()
 groupsRouter.use('/:_id', extractGroupMiddleware)
 
 const ENDPOINTS = [
-    ['post', '/', [['update:group'], req => req.body.user], addGroup],
+    ['post', '/', [['create:group'], req => req.body.user], addGroup],
     ['get', '/:_id', [['read:group', 'group:read:group']], getGroup],
     ['get', '/:_id/data', [['read:group', 'group:read:group']], getGroupData],
     ['put', '/:_id', [['update:group', 'group:update:info']], updateGroup],
