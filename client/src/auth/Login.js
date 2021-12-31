@@ -2,7 +2,9 @@ import React from 'react';
 import makeRequest from '../api/makeRequest';
 import '../static/page.css'
 import Layout from '../components/layout';
-import { Button } from 'react-bootstrap';
+import Logo from '../static/LogoAsset 3@4x.png'
+import { Button, Form } from 'react-bootstrap';
+import AuthButtons from './AuthButtons';
 
 
 export default class Login extends React.Component {
@@ -24,14 +26,10 @@ export default class Login extends React.Component {
     inputPart = (label, name, type) => {
         // mini component
         return (
-            <label className="page-form"> {label}
-                <input
-                    name={name}
-                    type={type}
-                    value={this.state[name]}
-                    onChange={this.handleEventChange}
-                ></input>
-            </label>
+            <Form.Group className="mb-3">
+                <Form.Label>{label}</Form.Label>
+                <Form.Control name={name} type={type} value={this.state[name]} onChange={this.handleEventChange}/>
+            </Form.Group>
         )
     }
 
@@ -63,15 +61,27 @@ export default class Login extends React.Component {
     render() {
         return (
             <>
-                <Layout name="THE LOGIN"></Layout>
-                <div className="dashboard">
-                    {this.state.loginFailed && <p>Login failed.</p>}
-                    <form onSubmit={this.handleSubmit} style={{ marginRight: "10%" }}>
-                        {this.inputPart("Username", "user", "text")}
-                        {this.inputPart("Password", "password", "password")}
-                        {/* <input type="submit" value="Log in" /> */}
-                        <Button variant="primary" type="submit" value="Log in">Log In</Button>
-                    </form>
+                <div style={{"display":"flex", "alignItems": "center"}}>
+                    <div className="side-logo">
+                        <img src={Logo} alt="" style={{"maxWidth":"70%", "height": "auto"}}/>
+                        <h2 style={{"color": "white", "fontSize": "2.5em", "fontWeight":"bold", "paddingTop":"10%"}}>Growthify</h2>
+                    </div>
+                    <div style={{"flex": "0.75"}}>
+                        <div style={{"position": "absolute", "paddingRight": "5px", "paddingTop": "10px", "right": "5px", "top":'5px'}}>
+                            <AuthButtons handleLogout={null} login={true}/>
+                        </div>
+                        <div style={{"marginLeft": "5%"}}>
+                            <div>
+                                <h1 style={{'paddingBottom': '8px'}}>Login</h1>
+                                {this.state.loginFailed && <p>Login failed.</p>}
+                                <Form onSubmit={this.handleSubmit} style={{ marginRight: "10%" }}>
+                                    {this.inputPart("Username", "user", "text")}
+                                    {this.inputPart("Password", "password", "password")}
+                                    <Button variant="primary" type="submit" value="Log in">Log In</Button>
+                                </Form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </>
         )

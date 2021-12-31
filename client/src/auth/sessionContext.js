@@ -4,7 +4,7 @@ const defaultSessionContext = {
     isAuthed: false,
     jwt: "",
     user: null,
-    perms: []
+    perms: [],
 }
 
 const sessionContext = React.createContext(defaultSessionContext)

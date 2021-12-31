@@ -47,12 +47,14 @@ function HabitObject(habits, basedOnState = false, numOnly = true) {
     return { 'value': checked, 'edit': { 'checkbox': checkboxChange, 'varaible': variableChange } }
 }
 
+
+// habit + checkbox
 let DisplayHabit = (props) => {
     return (
         <div className="habit-list" key={props.index}>
 
             {!noCheckedHistory.has(props.record.type) &&
-                <input type="checkbox" className="checkbox"
+                <input type="checkbox"
                     checked={props.item.value}
                     onChange={(e) => props.all ? props.onChange(e, props.index, props.context, props.record, props.setContext)
                         : props.onChange(e, props.index)}
@@ -60,7 +62,7 @@ let DisplayHabit = (props) => {
             }
 
             <div className="habit">
-                <h5 style={{ marginBottom: "0px" }}>{props.record ? props.record.name : props.item.name}</h5>
+                <p style={{ marginBottom: "0px" , 'fontSize': 'large'}}>{props.record ? props.record.name : props.item.name}</p>
             </div>
         </div >
     )

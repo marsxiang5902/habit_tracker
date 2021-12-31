@@ -53,7 +53,7 @@ function DataRoom(props) {
 
     return (
         <div className="wrapper">
-            <Layout name="📈 THE DATA ROOM" handleLogout={props.handleLogout}></Layout>
+            <Layout name="📈 THE DATA ROOM" handleLogout={props.handleLogout} menu={props.menu} showMenu={props.showMenu}></Layout>
             {nav}
             <div className="padding">
                 {renderContent}

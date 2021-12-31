@@ -2,21 +2,19 @@ import React, { useContext } from 'react';
 import { appContext } from '../context/appContext';
 import { Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
+import "../static/layout.css";
 
 function AuthButtons(props) {
     let session = useContext(appContext).session
     if (session && session.isAuthed) {
         return (
-            <div>
-                <Button onClick={props.handleLogout} style={{ marginRight: "5px" }}><Link style={{ color: 'white' }}>Logout</Link></Button>
-                <p>{session.user}</p>
-            </div>
+            <Link className="nav-text"><span onClick={props.handleLogout}>Logout</span></Link>
         )
     } else {
         return (
             <div>
-                <Button style={{ marginRight: "5px" }}><Link to="/app/login" style={{ color: 'white' }}>Login</Link></Button>
-                <Button style={{ marginRight: "5px" }}><Link to="/app/signup" style={{ color: 'white' }}>Signup</Link></Button>
+                <Link to="/app/login"><Button variant={props.login ? "outline-primary" : "primary"} style={{ marginRight: "5px" }}>Login</Button></Link>
+                <Link to="/app/signup"><Button variant={!props.login ? "outline-primary" : "primary"} style={{ marginRight: "5px" }}>Signup</Button></Link>
             </div>
         )
     }

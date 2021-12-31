@@ -8,8 +8,9 @@ import { DisplayHabit, HabitObject } from './HabitList';
 import { StackBody } from './StackList';
 import { Event, TriggerList } from './TriggerList';
 import { EditForm } from './FormList';
-import { ModalBody as FormEntry } from '../pages/Dashboard';
+import { ModalBody as FormEntry } from '../pages/Now';
 import noCheckedHistory from '../lib/noCheckedHistory';
+import DisplayEvent from './DisplayEvent';
 
 
 function capitalizeFirst(str) {
@@ -178,42 +179,46 @@ function EventList(props) {
 
       {/* header */}
       <div className="subheader">
-        <h2>{props.title}</h2>
+        <h2 style={{"fontWeight": "bolder"}}>{props.title}</h2>
         {formVisible ?
           <Icons.FaRegWindowClose onClick={() => { setFormVisible(false) }} className="hover"></Icons.FaRegWindowClose> :
           <Icons.FaRegPlusSquare onClick={() => { setFormVisible(true) }} className="hover"></Icons.FaRegPlusSquare>}
       </div>
 
-      {/* events */}
+      {/* load all events */}
       {Object.keys(records).map((_id, index) => {
         let record = records[_id]
         return (
-          <div className="card-2 border-2" key={_id}>
-            <div className="habit habit-2 inline">
-              {props.type === '1' ?
-                <p className="habit no-padding-top">{record.name}</p> :
-                <DisplayHabit onChange={habitObj.edit.checkbox}
-                  item={habitObj.value[index]} index={index} context={context} record={record}
-                  setContext={props.setContext} all={true} />
-              }
-              {/* {props.type === 'habit' && <h4 className="habit no-padding-top">{pct(record.history)}%</h4>} */}
-            </div>
-            <div>
-              {record.type === "form" ? <Icons.FaClipboardList className="hover" style={{ marginRight: '20px' }}
+          <DisplayEvent habitObj={habitObj} index={index} context={context} record={record} setContext={props.setContext} all={true}>
+            {record.type === "form" ? <Icons.FaClipboardList className="hov hover" style={{ marginRight: '20px' }}
                 onClick={() => { setFormModalShown(true); setFormRecord(record) }} /> : null}
-              <Icons.FaPencilAlt
-                className={"hover"}
-                style={{ marginRight: '20px' }}
-                onClick={() => { setEditPopoverId(editPopoverId === _id ? "" : _id) }} />
+
+                <div className="inline">
+                  {/* 2 day rule circle */}
+                  {record.checkedHistory !== undefined && record.type === 'habit' && !record.checkedHistory['0'] && !record.checkedHistory['1'] &&
+                    <div className="circle" style={{"marginRight": '15px'}}>
+                    </div>
+                  }
+                  {
+                    (record.type === "habit" || record.type === "todo" || record.type === "goal") &&
+                    <div style={{"marginRight": '15px'}}>
+                      <Icons.FaStar className={record.starred ? "star hover" : "hov hover"} 
+                      onClick={async() => { props.setContext(await updateEvent(context, record, {'starred': !record.starred}))}}/>
+                    </div>
+                  }
+                  <div className="hov hover">
+                  <Icons.FaEllipsisH style={{ marginRight: '20px' }} 
+                                    onClick={() => { setEditPopoverId(editPopoverId === _id ? "" : _id) }} />
+                  </div>
+                </div>
               {modalBody(record, _id)}
               {formModal(record)}
-            </div>
-          </div>
+          </DisplayEvent>
         );
       }
       )}
 
-      {/* adding new items */}
+      {/* adding new events */}
       {formVisible && <div className="card-2 border-2">
         <div className="form-padding">
           <Form onSubmit={handleSubmit}>

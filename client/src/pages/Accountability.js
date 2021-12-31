@@ -18,7 +18,7 @@ export default function Accountability(props) {
 
     return (
         <div className="wrapper">
-            <Layout name="🗺 THE USER" handleLogout={props.handleLogout} />
+            <Layout name="🗺 THE USER" handleLogout={props.handleLogout} menu={props.menu} showMenu={props.showMenu}/>
             <div className="dashboard">
                 <div class="fullheader">
                     <h2>{`${context.session.partner}'s Undone Events`}</h2>

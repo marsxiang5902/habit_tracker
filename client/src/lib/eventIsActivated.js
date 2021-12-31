@@ -8,4 +8,9 @@ function eventIsActivated(eventRecord, day, min, dayStartTime) {
         eventRecord.activationDays[day] && timeSinceStart(eventRecord.activationTime,
             dayStartTime) <= timeSinceStart(min, dayStartTime)
 }
-export { timeSinceStart, eventIsActivated }
+function eventActiveToday(eventRecord){
+    let today = new Date()
+    today = today.getDay()
+    return eventRecord.activationDays[today]
+}
+export { timeSinceStart, eventIsActivated, eventActiveToday }
