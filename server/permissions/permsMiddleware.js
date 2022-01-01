@@ -18,14 +18,14 @@ function addPermsMiddleware(req, res, next) {
                 req.user.perms = new Set(decoded.perms || [])
             }
         }
-    } catch (err) { console.log(err) } finally { next() }
+    } catch (err) { } finally { next() }
 }
 function addPermsMiddlewareGroup(req, res, next) {
     try {
         if (getGroup(req)) {
             req.user.groupPerms = getPerms(getGroup(req).roles[req.user.user])
         }
-    } catch (err) { console.log(err) } finally { next() }
+    } catch (err) { } finally { next() }
 }
 
 function hasSelf(perm) {

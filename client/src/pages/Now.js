@@ -217,6 +217,7 @@ function NowTime(props) {
             <div className="nowMain">
                 <NowContent day={day} min={min} />
             </div>
+            <UpNext day={day} min={min} />
         </div>
     )
 }

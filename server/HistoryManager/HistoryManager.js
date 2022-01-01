@@ -11,7 +11,6 @@ const checkData = function (data, maxDaysBefore = getDay(), minDaysBefore = 0) {
             assert(Number.isInteger(daysBefore) && minDaysBefore <= daysBefore && daysBefore <= maxDaysBefore)
         }
     } catch (err) {
-        console.log(err)
         return false
     }
     return true

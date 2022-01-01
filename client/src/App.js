@@ -38,8 +38,8 @@ class App extends React.Component {
     console.log('mount')
   }
 
-  setMenu = () => { this.setState({menu: !this.state.menu}) }
-  setContext = context => { this.setState({ context }); console.log(context)}
+  setMenu = () => { this.setState({ menu: !this.state.menu }) }
+  setContext = context => { this.setState({ context }); }
   getContext = () => this.state.context
 
   handleLogin = async token => {
@@ -76,27 +76,27 @@ class App extends React.Component {
           <Switch>
             <AuthRoute path="/app" exact render={(props) => {
               return (
-                <Now handleLogout={this.handleLogout} menu={this.state.menu} showMenu={this.setMenu}/>
+                <Now handleLogout={this.handleLogout} menu={this.state.menu} showMenu={this.setMenu} />
               )
             }} />
             <AuthRoute path='/app/dashboard' render={(props) => {
-              return(
+              return (
                 <Dashboard handleLogout={this.handleLogout} menu={this.state.menu} showMenu={this.setMenu} />
               )
             }} />
             <AuthRoute path="/app/editor" render={(props) => {
               return (
-                <Editor handleLogout={this.handleLogout} setContext={this.setContext} menu={this.state.menu} showMenu={this.setMenu}/>
+                <Editor handleLogout={this.handleLogout} setContext={this.setContext} menu={this.state.menu} showMenu={this.setMenu} />
               )
             }} />
             <AuthRoute path="/app/habits" render={(props) => (
-              <Habits setContext={this.setContext} handleLogout={this.handleLogout} menu={this.state.menu} showMenu={this.setMenu}/>
+              <Habits setContext={this.setContext} handleLogout={this.handleLogout} menu={this.state.menu} showMenu={this.setMenu} />
             )} />
             <AuthRoute path="/app/user" render={(props) => (
               <User setContext={this.setContext} handleLogout={this.handleLogout} menu={this.state.menu} showMenu={this.setMenu} />
             )} />
             <AuthRoute path="/app/accountability" render={(props) => (
-              <Accountability setContext={this.setContext} handleLogout={this.handleLogout} menu={this.state.menu} showMenu={this.setMenu}/>
+              <Accountability setContext={this.setContext} handleLogout={this.handleLogout} menu={this.state.menu} showMenu={this.setMenu} />
             )} />
             <AuthRoute path="/app/data" render={(props) => (
               <DataRoom setContext={this.setContext} handleLogout={this.handleLogout} menu={this.state.menu} showMenu={this.setMenu} />

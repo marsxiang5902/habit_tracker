@@ -18,7 +18,6 @@ function getPerms(roles) {
 }
 
 async function login(user, password) {
-    console.log(user, password)
     httpAssert.BAD_REQUEST(typeof user == 'string' && typeof password == 'string', `Invalid data.`)
     let userRecord = await getUser(user)
     httpAssert.UNAUTHORIZED(userRecord, `Invalid data.`)

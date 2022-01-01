@@ -81,7 +81,7 @@ function calcPct(items) {
             if (items[key]) ++percent;
         }
         return Math.floor(100 * percent / Object.keys(items).length)
-    } catch (err) { console.log(err); return 0; }
+    } catch (err) { return 0; }
 }
 
 function pct(habits) {
@@ -110,39 +110,39 @@ function totalDayCompletion(habits) {
 }
 
 //max
-function formMax(form){
+function formMax(form) {
     let max = 0;
     let currMax = 0;
-    for (let i=0; i < form.length; i++){
+    for (let i = 0; i < form.length; i++) {
         currMax = form[i]
-        max = checkMax(currMax, 'none', {'value': max, 'name': null}).value
+        max = checkMax(currMax, 'none', { 'value': max, 'name': null }).value
     }
     return max
 }
 //min
-function formMin(form){
+function formMin(form) {
     let min = 0;
     let currMin = 0;
-    for (let i=0; i < form.length; i++){
+    for (let i = 0; i < form.length; i++) {
         currMin = -(form[i])
-        min = -(checkMax(currMin, 'none', {'value': -min, 'name': null}).value)
+        min = -(checkMax(currMin, 'none', { 'value': -min, 'name': null }).value)
     }
     return min
 }
 
 //sum
-function formSum(form){
+function formSum(form) {
     let sum = 0;
-    for (let i=0; i < form.length; i++){
-        if(!isNaN(form[i])) sum += form[i]
+    for (let i = 0; i < form.length; i++) {
+        if (!isNaN(form[i])) sum += form[i]
     }
     return sum
 }
 //avg
-function formAvg(form){
+function formAvg(form) {
     let scale = 100;
     form = form.filter(x => !isNaN(x))
-    if(formMax(form) <= 10) scale = 1
+    if (formMax(form) <= 10) scale = 1
     return Math.floor(scale * formSum(form) / form.length)
 }
 

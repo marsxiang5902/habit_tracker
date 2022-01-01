@@ -26,7 +26,6 @@ module.exports = class HistoryManagerBitmask extends HistoryManager {
     static getHistory(data, curDay) {
         this.checkBitmaskData(data)
         let daysPassed = curDay - data.startDay + 1
-        console.log(curDay, data.startDay)
         let ret = bit2obj(data.bit, Math.min(32, daysPassed))
         assert(checkData(ret))
         return ret;
