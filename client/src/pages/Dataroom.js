@@ -54,9 +54,13 @@ function DataRoom(props) {
     return (
         <div className="wrapper">
             <Layout name="📈 THE DATA ROOM" handleLogout={props.handleLogout} menu={props.menu} showMenu={props.showMenu}></Layout>
-            {nav}
-            <div className="padding">
-                {renderContent}
+            <div className={props.menu ? "main-content active" : "main-content"}>
+                <div style={{"marginTop": "1%"}}>
+                    {nav}
+                </div>
+                <div className="padding">
+                    {renderContent}
+                </div>
             </div>
         </div>
     )

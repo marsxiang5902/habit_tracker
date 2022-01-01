@@ -39,7 +39,7 @@ class App extends React.Component {
   }
 
   setMenu = () => { this.setState({menu: !this.state.menu}) }
-  setContext = context => { this.setState({ context }) }
+  setContext = context => { this.setState({ context }); console.log(context)}
   getContext = () => this.state.context
 
   handleLogin = async token => {

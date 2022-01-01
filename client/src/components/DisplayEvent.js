@@ -3,7 +3,7 @@ import { updateEvent } from "../services/eventServices";
 import { DisplayHabit } from "./HabitList";
 
 function DisplayEvent(props) {
-    let colors = ["#F9F871", "#00896F", "#D23927", "#FF9671", "#FF6F91", "#2C73D2"]
+    let colors = ["#C4FCEF", "#F9F871", "#4AB753", "#FF5353", "#FF9671", "#FF6F91", "#2C73D2"]
     let changeColor = async (idx) => {
         props.setContext(await updateEvent(props.context, props.record, { 'color': idx }))
     }
@@ -29,9 +29,11 @@ function DisplayEvent(props) {
                             <div className="card-2 border-2" style={{ "width": "15%", "height": "15%", "backgroundColor": "white", "marginTop": '5px', 'alignItems': 'center' }}>
                                 <div className="color-picker">
                                     {colors.map((item, idx) => {
-                                        return (
-                                            <div style={{ "width": "25%", "height": "30%", "backgroundColor": item, 'margin': '2px', 'borderRadius': '5px' }} onClick={() => { changeColor(idx) }}></div>
-                                        )
+                                        if (idx !== props.record.color) {
+                                            return (
+                                                <div style={{ "width": "25%", "height": "35%", "backgroundColor": item, 'margin': '2px', 'borderRadius': '5px' }} onClick={() => { changeColor(idx) }}></div>
+                                            )
+                                        }
                                     })}
                                 </div>
                             </div>

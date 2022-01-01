@@ -38,8 +38,7 @@ let generateEvent = (context, day, min) => {
         }
     }
     events.sort((r1, r2) => timeSinceStart(r2.activationTime, dayStartTime) - timeSinceStart(r1.activationTime, dayStartTime))
-    console.log("events:", events)
-    return { 'curr': events ? events[0] : null, events }
+    return { 'curr': events.length > 0 ? events[0] : null, events }
 }
 
 function ModalBody(props) {
@@ -112,12 +111,14 @@ function UpNext(props) {
     const context = useContext(appContext)
     let events = generateEvent(context, props.day, props.min).events
     let habitObj = HabitObject(events);
-    return <>
-        <h4>Up Next</h4>
-        {events.map(record =>
-            <DisplayEvent noCheck={true} habitObj={habitObj} index={record._id} context={context}
-                record={record} setContext={context.setContext} all={false} />)}
-    </>
+    return events.length > 0 &&
+        <div className="nowSide">
+            <h4>Up Next</h4>
+            {events.map(record =>
+                <DisplayEvent noCheck={true} habitObj={habitObj} index={record._id} context={context}
+                    record={record} setContext={context.setContext} all={false} />)}
+        </div>
+
 }
 
 function NowContent(props) { // props: dayOfWeek, curMin
@@ -143,8 +144,7 @@ function NowContent(props) { // props: dayOfWeek, curMin
     }
 
     let event = generateEvent(context, props.day, props.min).curr
-
-    if (event !== null) {
+    if (event != null) {
         if (event.type === 'stack') {
             let stackedEvent = getEventById(context, event.eventList[event.pointer])
             let trigger = generateTrigger(stackedEvent)
@@ -216,9 +216,6 @@ function NowTime(props) {
         <div className="nowContainer">
             <div className="nowMain">
                 <NowContent day={day} min={min} />
-            </div>
-            <div className="nowSide">
-                <UpNext day={day} min={min} />
             </div>
         </div>
     )
