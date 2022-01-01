@@ -28,7 +28,7 @@ export default class Login extends React.Component {
         return (
             <Form.Group className="mb-3">
                 <Form.Label>{label}</Form.Label>
-                <Form.Control name={name} type={type} value={this.state[name]} onChange={this.handleEventChange}/>
+                <Form.Control name={name} type={type} value={this.state[name]} onChange={this.handleEventChange} />
             </Form.Group>
         )
     }
@@ -39,7 +39,7 @@ export default class Login extends React.Component {
             user: this.state.user, password: this.state.password
         })
         if (!loginResult.error) {
-            localStorage.setItem('jwt', loginResult.data.jwt)
+            // localStorage.setItem('jwt', loginResult.data.jwt)
             this.props.handleLogin(loginResult.data.jwt)
         } else {
             this.setState({ loginFailed: true })
@@ -61,18 +61,18 @@ export default class Login extends React.Component {
     render() {
         return (
             <>
-                <div style={{"display":"flex", "alignItems": "center"}}>
+                <div style={{ "display": "flex", "alignItems": "center" }}>
                     <div className="side-logo">
-                        <img src={Logo} alt="" style={{"maxWidth":"70%", "height": "auto"}}/>
-                        <h2 style={{"color": "white", "fontSize": "2.5em", "fontWeight":"bold", "paddingTop":"10%"}}>Growthify</h2>
+                        <img src={Logo} alt="" style={{ "maxWidth": "70%", "height": "auto" }} />
+                        <h2 style={{ "color": "white", "fontSize": "2.5em", "fontWeight": "bold", "paddingTop": "10%" }}>Growthify</h2>
                     </div>
-                    <div style={{"flex": "0.75"}}>
-                        <div style={{"position": "absolute", "paddingRight": "5px", "paddingTop": "10px", "right": "5px", "top":'5px'}}>
-                            <AuthButtons handleLogout={null} login={true}/>
+                    <div style={{ "flex": "0.75" }}>
+                        <div style={{ "position": "absolute", "paddingRight": "5px", "paddingTop": "10px", "right": "5px", "top": '5px' }}>
+                            <AuthButtons handleLogout={null} login={true} />
                         </div>
-                        <div style={{"marginLeft": "5%"}}>
+                        <div style={{ "marginLeft": "5%" }}>
                             <div>
-                                <h1 style={{'paddingBottom': '8px'}}>Login</h1>
+                                <h1 style={{ 'paddingBottom': '8px' }}>Login</h1>
                                 {this.state.loginFailed && <p>Login failed.</p>}
                                 <Form onSubmit={this.handleSubmit} style={{ marginRight: "10%" }}>
                                     {this.inputPart("Username", "user", "text")}

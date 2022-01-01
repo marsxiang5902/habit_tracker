@@ -53,7 +53,7 @@ let DisplayHabit = (props) => {
     return (
         <div className="habit-list" key={props.index}>
 
-            {!noCheckedHistory.has(props.record.type) &&
+            {!noCheckedHistory.has(props.record.type) && !props.noCheck &&
                 <input type="checkbox"
                     checked={props.record.value}
                     onChange={(e) => props.all ? props.onChange(e, props.index, props.context, props.record, props.setContext)
@@ -62,7 +62,7 @@ let DisplayHabit = (props) => {
             }
 
             <div className="habit">
-                <p style={{ marginBottom: "0px" , 'fontSize': 'large'}}>{props.record.name}</p>
+                <p style={{ marginBottom: "0px", 'fontSize': 'large' }}>{props.record.name}</p>
             </div>
         </div >
     )

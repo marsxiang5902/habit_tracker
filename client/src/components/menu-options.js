@@ -12,11 +12,11 @@ function getSidebarData(context) {
             path: '/',
             icon: <Icons.FaClock />,
         },
-        {
-            title: 'Dashboard',
-            path: '/dashboard',
-            icon: <Icons.FaHome />,
-        },
+        // {
+        //     title: 'Dashboard',
+        //     path: '/dashboard',
+        //     icon: <Icons.FaHome />,
+        // },
         {
             title: 'Editor',
             path: '/editor',
@@ -35,11 +35,11 @@ function getSidebarData(context) {
         //         cName: 'nav-text'
         //     }] : []
         // ),
-        {
-            title: 'Groups',
-            path: '/accountability',
-            icon: <Icons.FaUsers />
-        },
+        // {
+        //     title: 'Groups',
+        //     path: '/accountability',
+        //     icon: <Icons.FaUsers />
+        // },
         {
             title: 'Settings',
             path: '/user',
