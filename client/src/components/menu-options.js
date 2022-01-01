@@ -8,36 +8,42 @@ function getSidebarData(context) {
     }
     return [
         {
-            title: 'Dashboard',
+            title: 'Next Up',
             path: '/',
+            icon: <Icons.FaClock />,
+        },
+        {
+            title: 'Dashboard',
+            path: '/dashboard',
             icon: <Icons.FaHome />,
-            cName: 'nav-text'
         },
         {
             title: 'Editor',
             path: '/editor',
-            icon: <Icons.FaPencilAlt />,
-            cName: 'nav-text',
+            icon: <Icons.FaLightbulb />,
         },
         {
             title: 'Data Room',
             path: '/data',
-            icon: <Icons.FaDatabase />,
-            cName: 'nav-text'
+            icon: <Icons.FaChartLine />,
         },
-        ...(context.session.partner ?
-            [{
-                title: 'Partner',
-                path: '/accountability',
-                icon: <Icons.FaUsers />,
-                cName: 'nav-text'
-            }] : []
-        ),
+        // ...(context.session.partner ?
+        //     [{
+        //         title: 'Partner',
+        //         path: '/accountability',
+        //         icon: <Icons.FaUsers />,
+        //         cName: 'nav-text'
+        //     }] : []
+        // ),
         {
-            title: 'User',
+            title: 'Groups',
+            path: '/accountability',
+            icon: <Icons.FaUsers />
+        },
+        {
+            title: 'Settings',
             path: '/user',
-            icon: <Icons.FaUserAlt />,
-            cName: 'nav-text'
+            icon: <Icons.FaCog />,
         }
     ]
 }

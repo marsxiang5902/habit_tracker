@@ -7,7 +7,7 @@ function getURL(trigger) {
 const renderer = {
     link: trigger => {
         return (
-            <div className="blank">
+            <div className="blank" style={{"width": "60%"}}>
                 <a href={trigger.resourceURL}><h3 style={{ color: "white" }}>Link to {trigger.name}</h3></a>
             </div>
         )

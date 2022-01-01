@@ -22,7 +22,7 @@ function User(props) {
 
     return (
         <div className="wrapper">
-            <Layout name="🗺 THE USER" handleLogout={props.handleLogout} />
+            <Layout name="🗺 THE USER" handleLogout={props.handleLogout} menu={props.menu} showMenu={props.showMenu}/>
             <div className="dashboard">
                 <Form onSubmit={handleSubmit}>
                     <Form.Group>

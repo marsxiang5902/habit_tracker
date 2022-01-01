@@ -9,7 +9,7 @@ function Editor(props) {
     const GAEventTracker = useGAEvent("Habit Clicked")
     return (
         <div className="wrapper">
-            <Layout name="🗺 THE PLAN" handleLogout={props.handleLogout} />
+            <Layout name="🗺 THE PLAN" handleLogout={props.handleLogout} menu={props.menu} showMenu={props.showMenu}/>
             <div className="formatter">
                 <div className="container" id="habit">
                     <EventList setContext={props.setContext} title="Daily Habits" type="habit" />

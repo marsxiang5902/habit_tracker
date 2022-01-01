@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import Editor from './pages/Editor';
-import { Dashboard } from './pages/Dashboard';
+import { Now } from './pages/Now';
 import Habits from './pages/Habits'
 import Triggers from './pages/Triggers';
 import Signup from './auth/Signup';
@@ -21,13 +21,15 @@ import Accountability from './pages/Accountability';
 import AuthRoute from './routes/AuthRoute';
 import FullStory from 'react-fullstory';
 import amplitude from 'amplitude-js';
+import Dashboard from './pages/Dashboard';
 
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = ({
-      context: defaultAppContext
+      context: defaultAppContext,
+      menu: false
     })
   }
 
@@ -36,6 +38,7 @@ class App extends React.Component {
     console.log('mount')
   }
 
+  setMenu = () => { this.setState({menu: !this.state.menu}) }
   setContext = context => { this.setState({ context }) }
   getContext = () => this.state.context
 
@@ -45,7 +48,7 @@ class App extends React.Component {
       if ('user' in decoded && 'perms' in decoded) {
         let context = await fetchData(decoded.user, token)
         this.setContext(context)
-
+        this.setMenu(context.session.preferences.defaultShowSidebar)
         this.unsubscribeToNotifications = subscribeToNotifications(context.session.preferences.dayStartTime, () => (
           getAllEvents(this.state.context)
         ), () => { this.props.history.push('/app/') })
@@ -73,25 +76,30 @@ class App extends React.Component {
           <Switch>
             <AuthRoute path="/app" exact render={(props) => {
               return (
-                <Dashboard handleLogout={this.handleLogout} />
+                <Now handleLogout={this.handleLogout} menu={this.state.menu} showMenu={this.setMenu}/>
+              )
+            }} />
+            <AuthRoute path='/app/dashboard' render={(props) => {
+              return(
+                <Dashboard handleLogout={this.handleLogout} menu={this.state.menu} showMenu={this.setMenu} />
               )
             }} />
             <AuthRoute path="/app/editor" render={(props) => {
               return (
-                <Editor handleLogout={this.handleLogout} setContext={this.setContext} />
+                <Editor handleLogout={this.handleLogout} setContext={this.setContext} menu={this.state.menu} showMenu={this.setMenu}/>
               )
             }} />
             <AuthRoute path="/app/habits" render={(props) => (
-              <Habits setContext={this.setContext} handleLogout={this.handleLogout} />
+              <Habits setContext={this.setContext} handleLogout={this.handleLogout} menu={this.state.menu} showMenu={this.setMenu}/>
             )} />
             <AuthRoute path="/app/user" render={(props) => (
-              <User setContext={this.setContext} handleLogout={this.handleLogout} />
+              <User setContext={this.setContext} handleLogout={this.handleLogout} menu={this.state.menu} showMenu={this.setMenu} />
             )} />
             <AuthRoute path="/app/accountability" render={(props) => (
-              <Accountability setContext={this.setContext} handleLogout={this.handleLogout} />
+              <Accountability setContext={this.setContext} handleLogout={this.handleLogout} menu={this.state.menu} showMenu={this.setMenu}/>
             )} />
             <AuthRoute path="/app/data" render={(props) => (
-              <DataRoom setContext={this.setContext} handleLogout={this.handleLogout} />
+              <DataRoom setContext={this.setContext} handleLogout={this.handleLogout} menu={this.state.menu} showMenu={this.setMenu} />
             )} />
 
             <Route path="/app/signup">

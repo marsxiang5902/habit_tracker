@@ -6,6 +6,7 @@ function getEventById(context, _id) {
         }
     } return null
 }
+
 function getAllEvents(context) {
     let ret = {}
     for (let type in context.timedEvents) {
@@ -15,6 +16,7 @@ function getAllEvents(context) {
         }
     } return ret
 }
+
 function getSomeEvents(context, types) {
     let ret = {}
     for (let type in context.timedEvents) {

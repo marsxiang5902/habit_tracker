@@ -129,6 +129,7 @@ function formMin(form){
     }
     return min
 }
+
 //sum
 function formSum(form){
     let sum = 0;
