@@ -15,7 +15,7 @@ function DisplayOverview(props) {
             <>
                 <h6>{title}</h6>
                 <h2>{typeof value == 'number' ? `${value} Days` : value}</h2>
-                <p>{value == 0 ? "Habit: None" : `Habit: ${name}`}</p>
+                <p style={{"margin":"0px"}}>{value == 0 ? "Habit: None" : `Habit: ${name}`}</p>
             </>
         )
     }

@@ -25,8 +25,9 @@ let EditPopover = React.forwardRef((props, ref) => {
 
   async function handleEdit(event) {
     event.preventDefault();
-    await checkStack(props.record._id, context, props.setContext)
-    props.setContext(await (del ? deleteEvent(context, props.record):
+    await checkStack(props.record._id, context, props.setContext);
+    props.setContext(await (del ? 
+      deleteEvent(context, props.record):
       updateEvent(context, props.record, { name }))
     )
     setDelete(false)

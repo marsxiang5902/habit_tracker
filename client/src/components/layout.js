@@ -19,7 +19,6 @@ import DisplayProgress from "./ProgressBars";
 ReactGA.initialize(config.google_analytics)
 function Layout(props) {
     const context = useContext(appContext)
-    console.log(context)
 
     useEffect(() => {
         ReactGA.pageview(window.location.pathname + window.location.search);

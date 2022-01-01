@@ -24,7 +24,7 @@ function dailyProgress(context){
 }
 
 function DisplayProgress(props){
-    let now = dailyProgress(props.context)
+    let now = Math.round(dailyProgress(props.context))
     return(
         <>
             <ProgressBar now={now}/>

@@ -9,14 +9,12 @@ async function checkStack(id, context, setContext){
         let temp = [...element.eventList]
         for (let j = 0; j < element.eventList.length; j++) {
             const curr_id = element.eventList[j];
-            console.log(curr_id)
-            console.log(id)
             if (curr_id === id){
                 temp.splice(j, 1)
-                console.log(temp)
+                break;
             }
         }
-        await updateEvent(context, element, {eventList: temp}) 
+        await setContext(updateEvent(context, element, {eventList: temp}))
     }
 }
 
