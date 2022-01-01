@@ -28,9 +28,9 @@ let generateEvent = (context, day, min) => {
         if (eventIsActivated(eventRecord, day, min, dayStartTime) &&
             (curEvent === null || timeSinceStart(curEvent.activationTime, dayStartTime) <
                 timeSinceStart(eventRecord.activationTime, dayStartTime))) {
-            if (eventRecord.type !== 'stack' || eventRecord.pointer < eventRecord.eventList.length) {
-                curEvent = eventRecord
-                events.push(eventRecord)
+                if (eventRecord.type !== 'stack' || eventRecord.pointer < eventRecord.eventList.length) {
+                    curEvent = eventRecord
+                    events.push(eventRecord)
             }
         }
     }

@@ -11,6 +11,7 @@ import { EditForm } from './FormList';
 import { ModalBody as FormEntry } from '../pages/Now';
 import noCheckedHistory from '../lib/noCheckedHistory';
 import DisplayEvent from './DisplayEvent';
+import checkStack from '../lib/checkStacksOnDel';
 
 
 function capitalizeFirst(str) {
@@ -24,7 +25,8 @@ let EditPopover = React.forwardRef((props, ref) => {
 
   async function handleEdit(event) {
     event.preventDefault();
-    props.setContext(await (del ? deleteEvent(context, props.record) :
+    await checkStack(props.record._id, context, props.setContext)
+    props.setContext(await (del ? deleteEvent(context, props.record):
       updateEvent(context, props.record, { name }))
     )
     setDelete(false)
@@ -196,7 +198,7 @@ function EventList(props) {
                 <div className="inline">
                   {/* 2 day rule circle */}
                   {record.checkedHistory !== undefined && record.type === 'habit' && !record.checkedHistory['0'] && !record.checkedHistory['1'] &&
-                    <div className="circle" style={{"marginRight": '15px'}}>
+                    <div className="circle" style={{"marginRight": '15px', 'marginTop': '4px'}}>
                     </div>
                   }
                   {

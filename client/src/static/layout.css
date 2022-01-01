@@ -138,3 +138,9 @@ img {
     width: 100%;
   }
 }
+
+@media only screen and (max-height: 400px) {
+  .header {
+    height: 40px;
+  }
+}

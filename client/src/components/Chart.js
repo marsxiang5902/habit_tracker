@@ -13,13 +13,13 @@ function SideBar(props){
         {props.habitObj.value.map((item, index) => {
             if (item.type === "habit"){
                 // return <DisplayHabit all={false} onChange={props.habitObj.edit.checkbox} record={item} item={item} index={index}/>
-                return <DisplayEvent all={false} habitObj={props.habitObj} item={item} index={index} />
+                return <DisplayEvent all={false} habitObj={props.habitObj} record={item} index={index} />
             }
         })}
         <h3>Form Fields</h3>
         {props.habitObj.value.map((item, index) => {
             if (item.type === "form"){
-                return <DisplayEvent all={false} habitObj={props.habitObj} item={item} index={index} />
+                return <DisplayEvent all={false} habitObj={props.habitObj} record={item} index={index} />
             }
         })}
         <h3>Varaibles</h3>

@@ -5,6 +5,7 @@ import * as Icons from "react-icons/fa";
 import { getEventById } from "../lib/locateEvents";
 import { updateEvent } from "../services/eventServices";
 import noCheckedHistory from "../lib/noCheckedHistory";
+import notDashboard from "../lib/notDashboard";
 
 let PreviewPopover = React.forwardRef((props, ref) => {
     let context = useContext(appContext)
@@ -30,7 +31,7 @@ function StackBody(props) {
     const noItem = { _id: null, name: "New Event" }
     let dropdownContents = { null: noItem }
     for (let type in context.timedEvents) {
-        if (!noCheckedHistory.has(type) && type !== 'stack') {
+        if (!notDashboard.has(type) && type !== 'stack') {
             for (let _id in context.timedEvents[type]) {
                 dropdownContents[_id] = context.timedEvents[type][_id]
             }
@@ -43,36 +44,45 @@ function StackBody(props) {
         <p>
             Add a list of events that will be shown in the dashboard instead of this stack.
         </p>
-        {ar.map((_id, idx) => (
-            <div className="card-2" key={_id}>
-                <div className="pushed" key={_id}>
-                    <div className="stacked">
-                        <Icons.FaArrowUp onClick={() => {
-                            if (idx > 0) {
-                                let tmp = [...ar], val = tmp[idx]
-                                tmp[idx] = tmp[idx - 1]
-                                tmp[idx - 1] = val
-                                setAr(tmp)
-                            }
-                        }} className="hover" />
-                        <Icons.FaArrowDown onClick={() => {
-                            if (idx < ar.length - 1) {
-                                let tmp = [...ar], val = tmp[idx]
-                                tmp[idx] = tmp[idx + 1]
-                                tmp[idx + 1] = val
-                                setAr(tmp)
-                            }
-                        }} className="hover" />
+        {ar.map((_id, idx) => {
+            if (getEventById(context, _id) == null){
+                let tmp = [...ar]
+                tmp.splice(idx, 1)
+                setAr(tmp)
+            }
+            else{
+                return(
+                    <div className="card-2" key={_id}>
+                        <div className="pushed" key={_id}>
+                            <div className="stacked">
+                                <Icons.FaArrowUp onClick={() => {
+                                    if (idx > 0) {
+                                        let tmp = [...ar], val = tmp[idx]
+                                        tmp[idx] = tmp[idx - 1]
+                                        tmp[idx - 1] = val
+                                        setAr(tmp)
+                                    }
+                                }} className="hover" />
+                                <Icons.FaArrowDown onClick={() => {
+                                    if (idx < ar.length - 1) {
+                                        let tmp = [...ar], val = tmp[idx]
+                                        tmp[idx] = tmp[idx + 1]
+                                        tmp[idx + 1] = val
+                                        setAr(tmp)
+                                    }
+                                }} className="hover" />
+                            </div>
+                            <div className="pushed-spaced">
+                                <p>{getEventById(context, _id).name}</p>
+                            </div>
+                        </div>
+                        <Icons.FaTrash className="hover" onClick={() => {
+                            setAr([...ar.slice(0, idx), ...ar.slice(idx + 1, ar.length)])
+                        }} />
                     </div>
-                    <div className="pushed-spaced">
-                        <p>{getEventById(context, _id).name}</p>
-                    </div>
-                </div>
-                <Icons.FaTrash className="hover" onClick={() => {
-                    setAr([...ar.slice(0, idx), ...ar.slice(idx + 1, ar.length)])
-                }} />
-            </div>
-        ))}
+                )
+            }
+        })}
         <div className="pushed">
             <DropdownButton variant="light" title={dropdownContents[newElem].name}>
                 {Object.keys(dropdownContents).map(_id => (

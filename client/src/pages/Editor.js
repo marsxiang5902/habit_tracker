@@ -10,24 +10,26 @@ function Editor(props) {
     return (
         <div className="wrapper">
             <Layout name="🗺 THE PLAN" handleLogout={props.handleLogout} menu={props.menu} showMenu={props.showMenu}/>
-            <div className="formatter">
-                <div className="container" id="habit">
-                    <EventList setContext={props.setContext} title="Daily Habits" type="habit" />
-                </div>
-                <div className="container" id="todo">
-                    <EventList setContext={props.setContext} title="Todos" type="todo" />
-                </div>
-                <div className="container" id="goal">
-                    <EventList setContext={props.setContext} title="Goals" type="goal" />
-                </div>
-                <div className="container" id="reward">
-                    <EventList setContext={props.setContext} title="Rewards" type="reward" />
-                </div>
-                <div className="container" id="stack">
-                    <EventList setContext={props.setContext} title="Stacks" type="stack" />
-                </div>
-                <div className="container" id="stack">
-                    <EventList setContext={props.setContext} title="Forms" type="form" />
+            <div className={props.menu ? "main-content active" : "main-content"}>
+                <div className="formatter">
+                    <div className="container" id="habit">
+                        <EventList setContext={props.setContext} title="Daily Habits" type="habit" />
+                    </div>
+                    <div className="container" id="stack">
+                        <EventList setContext={props.setContext} title="Stacks" type="stack" />
+                    </div>
+                    <div className="container" id="reward">
+                        <EventList setContext={props.setContext} title="Rewards" type="reward" />
+                    </div>
+                    <div className="container" id="todo">
+                        <EventList setContext={props.setContext} title="Todos" type="todo" />
+                    </div>
+                    <div className="container" id="goal">
+                        <EventList setContext={props.setContext} title="Goals" type="goal" />
+                    </div>
+                    <div className="container" id="form">
+                        <EventList setContext={props.setContext} title="Forms" type="form" />
+                    </div>
                 </div>
             </div>
         </div>

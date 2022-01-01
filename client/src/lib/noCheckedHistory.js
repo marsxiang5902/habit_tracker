@@ -1,2 +1,2 @@
-let noCheckedHistory = new Set(['todo', 'goal'])
+let noCheckedHistory = new Set(['rewards', 'stacks'])
 export default noCheckedHistory

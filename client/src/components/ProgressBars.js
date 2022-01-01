@@ -15,17 +15,16 @@ function dailyProgress(context){
     }
     
     let completed = 0
-    for (const event in daily_events) {
-        if (event.checkedHistory !== undefined && event.checkedHistory['0']){
+    for (let i = 0; i < daily_events.length; i++) {
+        if (daily_events[i].checkedHistory !== undefined && daily_events[i].checkedHistory['0']){
             completed++;
         }
     }
-    return completed / daily_events.length;
+    return (completed / daily_events.length) * 100;
 }
 
 function DisplayProgress(props){
-    console.log(dailyProgress(props.context));
-    let now = 30
+    let now = dailyProgress(props.context)
     return(
         <>
             <ProgressBar now={now}/>
