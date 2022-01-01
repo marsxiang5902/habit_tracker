@@ -25,9 +25,8 @@ let EditPopover = React.forwardRef((props, ref) => {
 
   async function handleEdit(event) {
     event.preventDefault();
-    await checkStack(props.record._id, context, props.setContext);
-    props.setContext(await (del ? 
-      deleteEvent(context, props.record):
+    props.setContext(await checkStack(context, props.record._id))
+    props.setContext(await (del ? deleteEvent(context.getContext(), props.record) :
       updateEvent(context, props.record, { name }))
     )
     setDelete(false)
@@ -182,7 +181,7 @@ function EventList(props) {
 
       {/* header */}
       <div className="subheader">
-        <h2 style={{"fontWeight": "bolder"}}>{props.title}</h2>
+        <h2 style={{ "fontWeight": "bolder" }}>{props.title}</h2>
         {formVisible ?
           <Icons.FaRegWindowClose onClick={() => { setFormVisible(false) }} className="hover"></Icons.FaRegWindowClose> :
           <Icons.FaRegPlusSquare onClick={() => { setFormVisible(true) }} className="hover"></Icons.FaRegPlusSquare>}
@@ -194,28 +193,28 @@ function EventList(props) {
         return (
           <DisplayEvent habitObj={habitObj} index={index} context={context} record={record} setContext={props.setContext} all={true}>
             {record.type === "form" ? <Icons.FaClipboardList className="hov hover" style={{ marginRight: '20px' }}
-                onClick={() => { setFormModalShown(true); setFormRecord(record) }} /> : null}
+              onClick={() => { setFormModalShown(true); setFormRecord(record) }} /> : null}
 
-                <div className="inline">
-                  {/* 2 day rule circle */}
-                  {record.checkedHistory !== undefined && record.type === 'habit' && !record.checkedHistory['0'] && !record.checkedHistory['1'] &&
-                    <div className="circle" style={{"marginRight": '15px', 'marginTop': '4px'}}>
-                    </div>
-                  }
-                  {
-                    (record.type === "habit" || record.type === "todo" || record.type === "goal") &&
-                    <div style={{"marginRight": '15px'}}>
-                      <Icons.FaStar className={record.starred ? "star hover" : "hov hover"} 
-                      onClick={async() => { props.setContext(await updateEvent(context, record, {'starred': !record.starred}))}}/>
-                    </div>
-                  }
-                  <div className="hov hover">
-                  <Icons.FaEllipsisH style={{ marginRight: '20px' }} 
-                                    onClick={() => { setEditPopoverId(editPopoverId === _id ? "" : _id) }} />
-                  </div>
+            <div className="inline">
+              {/* 2 day rule circle */}
+              {record.checkedHistory !== undefined && record.type === 'habit' && !record.checkedHistory['0'] && !record.checkedHistory['1'] &&
+                <div className="circle" style={{ "marginRight": '15px', 'marginTop': '4px' }}>
                 </div>
-              {modalBody(record, _id)}
-              {formModal(record)}
+              }
+              {
+                (record.type === "habit" || record.type === "todo" || record.type === "goal") &&
+                <div style={{ "marginRight": '15px' }}>
+                  <Icons.FaStar className={record.starred ? "star hover" : "hov hover"}
+                    onClick={async () => { props.setContext(await updateEvent(context, record, { 'starred': !record.starred })) }} />
+                </div>
+              }
+              <div className="hov hover">
+                <Icons.FaEllipsisH style={{ marginRight: '20px' }}
+                  onClick={() => { setEditPopoverId(editPopoverId === _id ? "" : _id) }} />
+              </div>
+            </div>
+            {modalBody(record, _id)}
+            {formModal(record)}
           </DisplayEvent>
         );
       }

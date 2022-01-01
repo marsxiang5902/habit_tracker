@@ -41,6 +41,7 @@ async function getEvent(r) {
     let ret = sliceObject(r.eventRecord, EVENT_GET_SLICES)
 
     ret.checkedHistory = getEventHistory(r)
+    console.log(getEventHistory(r))
     let triggerList = r.eventRecord.triggerList
 
     let ar = await db_getTriggers(triggerList.map(_id => ObjectId(_id)))

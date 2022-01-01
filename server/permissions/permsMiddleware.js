@@ -58,11 +58,9 @@ function authorizeEndpoint(perms, getTargetUser = defaultGetTargetUser) {
             try {
                 let permsSet = hasGroup(perm) ? req.user.groupPerms : req.user.perms
                 perm = removeGroup(perm)
-                console.log(getTargetUser(req), req.user.user, permSelf(perm))
                 assert(permsSet.has(perm) ||
                     (getTargetUser(req) === req.user.user && permsSet.has(permSelf(perm))))
             } catch (err) {
-                console.log(err)
                 next(new httpStatusErrors.UNAUTHORIZED(`Not authorized.`))
             }
         })
