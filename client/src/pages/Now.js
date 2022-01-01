@@ -12,29 +12,34 @@ import { eventIsActivated, timeSinceStart } from '../lib/eventIsActivated';
 import { updateEventFormHistory } from "../services/eventServices";
 import useGAEvent from '../analytics/useGAEvent';
 import DisplayProgress from '../components/ProgressBars';
+import DisplayEvent from '../components/DisplayEvent';
+import { HabitObject } from '../components/HabitList';
 
 const convertTypes = {
     num: Number,
     str: x => x
 }
 
-// helper function for sidebar and current event todo
+// generate current event and get all events
 let generateEvent = (context, day, min) => {
-    let curEvent = null, allEvents = getAllEvents(context)
+    let allEvents = getAllEvents(context)
     let dayStartTime = context.session.preferences.dayStartTime
     let events = []
     for (let _id in allEvents) {
         let eventRecord = allEvents[_id]
-        if (eventIsActivated(eventRecord, day, min, dayStartTime) &&
-            (curEvent === null || timeSinceStart(curEvent.activationTime, dayStartTime) <
-                timeSinceStart(eventRecord.activationTime, dayStartTime))) {
-                if (eventRecord.type !== 'stack' || eventRecord.pointer < eventRecord.eventList.length) {
-                    curEvent = eventRecord
-                    events.push(eventRecord)
+        if (eventIsActivated(eventRecord, day, min, dayStartTime)) {
+            if (eventRecord.type !== 'stack' || eventRecord.pointer < eventRecord.eventList.length) {
+                // if ((curEvent === null || timeSinceStart(curEvent.activationTime, dayStartTime) <
+                //     timeSinceStart(eventRecord.activationTime, dayStartTime))) {
+                //     curEvent = eventRecord
+                // }
+                events.push(eventRecord)
             }
         }
     }
-    return {'curr': curEvent, 'events': events}
+    events.sort((r1, r2) => timeSinceStart(r2.activationTime, dayStartTime) - timeSinceStart(r1.activationTime, dayStartTime))
+    console.log("events:", events)
+    return { 'curr': events ? events[0] : null, events }
 }
 
 function ModalBody(props) {
@@ -103,13 +108,16 @@ function TimedForm(props) {
     </>
 }
 
-function UpNext(props){
+function UpNext(props) {
     const context = useContext(appContext)
-    let events = generateEvent(context, props.day, props.min)
-}
-
-function Incomplete(props){
-
+    let events = generateEvent(context, props.day, props.min).events
+    let habitObj = HabitObject(events);
+    return <>
+        <h4>Up Next</h4>
+        {events.map(record =>
+            <DisplayEvent noCheck={true} habitObj={habitObj} index={record._id} context={context}
+                record={record} setContext={context.setContext} all={false} />)}
+    </>
 }
 
 function NowContent(props) { // props: dayOfWeek, curMin
@@ -180,13 +188,13 @@ function NowContent(props) { // props: dayOfWeek, curMin
         }
     } else {
         return (
-        <div className="dashboard">
-            <h3 className="congrats-text">
-                Congrats you're one step closer to reaching your full potential! 
-                {/* <a href="https://www.youtube.com/watch?v=tmTZj0emGHw">You deserve this.</a> */}
-            </h3>
-            <img src="https://jamesclear.com/wp-content/uploads/2015/08/tiny-gains-graph-700x700.jpg" alt="" />
-        </div>
+            <div className="dashboard">
+                <h3 className="congrats-text">
+                    Congrats you're one step closer to reaching your full potential!
+                    {/* <a href="https://www.youtube.com/watch?v=tmTZj0emGHw">You deserve this.</a> */}
+                </h3>
+                <img src="https://jamesclear.com/wp-content/uploads/2015/08/tiny-gains-graph-700x700.jpg" alt="" />
+            </div>
         )
     }
 }
@@ -205,22 +213,26 @@ function NowTime(props) {
     }, [])
 
     return (
-        <>
-            <NowContent day={day} min={min}/>
-        </>
-    )
-}
-
-function Now(props){
-    return(
-        <div className="wrapper">
-            <Layout name="Home" handleLogout={props.handleLogout} menu={props.menu} showMenu={props.showMenu}/>
-            <div className={props.menu ? "main-content active" : "main-content"}>
-                <NowTime />
+        <div className="nowContainer">
+            <div className="nowMain">
+                <NowContent day={day} min={min} />
             </div>
-            <div></div>
+            <div className="nowSide">
+                <UpNext day={day} min={min} />
+            </div>
         </div>
     )
 }
 
-export { Now, TimedForm, ModalBody, NowTime};
+function Now(props) {
+    return (
+        <div className="wrapper">
+            <Layout name="Home" handleLogout={props.handleLogout} menu={props.menu} showMenu={props.showMenu} />
+            <div className={props.menu ? "main-content active" : "main-content"}>
+                <NowTime />
+            </div>
+        </div>
+    )
+}
+
+export { Now, TimedForm, ModalBody, NowTime };
