@@ -1,7 +1,7 @@
 import React from 'react';
 import '../static/page.css'
 import Layout from '../components/layout';
-import FormList from '../components/FormList2'
+import {FormList} from '../components/FormList'
 
 export default function Stacks(props) {
     return <div className="wrapper">

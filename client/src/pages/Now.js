@@ -13,7 +13,7 @@ import { updateEventFormHistory } from "../services/eventServices";
 import useGAEvent from '../analytics/useGAEvent';
 import DisplayProgress from '../components/ProgressBars';
 import DisplayEvent from '../components/DisplayEvent';
-import { HabitObject } from '../components/HabitList';
+import { EventObject } from '../components/EventOnChange';
 
 const convertTypes = {
     num: Number,
@@ -110,7 +110,7 @@ function TimedForm(props) {
 function UpNext(props) {
     const context = useContext(appContext)
     let events = generateEvent(context, props.day, props.min).events
-    let habitObj = HabitObject(events);
+    let habitObj = EventObject(events);
     return events.length > 0 &&
         <div className="nowSide">
             <h4>Up Next</h4>

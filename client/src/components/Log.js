@@ -5,7 +5,7 @@ import { fillArray, maxLength } from '../lib/chartServices';
 import { getNumFormFields, getSomeEvents } from '../lib/locateEvents';
 import { getPastDay } from '../lib/time';
 import '../static/page.css'
-import { HabitObject } from './HabitList';
+import { EventObject } from './EventOnChange';
 
 
 //find similar days
@@ -53,8 +53,8 @@ function DisplayEntries(props){
     let events = getSomeEvents(props.context, ['habit', 'form'])
     let length = maxLength(events)
     let numFields = getNumFormFields(props.context)
-    numFields = HabitObject(numFields).value
-    events = HabitObject(events, false, false).value
+    numFields = EventObject(numFields).value
+    events = EventObject(events, false, false).value
 
     for (let event in events){
         events[event] = fillArray(events, events[event])
