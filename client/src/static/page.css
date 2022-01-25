@@ -36,10 +36,11 @@
 }
 
 .container {
-    margin-left: 10%;
+    /* margin-left: 10%; */
     /* width:100%; */
     border-radius: 10px;
     padding: 5px 0px 10px 0px;
+    padding-left: 5%;
 }
 
 .border-2 {
@@ -59,11 +60,15 @@
 }
 
 .hov{
+<<<<<<< HEAD
     opacity: 0%;
+=======
+    opacity: 0;
+>>>>>>> 792ba23894b2aa999d5d36f9e23acdaa105e2b8c
 }
 
 .card-2:hover .hov{
-    opacity: 100%;
+    opacity: 1;
     transition: 600ms;
 }
 
@@ -202,6 +207,7 @@ select {
 .nowContainer{
     display: flex;
     flex-direction: row;
+    align-items: center;
 }
 
 .nowMain {
@@ -278,8 +284,9 @@ select {
 }
 
 .data-chart{
-    margin: 10px 10px 10px 50px;
-    width:80%;
+    margin: 10px 10px 10px 30px;
+    flex-basis: 95%;
+    width: 80%;
 }
 
 .dropdown{
@@ -399,6 +406,19 @@ select{
     column-gap: 5px;
     justify-content: center;
     align-items: center;
+}
+
+.variable-select{
+    margin-left: 10px;
+    height: 100%;
+}
+
+.event-variable{
+    display: flex;
+}
+
+.sidebar-container{
+    display: flex;
 }
 
 @media only screen and (max-width: 850px) {

@@ -5,7 +5,6 @@ import '../static/page.css'
 import { Nav } from 'react-bootstrap'
 import DisplayOverview from "../components/ProgressOverview";
 import { LineChart } from "../components/Chart";
-import { Calendar } from "../components/Calendar";
 import { getAllEvents, getSomeEvents } from "../lib/locateEvents";
 import { DisplayEntries } from "../components/Log";
 

@@ -1,4 +1,4 @@
-# habit_tracker
+# Growthify
 
 ## Description
 

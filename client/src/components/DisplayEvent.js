@@ -1,6 +1,6 @@
 import { OverlayTrigger, Popover, Tooltip } from "react-bootstrap";
 import { updateEvent } from "../services/eventServices";
-import { DisplayHabit } from "./HabitList";
+import { DisplayEventTextCheck } from "./EventOnChange";
 
 function DisplayEvent(props) {
     let colors = ["#C4FCEF", "#F9F871", "#4AB753", "#FF5353", "#FF9671", "#FF6F91", "#2C73D2"]
@@ -12,9 +12,9 @@ function DisplayEvent(props) {
             <div className="card-2 border-2" key={props.index}>
                 <div className="habit habit-2 inline">
                     {props.all ?
-                        <DisplayHabit onChange={props.habitObj.edit.checkbox} index={props.index} context={props.context} record={props.record}
+                        <DisplayEventTextCheck onChange={props.habitObj.edit.checkbox} index={props.index} context={props.context} record={props.record}
                             setContext={props.setContext} all={true} /> :
-                        <DisplayHabit noCheck={props.noCheck} all={false} onChange={props.habitObj.edit.checkbox} record={props.record} index={props.index} />
+                        <DisplayEventTextCheck noCheck={props.noCheck} all={false} onChange={props.habitObj.edit.checkbox} record={props.record} index={props.index} name={props.name === null ? null : props.name}/>
                     }
 
                     {props.children}

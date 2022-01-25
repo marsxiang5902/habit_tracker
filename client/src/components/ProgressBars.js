@@ -13,7 +13,6 @@ function dailyProgress(context){
         }
         
     }
-    
     let completed = 0
     for (let i = 0; i < daily_events.length; i++) {
         if (daily_events[i].checkedHistory !== undefined && daily_events[i].checkedHistory['0']){

@@ -63,7 +63,7 @@ export default class Login extends React.Component {
             <>
                 <div style={{ "display": "flex", "alignItems": "center" }}>
                     <div className="side-logo">
-                        <img src={Logo} alt="" style={{ "maxWidth": "70%", "height": "auto" }} />
+                        <img src={Logo} alt="" style={{ "margin": "0px" }} />
                         <h2 style={{ "color": "white", "fontSize": "2.5em", "fontWeight": "bold", "paddingTop": "10%" }}>Growthify</h2>
                     </div>
                     <div style={{ "flex": "0.75" }}>

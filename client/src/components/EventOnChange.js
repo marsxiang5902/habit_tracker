@@ -2,28 +2,29 @@ import { React, useState } from 'react'
 import noCheckedHistory from '../lib/noCheckedHistory'
 import { updateEventHistory } from '../services/eventServices'
 
-function HabitObject(habits, basedOnState = false, numOnly = true) {
+function EventObject(events, basedOnState = false, numOnly = true) {
+    //using an array and index for checkBox change only work since we load all instances of a single event
     let [checked, setChecked] = useState([])
-    if (checked.length < Object.keys(habits).length) {
-        for (let i in habits) {
+    if (checked.length < Object.keys(events).length) {
+        for (let i in events) {
             let temp = checked
             if (basedOnState) {
-                temp.push({ 'name': habits[i].name, 'value': habits[i].checkedHistory['0'], 'id': habits[i]._id, 'variable': "Daily Completion", 'type': habits[i].type, 'data': habits[i].checkedHistory })
+                temp.push({ 'name': events[i].name, 'value': events[i].checkedHistory['0'], 'id': events[i]._id, 'variable': "Daily Completion", 'type': events[i].type, 'data': events[i].checkedHistory })
             }
-            else if (habits[i].type === "form") {
-                for (let field in habits[i].formLayout) {
-                    let currFormField = habits[i].formLayout[field]
+            else if (events[i].type === "form") {
+                for (let field in events[i].formLayout) {
+                    let currFormField = events[i].formLayout[field]
                     if (currFormField[1] === "num") {
-                        temp.push({ 'name': currFormField[0], 'value': false, 'id': habits[i]._id, 'variable': "Daily Value", 'type': habits[i].type, 'data': habits[i].formData[currFormField[0]] })
+                        temp.push({ 'name': currFormField[0], 'value': false, 'id': events[i]._id, 'variable': "Daily Value", 'type': events[i].type, 'data': events[i].formData[currFormField[0]] })
                     }
                     else if (!numOnly) {
-                        temp.push({ 'name': currFormField[0], 'value': false, 'id': habits[i]._id, 'variable': "Daily Value", 'type': habits[i].type, 'data': habits[i].formData[currFormField[0]] })
+                        temp.push({ 'name': currFormField[0], 'value': false, 'id': events[i]._id, 'variable': "Daily Value", 'type': events[i].type, 'data': events[i].formData[currFormField[0]] })
 
                     }
                 }
             }
             else {
-                temp.push({ 'name': habits[i].name, 'value': false, 'id': habits[i]._id, 'variable': "Daily Completion", 'type': habits[i].type, 'data': habits[i].checkedHistory })
+                temp.push({ 'name': events[i].name, 'value': false, 'id': events[i]._id, 'variable': "Daily Completion", 'type': events[i].type, 'data': events[i].checkedHistory })
             }
             setChecked(temp)
         }
@@ -49,23 +50,24 @@ function HabitObject(habits, basedOnState = false, numOnly = true) {
 
 
 // habit + checkbox
-let DisplayHabit = (props) => {
+let DisplayEventTextCheck = (props) => {
     return (
         <div className="habit-list" key={props.index}>
 
             {!noCheckedHistory.has(props.record.type) && !props.noCheck &&
                 <input type="checkbox"
-                    checked={props.record.value}
+                    checked={props.all ? props.record.checkedHistory['0'] : props.value}
                     onChange={(e) => props.all ? props.onChange(e, props.index, props.context, props.record, props.setContext)
                         : props.onChange(e, props.index)}
                 />
             }
 
             <div className="habit">
-                <p style={{ marginBottom: "0px", 'fontSize': 'large' }}>{props.record.name}</p>
+                {/* for getting the name of a form field vs the name of an event */}
+                <p style={{ marginBottom: "0px", 'fontSize': 'large' }}>{props.name === undefined ? props.record.name : props.name}</p>
             </div>
         </div >
     )
 }
 
-export { HabitObject, DisplayHabit }
+export { EventObject, DisplayEventTextCheck }

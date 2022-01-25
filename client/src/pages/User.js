@@ -23,12 +23,13 @@ function User(props) {
     return (
         <div className="wrapper">
             <Layout name="🗺 THE USER" handleLogout={props.handleLogout} menu={props.menu} showMenu={props.showMenu}/>
-            <div className="dashboard">
+            <div className="dashboard" style={{"textAlign" : "left"}}>
                 <Form onSubmit={handleSubmit}>
+                    <h1>User Settings</h1>
                     <Form.Group>
                         <Form.Label>Day Start Time</Form.Label>
-                        <Row>
-                            <Col>
+                        <Row style={{"marginLeft" : "0px"}}>
+                            <Col style={{"paddingLeft" : "0px"}}> 
                                 <Form.Control type="number" placeholder="Hour" value={dayStartHour}
                                     onChange={(e) => setDayStartHour(parseInt(e.target.value))} />
                             </Col>
@@ -40,38 +41,29 @@ function User(props) {
                         </Row>
                     </Form.Group>
 
-                    <Form.Group>
+                    {/* <Form.Group>
                         <Form.Label>Theme</Form.Label>
                         <Row>
                             {["light", "dark"].map(opt => <Col key={opt}>
                                 <Button variant={`${opt === theme ? "" : "outline-"}primary`} onClick={() => { setTheme(opt) }}>{opt}</Button>
                             </Col>)}
                         </Row>
-                    </Form.Group>
+                    </Form.Group> */}
 
                     <Form.Group>
                         <Form.Label>Show Sidebar By Default</Form.Label>
-                        <Row>
-                            <Button variant={`${defaultShowSidebar ? "" : "outline-"}primary`} onClick={() => { setDefaultShowSidebar(!defaultShowSidebar) }}>Show Sidebar by Default</Button>
+                        <Row style={{"marginLeft" : "0px"}}>
+                            <Button variant={defaultShowSidebar ? "primary" : "outline-secondary"} onClick={() => { setDefaultShowSidebar(!defaultShowSidebar) }}>Show Sidebar by Default</Button>
                         </Row>
                     </Form.Group>
-
-                    <Form.Group>
-                        <Form.Label>Sidebar Orientation</Form.Label>
-                        <Row>
-                            {["top", "down", "left", "right"].map(opt => <Col key={opt}>
-                                <Button variant={`${opt === sidebarOrientation ? "" : "outline-"}primary`} onClick={() => { setSidebarOrientation(opt) }}>{opt}</Button>
-                            </Col>)}
-                        </Row>
-                    </Form.Group>
-
+{/* 
                     <Form.Group>
                         <Form.Label>Partner</Form.Label>
                         <Form.Control type="text" placeholder={context.session.partner || 'None'} readOnly />
-                    </Form.Group>
+                    </Form.Group> */}
 
-                    <Button variant="primary" type="submit">
-                        Submit
+                    <Button variant="success" type="submit">
+                        Update Settings
                     </Button>
                 </Form>
             </div>

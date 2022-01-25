@@ -4,7 +4,7 @@ import { Form, Row, Col, Popover, OverlayTrigger, Button, Modal, } from 'react-b
 import { addEvent, updateEvent, deleteEvent } from '../services/eventServices';
 import { appContext } from '../context/appContext';
 import { calcPct as pct } from '../lib/dataServices'
-import { DisplayHabit, HabitObject } from './HabitList';
+import { EventObject } from './EventOnChange';
 import { StackBody } from './StackList';
 import { Event, TriggerList } from './TriggerList';
 import { EditForm } from './FormList';
@@ -175,7 +175,7 @@ function EventList(props) {
   if (!context.session.isAuthed) {
     return null
   }
-  let habitObj = HabitObject(records, true);
+  let habitObj = EventObject(records, true);
   return !context.timedEvents.loading && (
     <>
 
