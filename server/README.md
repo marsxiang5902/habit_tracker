@@ -741,7 +741,7 @@ Omitted fields are blank.
 * Request Body:
 ```
 {
-  "user": "<the user to invite>"
+  "user": "<the user to remove>"
 }
 ```
 * Returned Data:
