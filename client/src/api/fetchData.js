@@ -9,8 +9,7 @@ export default async function fetchData(user, token) {
     ...userRecord
   }
   let timedEvents = (await makeRequest(`users/${user}/events`, 'get', {}, token)).data
-  let partnerUndone = (await makeRequest(`users/${user}/partner`, 'get', {}, token)).data
 
-  return { session, timedEvents, partnerUndone }
+  return { session, timedEvents }
 }
 // app component mount: set context to FetchData

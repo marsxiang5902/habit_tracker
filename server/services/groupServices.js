@@ -31,10 +31,10 @@ async function addGroup(r, config) {
     await includeGroup(r, _id)
     return getGroup(r)
 }
-const GET_GROUP_SLICES = ['_id', 'user', 'name', 'members', 'roles', 'invites']
+const GET_GROUP_SLICES = ['_id', 'user', 'name', 'members', 'roles', 'invites', 'sharedEvents']
 function getGroup(r) {
     notFoundAssert(r)
-    return sliceObject(r.groupRecord, GET_GROUP_SLICES);
+    return { ...sliceObject(r.groupRecord, GET_GROUP_SLICES), 'sharedEvents': getGroupData(r) };
 }
 async function getGroupData(r) {
     notFoundAssert(r)

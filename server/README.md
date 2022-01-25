@@ -654,8 +654,10 @@ Omitted fields are blank.
     ...
   },
   "invites": [<list of invited users>]
+  "sharedEvents": [<list of shared events>]
 }
 ```
+* The `sharedEvents` are the same as those returned from [Get Group Shared Event Data](#get-group-shared-event-data)
 
 
 #### Get Group Shared Event Data

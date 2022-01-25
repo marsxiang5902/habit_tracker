@@ -35,11 +35,11 @@ function getSidebarData(context) {
         //         cName: 'nav-text'
         //     }] : []
         // ),
-        // {
-        //     title: 'Groups',
-        //     path: '/accountability',
-        //     icon: <Icons.FaUsers />
-        // },
+        {
+            title: 'Groups',
+            path: '/accountability',
+            icon: <Icons.FaUsers />
+        },
         {
             title: 'Settings',
             path: '/user',

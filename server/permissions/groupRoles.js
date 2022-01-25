@@ -25,7 +25,6 @@ function checkRoles(roles) {
     })
 }
 function getPerms(roles) {
-    // console.log(roles)
     checkRoles(roles)
     let perms = new Set()
     roles.forEach(role => {

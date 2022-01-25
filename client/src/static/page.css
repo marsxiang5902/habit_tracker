@@ -58,14 +58,14 @@
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 16%);
 }
 
-/* .hov{
+.hov{
     opacity: 0%;
 }
 
 .card-2:hover .hov{
     opacity: 100%;
     transition: 600ms;
-} */
+}
 
 .habit-card {
     margin-bottom: 5px;
