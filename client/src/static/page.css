@@ -60,11 +60,7 @@
 }
 
 .hov{
-<<<<<<< HEAD
-    opacity: 0%;
-=======
     opacity: 0;
->>>>>>> 792ba23894b2aa999d5d36f9e23acdaa105e2b8c
 }
 
 .card-2:hover .hov{
@@ -432,3 +428,45 @@ select{
       flex-basis: 50%;
     }
 }
+
+.groups-item{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 16%);
+    flex-grow: 1;
+    width:100%;
+    padding:5px;
+    background-color: white;
+}
+
+.groups-add{
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+}
+
+.groups-grid-container{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width:100%;
+    grid-gap: 10px;
+}
+
+.divider{
+    background-color: #000;
+    height:3px;
+    margin-bottom: 15px;
+}
+
+/* .dashboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+    margin-top: 2.5%;
+    justify-content: center;
+    width: 75%;
+    flex-basis: 80%;
+    text-align: center;
+} */
