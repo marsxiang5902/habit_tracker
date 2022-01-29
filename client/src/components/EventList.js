@@ -48,6 +48,7 @@ let EditPopover = React.forwardRef((props, ref) => {
 let ActivationPopover = React.forwardRef((props, ref) => {
   const context = useContext(appContext)
   const [activationDays, setActivationDays] = useState(props.record.activationDays)
+  const [am, setAm] = useState(Math.floor(props.record.activationTime / 60) < 12)
   const [activationTimeHour, setActivationTimeHour] = useState(Math.floor(props.record.activationTime / 60))
   const [activationTimeMin, setActivationTimeMin] = useState(props.record.activationTime % 60)
 
@@ -60,6 +61,7 @@ let ActivationPopover = React.forwardRef((props, ref) => {
   }
 
   const DAYS = ['M', 'T', 'W', 'Th', 'F', 'Sa', 'Su']
+
 
   return <>
     <hr className="triggers-hr"></hr>
@@ -83,16 +85,22 @@ let ActivationPopover = React.forwardRef((props, ref) => {
         </Form.Group>
 
         <Form.Group>
-          <Form.Label>Time</Form.Label>
+          <Form.Label>Notification Time</Form.Label>
           <Row>
             <Col>
-              <Form.Control type="number" placeholder="Hour" value={activationTimeHour}
+              <Form.Control type="number" placeholder="Hour" label="test" value={am ? activationTimeHour - 0 : activationTimeHour - 12}
                 onChange={(e) => setActivationTimeHour(parseInt(e.target.value))} />
             </Col>
             <Col sm={0.5}><h3>:</h3></Col>
             <Col>
-              <Form.Control type="number" placeholder="Minute" value={activationTimeMin}
+              <Form.Control type="number" placeholder="Minute" value={activationTimeMin.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})}
                 onChange={(e) => setActivationTimeMin(parseInt(e.target.value))} />
+            </Col>
+            <Col>
+              <Button variant={am ? "primary" : "outline-primary"} style={{"marginRight" : "10px"}} onClick={() => {setActivationTimeHour(am ? activationTimeHour: activationTimeHour - 12); setAm(true)}}>
+                AM
+              </Button>
+              <Button variant={!am ? "primary" : "outline-primary"} onClick={() => {setActivationTimeHour(am ? activationTimeHour + 12 : activationTimeHour); setAm(false)}}>PM</Button>
             </Col>
           </Row>
         </Form.Group>

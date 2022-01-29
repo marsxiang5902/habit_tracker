@@ -60,11 +60,7 @@
 }
 
 .hov{
-<<<<<<< HEAD
-    opacity: 0%;
-=======
     opacity: 0;
->>>>>>> 792ba23894b2aa999d5d36f9e23acdaa105e2b8c
 }
 
 .card-2:hover .hov{
@@ -419,6 +415,13 @@ select{
 
 .sidebar-container{
     display: flex;
+}
+
+.form-underline{
+    border: 0;
+    border-bottom: 2px solid black;
+    border-radius: 0;
+    box-shadow: none;
 }
 
 @media only screen and (max-width: 850px) {
