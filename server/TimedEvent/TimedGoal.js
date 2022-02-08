@@ -18,5 +18,6 @@ module.exports = class TimedGoal extends TimedEvent {
         super(user, name, 'goal', startDay, new subclasses[checkedHistoryManagerType](startDay))
         this.endDay = 1e9
         this.goalTarget = { event_id: '', value: 0, formField: '' }
+        this.targetComparatorGEQ = true;
     }
 }
