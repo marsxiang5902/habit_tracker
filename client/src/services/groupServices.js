@@ -9,7 +9,10 @@ async function addGroup(context, name, args = {}) {
         return update(context, { session: { groups: { [res.data._id]: { "$set": res.data } } } })
     } return context
 }
-
+async function getGroupData(context, groupId) {
+    let res = await makeRequest(`groups/${groupId}/data`, 'GET', {}, context.session.jwt)
+    return res.error ? {} : res.data
+}
 async function updateEvent(context, event, updObj) {
     let res = await makeRequest(`events/${event._id}`, 'PUT', updObj, context.session.jwt)
     if (!res.error) {
@@ -47,4 +50,4 @@ async function deleteEvent(context, event) {
 }
 
 
-export { addGroup, updateEvent, updateEventFormLayout, updateEventFormHistory, deleteEvent, updateEventHistory }
+export { addGroup, getGroupData, updateEvent, updateEventFormLayout, updateEventFormHistory, deleteEvent, updateEventHistory }

@@ -459,6 +459,25 @@ select{
     margin-bottom: 15px;
 }
 
+.link-black {
+color: black;
+}
+.link-black:hover {
+    color: black;
+}
+
+.groups-user-item{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 16%);
+    border-radius: 5px;
+    width:100%;
+    padding:5px;
+    background-color: white;
+}
+
 /* .dashboard {
     display: flex;
     flex-direction: column;

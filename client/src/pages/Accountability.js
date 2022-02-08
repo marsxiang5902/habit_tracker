@@ -1,10 +1,13 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { appContext } from "../context/appContext";
 import '../static/page.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Layout from "../components/layout";
 import { Button, Form } from "react-bootstrap";
 import { addGroup } from "../services/groupServices";
+import makeRequest from "../api/makeRequest";
+import { Link, Route, Switch, useRouteMatch } from "react-router-dom";
+import GroupPage from "./GroupPage";
 
 function GroupMember(props) {
     return <h5>{props.name}</h5>
@@ -17,7 +20,8 @@ function GroupCardAddNew(props) {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        props.setContext(await addGroup(context, name))
+        if (name !== '')
+            props.setContext(await addGroup(context, name))
         setAdding(false)
         setName("")
     }
@@ -41,7 +45,7 @@ function GroupCardAddNew(props) {
 function GroupCard(props) {
     let groupRecord = props.groupRecord
     return <div className="groups-item">
-        <h3>{groupRecord.name}</h3>
+        <Link className="link-black" to={props.link}><h3>{groupRecord.name}</h3></Link>
         <p>{`${Object.keys(groupRecord.members).length} member(s)`}</p>
         <div className="divider" />
         {Object.keys(groupRecord.members).map((name, idx) => idx > 2 ? null : <GroupMember name={name} />)}
@@ -50,31 +54,53 @@ function GroupCard(props) {
 
 export default function Accountability(props) {
     let context = useContext(appContext)
+    let { path, url } = useRouteMatch()
+    useEffect(() => {
+        (async () => {
+            if (Array.isArray(context.session.groups)) {
+                let groupsMap = {}
+                for (let _id of context.session.groups) {
+                    groupsMap[_id] = (await makeRequest(`groups/${_id}`, 'get', {}, context.session.jwt)).data
+                }
+                props.setGroups(groupsMap)
+            }
+        })()
+    }, [])
     return (
         <div className="wrapper">
             <Layout name="🗺 GROUPS" handleLogout={props.handleLogout} menu={props.menu} showMenu={props.showMenu} />
             <div className={props.menu ? "main-content active" : "main-content"}>
-                <div className="dashboard">
-                    <div className="groups-grid-container">
-                        {Object.keys(context.session.groups).map(_id => <GroupCard groupRecord={context.session.groups[_id]} />)}
-                        {[...Array(0).keys()].map(v => <GroupCard groupRecord={{
-                            "_id": "61f01d8ab15f520016b77012",
-                            "user": "test2",
-                            "name": "Group 1",
-                            "members": {
-                                "test2": []
-                            },
-                            "roles": {
-                                "test2": [
-                                    "default",
-                                    "admin"
-                                ]
-                            },
-                            "invites": []
-                        }} />)}
-                        <GroupCardAddNew setContext={props.setContext} />
-                    </div>
-                </div>
+                {Array.isArray(context.session.groups) ? null :
+                    <Switch>
+                        <Route exact path={path}>
+                            <div className="dashboard">
+                                <div className="groups-grid-container">
+                                    {Object.keys(context.session.groups).map(_id => <GroupCard groupRecord={context.session.groups[_id]} link={`${url}/${_id}`} />)}
+                                    {[...Array(0).keys()].map(v => <GroupCard groupRecord={{
+                                        "_id": "61f01d8ab15f520016b77012",
+                                        "user": "test2",
+                                        "name": "Group 1",
+                                        "members": {
+                                            "test2": []
+                                        },
+                                        "roles": {
+                                            "test2": [
+                                                "default",
+                                                "admin"
+                                            ]
+                                        },
+                                        "invites": []
+                                    }} />)}
+                                    <GroupCardAddNew setContext={props.setContext} />
+                                </div>
+                            </div>
+                        </Route>
+                        <Route path={`${path}/:groupId`}>
+                            <GroupPage back={url} />
+                            {/* topic */}
+                        </Route>
+                    </Switch>
+                }
             </div>
         </div>
     );
