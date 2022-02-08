@@ -92,7 +92,7 @@ async function updateEvent(r, updObj) {
     let res = sliceObject(updObj, EVENT_UPD_SLICES)
     if (r.eventRecord.type === 'goal') {
         if ('endDay' in res) {
-            res.endDay += r.userRecord.lastLoginDay
+            res.endDay -= r.userRecord.lastLoginDay
         }
         if ('goalTarget' in res) {
             wrapObject(res.goalTarget, { event_id: '', value: 0, formField: '' }, true)
