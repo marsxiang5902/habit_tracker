@@ -74,8 +74,8 @@ async function newDay(r) {
                 await db_updateEvent(eventRecord._id, eventRecord, sliceObject(eventRecord, ['checkedHistory', ...subset]))
             }
         }
-        HistoryManagerFields.realignDate(r.userRecord.pointsHistory, dayDiff)
-        await db_updateUser(r.user, r.userRecord, { lastLoginDay: curDay, })
+        HistoryManagerFields.realignDate(r.userRecord.pointsHistory.data, dayDiff)
+        await db_updateUser(r.user, r.userRecord, { pointsHistory, lastLoginDay: curDay })
     }
     return { dayDiff }
 }
