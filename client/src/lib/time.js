@@ -9,15 +9,8 @@ function getDay(dayStart = 0, offset = 240) {
 function date2Day(d, dayStart = 0, offset = 240) {
     return Math.floor((d.getTime() - (dayStart + offset) * MILLS_IN_MIN) / MILLS_IN_DAY)
 }
-function time2Date(t) {
-    let nd = new Date()
-    nd.setTime(t)
-    return nd
-}
 function day2Date(d, dayStart = 0, offset = 240) {
-    let nd = new Date()
-    nd.setTime(d * MILLS_IN_DAY + (dayStart + offset) * MILLS_IN_MIN)
-    return nd
+    return new Date(d * MILLS_IN_DAY + (dayStart + offset) * MILLS_IN_MIN + (new Date()).getTimezoneOffset() * MILLS_IN_MIN)
 }
 
 const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Firday", "Saturday"]
