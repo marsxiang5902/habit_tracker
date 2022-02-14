@@ -39,7 +39,7 @@ function StackBody(props) {
     }
 
     return <>
-        <hr></hr>
+        <hr className="triggers-hr"></hr>
         <h4>Edit Stacks</h4>
         <p>
             Add a list of events that will be shown in the dashboard instead of this stack.
@@ -52,7 +52,7 @@ function StackBody(props) {
             }
             else{
                 return(
-                    <div className="card-2" key={_id}>
+                    <div className="card-2 border-2" key={_id} style={{padding: "15px", alignItems: "center"}}>
                         <div className="pushed" key={_id}>
                             <div className="stacked">
                                 <Icons.FaArrowUp onClick={() => {
@@ -73,7 +73,7 @@ function StackBody(props) {
                                 }} className="hover" />
                             </div>
                             <div className="pushed-spaced">
-                                <p>{getEventById(context, _id).name}</p>
+                                <p style={{margin: "0"}}>{getEventById(context, _id).name}</p>
                             </div>
                         </div>
                         <Icons.FaTrash className="hover" onClick={() => {
@@ -98,6 +98,7 @@ function StackBody(props) {
         </div>
         <Button className="button" variant="success" onClick={async () => {
             context.setContext(await updateEvent(context, props.record, { eventList: ar }))
+            props.hide()
         }}>Submit</Button>
     </>
 }

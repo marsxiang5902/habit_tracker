@@ -56,10 +56,10 @@ function Trigger(props) {
     let record = props.record
 
     let name = <div className="habit habit-2">
-        <h5>{record.name}</h5>
+        <h5 style={{"margin" : "0"}}>{record.name}</h5>
     </div>
 
-    let overlay = <div ref={ref}>
+    let overlay = <div ref={ref} style={{"display" : "flex", "alignItems" : "center"}}>
         <OverlayTrigger trigger="click" placement="left"
             overlay={
                 <EditPopover
@@ -69,11 +69,12 @@ function Trigger(props) {
             show={popoverShown}
             container={ref.current}
         >
-            <Icons.FaPencilAlt className="hover" style={{ marginRight: '20px' }}
+            <Icons.FaEllipsisH className="hover" style={{ marginRight: '20px' }}
                 onClick={() => { setPopoverShown(!popoverShown) }} />
         </OverlayTrigger>
         <Icons.FaEye className="hover" style={{ marginRight: '20px' }}
-            onClick={() => { setPreviewShown(!previewShown) }}></Icons.FaEye>
+                onClick={() => { setPreviewShown(!previewShown) }}>
+        </Icons.FaEye>
     </div >
 
     return <div className="card-2 border-2 trigger-list">
@@ -97,7 +98,7 @@ function AddTriggerBody(props) {
     )
 
     return <>
-        <div className="card-2 border-2 trigger-list">
+        <div className="card-2 border-2">
             <div className="form-padding">
                 <h4>Add a Trigger</h4>
                 <p>

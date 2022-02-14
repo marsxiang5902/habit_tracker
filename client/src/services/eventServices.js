@@ -16,6 +16,7 @@ async function updateEvent(context, event, updObj) {
         return update(context, { timedEvents: { [event.type]: { [event._id]: { "$set": res.data } } } })
     } return context
 }
+
 async function updateEventHistory(context, event, updObj) {
     let res = await makeRequest(`events/${event._id}/history`, 'PUT', updObj, context.session.jwt)
     if (!res.error) {

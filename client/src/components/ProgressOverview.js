@@ -34,7 +34,7 @@ function DisplayOverview(props) {
             <tbody>
                 {strk.all.map((item, index) => {
                     return (
-                        <tr>
+                        <tr key={index}>
                             <td>{item.name}</td>
                             <td>{`${item.maxValue} Days`}</td>
                             <td>{`${item.currValue} Days`}</td>
@@ -62,7 +62,7 @@ function DisplayOverview(props) {
             <tbody>
                 {Object.values(fields).map((item, index) => {
                     return (
-                        <tr>
+                        <tr key={index}>
                             <td>{fieldNames[index]}</td>
                             <td>{`${formMax(Object.values(item))}`}</td>
                             <td>{`${formMin(Object.values(item))}`}</td>
