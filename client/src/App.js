@@ -4,24 +4,20 @@ import { Route, Switch, withRouter } from 'react-router-dom';
 import Editor from './pages/Editor';
 import { Now } from './pages/Now';
 import Habits from './pages/Habits'
-import Triggers from './pages/Triggers';
 import Signup from './auth/Signup';
 import Login from './auth/Login';
 import { defaultAppContext, appContext } from './context/appContext'
 import jwt from 'jsonwebtoken';
 import fetchData from './api/fetchData';
-import makeRequest from './api/makeRequest';
 import User from './pages/User';
 import subscribeToNotifications from './notifications/notify';
 import { getAllEvents } from './lib/locateEvents';
 import DataRoom from './pages/Dataroom';
-import Stacks from './pages/Stacks';
-import Forms from './pages/Forms';
 import Accountability from './pages/Accountability';
 import AuthRoute from './routes/AuthRoute';
 import FullStory from 'react-fullstory';
-import amplitude from 'amplitude-js';
 import Dashboard from './pages/Dashboard';
+import update from 'immutability-helper'
 
 
 class App extends React.Component {
@@ -96,7 +92,9 @@ class App extends React.Component {
               <User setContext={this.setContext} handleLogout={this.handleLogout} menu={this.state.menu} showMenu={this.setMenu} />
             )} />
             <AuthRoute path="/app/accountability" render={(props) => (
-              <Accountability setContext={this.setContext} handleLogout={this.handleLogout} menu={this.state.menu} showMenu={this.setMenu} />
+              <Accountability setContext={this.setContext} handleLogout={this.handleLogout} menu={this.state.menu} showMenu={this.setMenu} setGroups={groups => {
+                this.setState({ context: update(this.state.context, { session: { groups: { "$set": groups } } }) })
+              }} />
             )} />
             <AuthRoute path="/app/data" render={(props) => (
               <DataRoom setContext={this.setContext} handleLogout={this.handleLogout} menu={this.state.menu} showMenu={this.setMenu} />

@@ -35,7 +35,7 @@ async function addEvent(r, config) {
     return await getEvent(r)
 }
 const EVENT_GET_SLICES = ['_id', 'user', 'name', 'type', 'activationTime', 'eventList',
-    'pointer', 'color', 'starred', 'points', 'goalTarget', 'endDay']
+    'pointer', 'color', 'starred', 'points', 'goalTarget', 'endDay', 'targetComparatorGEQ']
 async function getEvent(r) {
     notFoundAssert(r)
     let ret = sliceObject(r.eventRecord, EVENT_GET_SLICES)
@@ -82,7 +82,7 @@ function getEventFormHistory(r) {
 }
 
 const EVENT_UPD_SLICES = ['name', 'activationDaysBit', 'activationTime', 'eventList',
-    'pointer', 'color', 'starred', 'points', 'goalTarget', 'endDay']
+    'pointer', 'color', 'starred', 'points', 'goalTarget', 'endDay', 'targetComparatorGEQ']
 async function updateEvent(r, updObj) {
     notFoundAssert(r)
     if ('activationDays' in updObj) {
@@ -92,7 +92,7 @@ async function updateEvent(r, updObj) {
     let res = sliceObject(updObj, EVENT_UPD_SLICES)
     if (r.eventRecord.type === 'goal') {
         if ('endDay' in res) {
-            res.endDay += r.userRecord.lastLoginDay
+            res.endDay -= r.userRecord.lastLoginDay
         }
         if ('goalTarget' in res) {
             wrapObject(res.goalTarget, { event_id: '', value: 0, formField: '' }, true)
