@@ -140,12 +140,12 @@ function formSum(form) {
 }
 //avg
 function formAvg(form) {
-    let scale = 100;
+    let scale = 1;
     form = form.filter(x => !isNaN(x))
-    if (formMax(form) <= 10){ 
-        scale = 1
-    }
-    let ret = Math.floor(scale * formSum(form) / form.length)
+    // if (formMax(form) <= 10){ 
+    //     scale = 1
+    // }
+    let ret = (scale * (formSum(form) / form.length)).toFixed(1)
     return isNaN(ret) ? 0 : ret
 }
 

@@ -37,16 +37,14 @@ function VariableChange(props){
 function SideBar(props){
 
     let context = useContext(appContext)
-
     return(
         <div className='sidebar-container'>
             <div style={{"flexBasis" : "50%"}}>
                 <h3>Habits</h3>
                 {props.habitObj.value.map((item, index) => {
                     if (item.type === "habit"){
-                        // return <DisplayHabit all={false} onChange={props.habitObj.edit.checkbox} record={item} item={item} index={index}/>
                         return(
-                            <div className='event-variable'>
+                            <div className='event-variable' key={index}>
                                 <div style={{"flexBasis" : "60%"}}>
                                     <DisplayEvent all={false} habitObj={props.habitObj} record={getEventById(context, item.id)} index={index} />
                                 </div>
@@ -64,7 +62,7 @@ function SideBar(props){
                 {props.habitObj.value.map((item, index) => {
                     if (item.type === "form"){
                         return (
-                            <div className='event-variable'>
+                            <div className='event-variable' key={index}>
                                 <div style={{"flexBasis" : "60%"}}>
                                     <DisplayEvent all={false} habitObj={props.habitObj} record={getEventById(context, item.id)} index={index} name={item.name}/>
                                 </div>

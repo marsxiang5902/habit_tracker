@@ -23,7 +23,7 @@ function fillArray(events, event){
     let length = maxLength(events).length
     let temp = {};
         for(let i = 0; i < length; i++){
-            if(event.data[i]===undefined){
+            if(event.data[i] === undefined){
                 temp[i] = NaN
             }
             else{
@@ -90,11 +90,9 @@ function createDatasets(events, eventsObj) {
         let currEvent = events[eventsObj[i].id]
         let currEventObj = eventsObj[i]
         let data, type;
-
         if (currEvent.type === "habit"){
             data = currEventObj.variable === "Daily Completion" ? dailyCompletion(events, currEventObj) : dailyPercentage(events, currEventObj)
             type = currEventObj.variable === "Daily Completion" ? 'bar' : 'line'
-
         }
         else {
             switch(currEventObj.variable){

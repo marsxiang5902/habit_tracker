@@ -22,16 +22,15 @@ async function checkGoal(context, id) {
     let goals = Object.values(context.timedEvents.goal)
     for (let i = 0; i < goals.length; i++) {
         const element = goals[i];
-        // let temp = [...element.eventList]
-        // for (let j = 0; j < element.eventList.length; j++) {
-        //     const curr_id = element.eventList[j];
-        //     if (curr_id === id) {
-        //         temp.splice(j, 1)
-        //     }
-        // }
-        // context = await updateEvent(context, element, { eventList: temp })
+        let temp = element.goalTarget
+        if (temp.event_id === id) {
+            temp.event_id = ""
+            temp.formField = ""
+            temp.value = 0
+        }
+        context = await updateEvent(context, element, { 'goalTarget': temp })
     }
     return context
 }
 
-export default checkStack
+export {checkStack, checkGoal};

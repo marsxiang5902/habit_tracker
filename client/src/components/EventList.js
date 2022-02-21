@@ -10,13 +10,13 @@ import { EditForm } from './FormList';
 import { ModalBody as FormEntry } from '../pages/Now';
 import noCheckedHistory from '../lib/noCheckedHistory';
 import DisplayEvent from './DisplayEvent';
-import checkStack from '../lib/checkEventsOnDel';
+import { checkStack, checkGoal} from '../lib/checkEventsOnDel';
 import { updatePoints } from '../services/userServices';
 import notDashboard from '../lib/notDashboard';
 import { getEventById, getNumFormFields, getSomeEvents } from '../lib/locateEvents';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'
-import { dateToDay, getDay, MILLS_IN_DAY } from '../lib/time';
+import { date2Day, dateToDay, day2Date, getDay, getFutureDate, getDaysToFuture, MILLS_IN_DAY } from '../lib/time';
 import EventSelect from './EventSelect';
 
 
@@ -29,13 +29,16 @@ let GoalDescription = (props) => {
   const [item, setItem] = useState(getEventById(context, props.record.goalTarget.event_id))
   const [formField, setFormField] = useState(null)
   const [value, setValue] = useState(props.record.goalTarget.value)
-  const [dueDate, setDueDate] = useState(props.record.endDay === 1e9 ? getDay() : props.record.endDay)
-
+  const [comparator, setComparator] = useState(props.record.targetComparatorGEQ)
+  const [dueDate, setDueDate] = useState(props.record.endDay > 1e9 / 2 ? 0 : props.record.endDay)
+  
   async function handleSubmit(e){
     e.preventDefault()
     context.setContext(await updateEvent(context, props.record, {"goalTarget" : 
                       {"event_id" : item === null ? "" : item._id, "formField" : formField === null ? "" : formField, 
                       "value" : isNaN(parseInt(value)) ? 0 : parseInt(value)}}))
+    context.setContext(await updateEvent(context, props.record, {"endDay" : dueDate}))
+    context.setContext(await updateEvent(context, props.record, {"targetComparatorGEQ" : comparator}))
     props.hide()
   }
 
@@ -50,7 +53,6 @@ let GoalDescription = (props) => {
     }
   }
 
-
   return(
     <>
     <hr className="triggers-hr"></hr>
@@ -63,17 +65,23 @@ let GoalDescription = (props) => {
       </Form.Group>
       <Form.Group>
         <h4>
-          Goal Value
+          Goal Value and Comparator
         </h4>
-          <p>Example: I want to lose 20lbs, so I will enter 20lbs in the box</p>
-          <Form.Control style={{width : "30%"}} type="number" defaultValue={value !== undefined ? value : 0} onChange={(e) => {setValue(e.target.value)}} />
+          <p>Example: I want to lose {'>'}= 20lbs</p>
+          <div style={{display : "flex"}}>
+            <DropdownButton variant="light" title={comparator ? ">=" : "<="}>
+              <Dropdown.Item value=">=" onClick={() => setComparator(true)}>{'>='}</Dropdown.Item>
+              <Dropdown.Item value="<=" onClick={() => setComparator(false)}>{'<='}</Dropdown.Item>
+            </DropdownButton>
+            <Form.Control style={{width : "30%"}} type="number" defaultValue={value !== undefined ? value : 0} onChange={(e) => {setValue(e.target.value)}} />
+          </div>
       </Form.Group>
       <Form.Group>
         <h4>
           Due Date
         </h4>
         <div style={{width: "30%"}}>
-          <DatePicker className='form-control' selected={() => {let d = new Date(); d.setTime(dueDate * MILLS_IN_DAY); return d}} onChange={(date) => {setDueDate(dateToDay(date));}} dateFormat={'dd / MM / yyyy'}/>
+          <DatePicker className='form-control' selected={getFutureDate(dueDate)} onChange={(date) => {setDueDate(getDaysToFuture(date))}} dateFormat={'dd / MM / yyyy'}/>
         </div>
       </Form.Group>
       {props.record.goalTarget.event_id === "" &&
@@ -121,6 +129,7 @@ let ActivationPopover = React.forwardRef((props, ref) => {
       activationDays, activationTime: activationTimeHour * 60 + activationTimeMin
     }))
     props.setContext(await checkStack(context, props.record._id))
+    props.setContext(await checkGoal(context, props.record._id))
     props.setContext(await (updateEvent(context, props.record, {"points" : pointField})))
     props.setContext(await (updateEvent(context, props.record, {"name" : nameField})))
     if (del){
@@ -150,7 +159,7 @@ let ActivationPopover = React.forwardRef((props, ref) => {
           <Form.Label>Days</Form.Label>
           <Row style={{ paddingRight: "15px", paddingLeft: "15px" }}>
             {DAYS.map((day, idx) => (
-              <Col style={{ padding: "0px" }}>
+              <Col style={{ padding: "0px" }} key={idx}>
                 <Button
                   size="sm"
                   style={{ width: 35 }}
@@ -238,7 +247,7 @@ function EventList(props) {
       </Modal.Title>
     </Modal.Header>
     <Modal.Body>
-      <FormEntry record={formRecord} hide={() => { setFormModalShown(false) }} />
+      <FormEntry record={formRecord} hide={() => { setFormModalShown(false) }} day={0} editable={true}/>
     </Modal.Body>
   </Modal>
 
@@ -257,7 +266,6 @@ function EventList(props) {
     show={editPopoverId === _id}
     onHide={() => setEditPopoverId("")}
     dialogClassName="custom-modal"
-    bsClass="custom-modal"
   >
     <Modal.Header closeButton>
       <Modal.Title id="contained-modal-title-vcenter">
@@ -304,6 +312,7 @@ function EventList(props) {
       {Object.keys(records).map((_id, index) => {
         let record = records[_id]
         return (
+          <div key={index}>
           <DisplayEvent habitObj={habitObj} index={index} context={context} record={record} setContext={props.setContext} all={true}>
             {record.type === "form" ? <Icons.FaClipboardList className="hov hover" style={{ marginRight: '20px' }}
               onClick={() => { setFormModalShown(true); setFormRecord(record) }} /> : null}
@@ -312,6 +321,10 @@ function EventList(props) {
               {/* 2 day rule circle */}
               {record.checkedHistory !== undefined && record.type === 'habit' && !record.checkedHistory['0'] && !record.checkedHistory['1'] &&
                 <div className="circle" style={{ "marginRight": '15px', 'marginTop': '4px' }}>
+                </div>
+              }
+              {record.type === 'goal' && getDaysToFuture(getFutureDate(record.endDay)) <= 10 &&
+                <div className="circle" style={{ "marginRight": '15px', 'marginTop': '4px', 'backgroundColor' : 'orange'}}>
                 </div>
               }
               {
@@ -329,6 +342,7 @@ function EventList(props) {
             {modalBody(record, _id)}
             {formModal(record)}
           </DisplayEvent>
+          </div>
         );
       }
       )}

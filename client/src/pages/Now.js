@@ -45,7 +45,7 @@ function ModalBody(props) {
     let record = props.record, layout = record.formLayout
     const context = useContext(appContext)
     const [formResponse, setFormResponse] = useState(layout.map(
-        formField => record.formData[formField[0]][0]))
+        formField => record.formData[formField[0]][props.day]))
     const TYPES = { 'num': 'number', 'str': 'textarea' }
     return <Form onSubmit={async e => {
         e.preventDefault()
@@ -56,10 +56,11 @@ function ModalBody(props) {
         context.setContext(await updateEventFormHistory(context, record, updObj))
         props.hide()
     }}>
-        {layout.map((formField, idx) => (
+        {layout.map((formField, idx) => {
+        return(
             <Form.Group key={formField[0]}>
                 <Form.Label>{formField[0]}</Form.Label>
-                {(TYPES[formField[1]] === 'textarea') ?
+                {props.editable ? (TYPES[formField[1]] === 'textarea') ?
                     <Form.Control as="textarea" value={formResponse[idx]} onChange={e => {
                         let newFormResponse = [...formResponse]
                         newFormResponse[idx] = convertTypes[formField[1]](e.target.value)
@@ -68,10 +69,14 @@ function ModalBody(props) {
                         let newFormResponse = [...formResponse]
                         newFormResponse[idx] = convertTypes[formField[1]](e.target.value)
                         setFormResponse(newFormResponse)
-                    }} />}
+                    }} /> : 
+                    <div>
+                        <h6>{formResponse[idx]}</h6>
+                        <p></p>
+                    </div>}
             </Form.Group>
-        ))}
-        <Button variant="success" type="submit">Submit</Button>
+        )})}
+        {props.editable && <Button variant="success" type="submit">Submit</Button>}
     </Form>
 }
 
@@ -101,7 +106,7 @@ function TimedForm(props) {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <ModalBody record={record} hide={() => { setModalShown(false) }} />
+                <ModalBody record={record} hide={() => { setModalShown(false) }} day={0} editable={true}/>
             </Modal.Body>
         </Modal>
     </>
@@ -112,13 +117,15 @@ function UpNext(props) {
     let events = generateEvent(context, props.day, props.min).events
     let habitObj = EventObject(events);
     let goals = getSomeEvents(context, ["goal"])
-    console.log(goals)
     return events.length > 0 &&
         <div className="nowSide">
             <h4>Up Next</h4>
             {events.map(record =>
-                <DisplayEvent noCheck={true} habitObj={habitObj} index={record._id} context={context}
-                    record={record} setContext={context.setContext} all={false} />)}
+                <div key={record._id}>
+                    <DisplayEvent noCheck={true} habitObj={habitObj} index={record._id} context={context}
+                    record={record} setContext={context.setContext} all={false}/>
+                </div>
+            )}
         {/* <h4>Upcoming Goals</h4>
         {sortGoals(context, goals)} */}
         </div>

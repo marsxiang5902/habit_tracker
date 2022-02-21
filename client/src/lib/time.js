@@ -8,21 +8,18 @@ const MILLS_IN_MIN = 1000 * 60, MILLS_IN_DAY = MILLS_IN_MIN * 60 * 24
 function getDay(dayStart = 0, offset = 240) {
     return (Math.floor((Date.now() - (dayStart + offset) * MILLS_IN_MIN) / MILLS_IN_DAY) + 3) % 7
 }
+function getFutureDate(daysInFuture){
+    return new Date(Date.now() + (daysInFuture * MILLS_IN_DAY));
+}
+function getDaysToFuture(date){
+    return date2Day(date) - date2Day(new Date());
+}
+//curr_day + (end_day * mills_in_day)
 function date2Day(d, dayStart = 0, offset = 240) {
     return Math.floor((d.getTime() - (dayStart + offset) * MILLS_IN_MIN) / MILLS_IN_DAY)
 }
 function day2Date(d, dayStart = 0, offset = 240) {
     return new Date(d * MILLS_IN_DAY + (dayStart + offset) * MILLS_IN_MIN + (new Date()).getTimezoneOffset() * MILLS_IN_MIN)
-}
-
-function dayToDate(d, dayStart = 0, offset = 240) {
-    let nd = new Date()
-    nd.setDate((d - (dayStart + offset) * MILLS_IN_MIN) / MILLS_IN_DAY)
-    return nd.getTime()
-}
-
-function dateToDay(d) {
-    return Math.floor((d.getTime() * MILLS_IN_MIN) / MILLS_IN_DAY)
 }
 
 
@@ -49,4 +46,4 @@ function sortGoals(context, goals){
         console.log(goal.endDay)
     }
 }
-export { getMin, getDay, getPastDay, sortGoals, dateToDay, dayToDate, MILLS_IN_DAY }
+export { getMin, getDay, getPastDay, sortGoals, date2Day, day2Date, getFutureDate, getDaysToFuture, MILLS_IN_DAY }

@@ -16,10 +16,10 @@ function EventObject(events, basedOnState = false, numOnly = true) {
                 for (let field in events[i].formLayout) {
                     let currFormField = events[i].formLayout[field]
                     if (currFormField[1] === "num") {
-                        temp.push({ 'name': currFormField[0], 'value': false, 'id': events[i]._id, 'variable': "Daily Value", 'type': events[i].type, 'data': events[i].formData[currFormField[0]] })
+                        temp.push({ 'name': currFormField[0], 'value': false, 'id': events[i]._id, 'variable': "Daily Value", 'type': events[i].type, 'data': events[i].formData[currFormField[0]]})
                     }
                     else if (!numOnly) {
-                        temp.push({ 'name': currFormField[0], 'value': false, 'id': events[i]._id, 'variable': "Daily Value", 'type': events[i].type, 'data': events[i].formData[currFormField[0]] })
+                        temp.push({ 'name': currFormField[0], 'value': false, 'id': events[i]._id, 'variable': "Daily Value", 'type': events[i].type, 'data': events[i].formData[currFormField[0]]})
 
                     }
                 }
@@ -46,7 +46,7 @@ function EventObject(events, basedOnState = false, numOnly = true) {
                 setContext(await updatePoints(context, {0 : points + parseInt(record.points)}))
             }
             context = context.getContext()
-            setContext(await updateEventHistory(context, record, { 0: checkbox }))
+            setContext(await updateEventHistory(context, record, { 0 : checkbox }))
         }
     }
 

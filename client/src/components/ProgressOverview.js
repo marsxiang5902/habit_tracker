@@ -64,10 +64,10 @@ function DisplayOverview(props) {
                     return (
                         <tr key={index}>
                             <td>{fieldNames[index]}</td>
-                            <td>{`${formMax(Object.values(item))}`}</td>
-                            <td>{`${formMin(Object.values(item))}`}</td>
-                            <td>{`${formSum(Object.values(item))}`}</td>
-                            <td>{`${formAvg(Object.values(item))}`}</td>
+                            <td>{`${formMax(Object.values(item.data))}`}</td>
+                            <td>{`${formMin(Object.values(item.data))}`}</td>
+                            <td>{`${formSum(Object.values(item.data))}`}</td>
+                            <td>{`${formAvg(Object.values(item.data))}`}</td>
                         </tr>)
                 })}
             </tbody>

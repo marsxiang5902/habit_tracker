@@ -8,7 +8,7 @@ function AuthButtons(props) {
     let session = useContext(appContext).session
     if (session && session.isAuthed) {
         return (
-            <Link className="nav-text"><span onClick={props.handleLogout}>Logout</span></Link>
+            <Link to="/app/login" className="nav-text"><span onClick={props.handleLogout}>Logout</span></Link>
         )
     } else {
         return (

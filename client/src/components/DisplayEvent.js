@@ -13,7 +13,7 @@ function DisplayEvent(props) {
                 <div className="habit habit-2 inline">
                     {props.all ?
                         <DisplayEventTextCheck onChange={props.habitObj.edit.checkbox} index={props.index} context={props.context} record={props.record}
-                            setContext={props.setContext} all={true} /> :
+                            setContext={props.setContext} all={true}/> :
                         <DisplayEventTextCheck noCheck={props.noCheck} all={false} onChange={props.habitObj.edit.checkbox} record={props.record} index={props.index} name={props.name === null ? null : props.name}/>
                     }
 
@@ -31,7 +31,7 @@ function DisplayEvent(props) {
                                     {colors.map((item, idx) => {
                                         if (idx !== props.record.color) {
                                             return (
-                                                <div style={{ "width": "25%", "height": "35%", "backgroundColor": item, 'margin': '2px', 'borderRadius': '5px' }} onClick={() => { changeColor(idx) }}></div>
+                                                <div style={{ "width": "25%", "height": "35%", "backgroundColor": item, 'margin': '2px', 'borderRadius': '5px' }} onClick={() => { changeColor(idx) }} key={idx}></div>
                                             )
                                         }
                                     })}

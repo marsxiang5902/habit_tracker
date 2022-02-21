@@ -37,7 +37,7 @@ function getNumFormFields(context){
         for (let field in form.formLayout){
             let currFormField = form.formLayout[field]
             if (currFormField[1] === "num"){
-                ret[currFormField[0]] = {"name" : currFormField[0], "parent_id" : form._id, "parent_name" : form.name, "data" : form.checkedHistory }
+                ret[currFormField[0]] = {"name" : currFormField[0], "parent_id" : form._id, "parent_name" : form.name, "data" : form.formData[currFormField[0]]}
             }
         }
     }
