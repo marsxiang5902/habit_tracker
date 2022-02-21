@@ -75,7 +75,7 @@ async function newDay(r) {
             }
         }
         HistoryManagerFields.realignDate(r.userRecord.pointsHistory.data, dayDiff)
-        await db_updateUser(r.user, r.userRecord, { pointsHistory, lastLoginDay: curDay })
+        await db_updateUser(r.user, r.userRecord, { pointsHistory: r.userRecord.pointsHistory, lastLoginDay: curDay })
     }
     return { dayDiff }
 }
