@@ -8,4 +8,11 @@ async function updateUser(context, updObj) {
     } return context
 }
 
-export { updateUser }
+async function updatePoints(context, updObj) {
+    let res = await makeRequest(`users/${context.session.user}/points`, 'PUT', updObj, context.session.jwt)
+    if (!res.error) {
+        return update(context, {session: {pointsHistory: {$set: res.data.pointsHistory}}})
+    } return context
+}
+
+export { updateUser, updatePoints }

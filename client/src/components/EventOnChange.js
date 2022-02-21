@@ -1,6 +1,7 @@
 import { React, useState } from 'react'
 import noCheckedHistory from '../lib/noCheckedHistory'
 import { updateEventHistory } from '../services/eventServices'
+import { updatePoints } from '../services/userServices'
 
 function EventObject(events, basedOnState = false, numOnly = true) {
     //using an array and index for checkBox change only work since we load all instances of a single event
@@ -33,8 +34,19 @@ function EventObject(events, basedOnState = false, numOnly = true) {
         let temp = [...checked]
         temp[index].value = event.target.checked
         setChecked(temp)
+        //says correct value
+        let checkbox = event.target.checked
         if (context !== null) {
-            setContext(await updateEventHistory(context, record, { 0: event.target.checked }))
+            let points = parseInt(context.session.pointsHistory['0'])
+            //it was originally checked
+            if (record.checkedHistory['0']){
+                setContext(await updatePoints(context, {0 : Math.max(points - parseInt(record.points), 0)}))
+            }
+            else {
+                setContext(await updatePoints(context, {0 : points + parseInt(record.points)}))
+            }
+            context = context.getContext()
+            setContext(await updateEventHistory(context, record, { 0: checkbox }))
         }
     }
 

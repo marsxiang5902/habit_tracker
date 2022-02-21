@@ -21,15 +21,21 @@ function DataRoom(props) {
     const handleSelect = (eventKey) => setNavPage(navOptions[eventKey]);
 
     let nav =
-        <Nav fill variant="pills" defaultActiveKey="0" className="sub-nav" onSelect={handleSelect}>
-            <Nav.Item>
-                <Nav.Link eventKey="0">Overview</Nav.Link>
+        <Nav fill variant="pills" defaultActiveKey="0" className="sub-nav" onSelect={handleSelect} style={{width: "100%"}}>
+            <Nav.Item style={{flexBasis: "33%"}}>
+                <div style={{margin: "0% 20%"}}>
+                    <Nav.Link eventKey="0">Overview</Nav.Link>
+                </div>
             </Nav.Item>
-            <Nav.Item>
-                <Nav.Link eventKey="1">Graphs</Nav.Link>
+            <Nav.Item style={{flexBasis: "33%"}}>
+                <div style={{margin: "0% 20%"}}>
+                    <Nav.Link eventKey="1">Graphs</Nav.Link>
+                </div>
             </Nav.Item>
-            <Nav.Item>
-                <Nav.Link eventKey="2">Log</Nav.Link>
+            <Nav.Item style={{flexBasis: "33%"}}>
+                <div style={{margin: "0% 20%"}}>
+                    <Nav.Link eventKey="2">Log</Nav.Link>
+                </div>
             </Nav.Item>
         </Nav>
 
@@ -54,7 +60,7 @@ function DataRoom(props) {
         <div className="wrapper">
             <Layout name="📈 THE DATA ROOM" handleLogout={props.handleLogout} menu={props.menu} showMenu={props.showMenu}></Layout>
             <div className={props.menu ? "main-content active" : "main-content"}>
-                <div style={{"marginTop": "1%"}}>
+                <div style={{"marginTop": "1%", display:"flex", justifyContent: "center"}}>
                     {nav}
                 </div>
                 <div className="padding">

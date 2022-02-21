@@ -23,10 +23,8 @@
 
 .log-formatter {
     display: grid;
-    grid-template-areas:    "1 2 3" 
-                            "1 2 3";
-    padding-left: 10%;
-    padding-right: 10%;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 2fr));
+    padding: 0% 4%;
     gap: 10px 50px;
 }
 
@@ -50,7 +48,6 @@
 
 .card-2 {
     margin-bottom: 12px;
-    width: clamp(fit-content, 40%, 40%);
     display:flex;
     justify-content: space-between;
     align-items: stretch;
@@ -90,7 +87,9 @@
     flex-basis: 15%;
     background-color: yellow;
     border-radius: 5px;
-    width: 15px
+    width: 15px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
 }
 
 .inline {
@@ -160,8 +159,7 @@
 }
 
 .triggers-hr {
-    width: 90%;
-    border-top: 2px solid black;
+    border-top: 2px solid rgba(0, 0, 0, 0.637);
     margin-top: 5px;
 }
 
@@ -245,8 +243,7 @@ select {
 }
 
 .sub-nav{
-    width: 70%;
-    margin-left: 15%;
+    width: 50%;
 }
 
 .data-container{
@@ -377,7 +374,7 @@ select{
 }
 
 .main-content.active {
-    margin-left: 20%;
+    margin-left: 17vw;
     width: 80%;
     transition: 900ms;
 }
@@ -466,6 +463,30 @@ select{
     margin-bottom: 15px;
 }
 
+.text-underline{
+	border: none;
+	cursor: pointer;
+	outline: inherit;
+    padding-bottom: 5px;
+    background: #cadeff;
+    margin-bottom: 20px;
+    color: #1f67db;
+    font-weight: bold;
+    border-radius: 5px;
+    margin-right: 50px;
+}
+
+.no-button-style{
+    background: none;
+	color: inherit;
+	border: none;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+    margin-right: 50px;
+}
 .link-black {
 color: black;
 }

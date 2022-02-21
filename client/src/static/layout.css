@@ -130,7 +130,7 @@ img {
 }
 
 .progress-wrapper.active {
-  margin-left: 20%;
+  margin-left: 17vw;
   flex-basis: 50%;
   transition: 900ms;
 }

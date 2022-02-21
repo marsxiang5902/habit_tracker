@@ -35,9 +35,9 @@ function ModalBody(props) {
         {submitFailed && <p>
             Submit failed. Field names must be unique.
         </p>}
-        <div className="border-2 trigger-list">
+        <div className="border-2">
         {perm.map((field, idx) => (
-            <div className="card-2 trigger-list border-2" key={perm[idx][1] ? perm[idx][2] : idx} style={{padding: "20px"}}>
+            <div className="card-2 border-2" key={perm[idx][1] ? perm[idx][2] : idx} style={{padding: "10px", alignItems : "center"}}>
                 <div className="pushed">
                     <div className="stacked-free">
                         {/* reorder */}
@@ -111,12 +111,9 @@ function ModalBody(props) {
 }
 
 function EditForm(props) {
-    let [modalShown, setModalShown] = useState(false)
-    let record = props.record
-
     let modalBody = 
         <div className="form-padding">
-        <ModalBody record={props.record} hide={() => { setModalShown(false) }} />
+        <ModalBody record={props.record} hide={() => {props.hide()}}/>
         </div>
 
     return <>

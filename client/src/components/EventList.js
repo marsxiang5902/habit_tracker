@@ -1,47 +1,104 @@
 import React, { useState, useContext } from 'react';
 import * as Icons from "react-icons/fa";
-import { Form, Row, Col, Popover, OverlayTrigger, Button, Modal, } from 'react-bootstrap'
+import { Form, Row, Col, Popover, OverlayTrigger, Button, Modal, DropdownButton, Dropdown, FormControl, } from 'react-bootstrap'
 import { addEvent, updateEvent, deleteEvent } from '../services/eventServices';
 import { appContext } from '../context/appContext';
-import { calcPct as pct } from '../lib/dataServices'
 import { EventObject } from './EventOnChange';
 import { StackBody } from './StackList';
-import { Event, TriggerList } from './TriggerList';
+import { Event} from './TriggerList';
 import { EditForm } from './FormList';
 import { ModalBody as FormEntry } from '../pages/Now';
 import noCheckedHistory from '../lib/noCheckedHistory';
 import DisplayEvent from './DisplayEvent';
-import checkStack from '../lib/checkStacksOnDel';
+import checkStack from '../lib/checkEventsOnDel';
+import { updatePoints } from '../services/userServices';
+import notDashboard from '../lib/notDashboard';
+import { getEventById, getNumFormFields, getSomeEvents } from '../lib/locateEvents';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css'
+import { dateToDay, getDay, MILLS_IN_DAY } from '../lib/time';
+import EventSelect from './EventSelect';
 
 
 function capitalizeFirst(str) {
   return str[0].toUpperCase() + str.substring(1)
 }
 
-let EditPopover = React.forwardRef((props, ref) => {
+let GoalDescription = (props) => {
   const context = useContext(appContext)
-  const [name, setName] = useState(props.record.name)
-  const [del, setDelete] = useState(false)
+  const [item, setItem] = useState(getEventById(context, props.record.goalTarget.event_id))
+  const [formField, setFormField] = useState(null)
+  const [value, setValue] = useState(props.record.goalTarget.value)
+  const [dueDate, setDueDate] = useState(props.record.endDay === 1e9 ? getDay() : props.record.endDay)
 
-  async function handleEdit(event) {
-    event.preventDefault();
-    props.setContext(await checkStack(context, props.record._id))
-    props.setContext(await (del ? deleteEvent(context.getContext(), props.record) :
-      updateEvent(context, props.record, { name }))
-    )
-    setDelete(false)
-    props.hidePopover()
+  async function handleSubmit(e){
+    e.preventDefault()
+    context.setContext(await updateEvent(context, props.record, {"goalTarget" : 
+                      {"event_id" : item === null ? "" : item._id, "formField" : formField === null ? "" : formField, 
+                      "value" : isNaN(parseInt(value)) ? 0 : parseInt(value)}}))
+    props.hide()
   }
 
-  return <>
-    <h4>{`Edit Name`}</h4>
-    <Form onSubmit={e => handleEdit(e)}>
+  function changeItem(form, id, e){
+    if (form){
+      setItem(id.parent_name)
+      setFormField(id.name)
+    }
+    else{
+      setItem(getEventById(context, id))
+      setFormField(null)
+    }
+  }
+
+
+  return(
+    <>
+    <hr className="triggers-hr"></hr>
+    <Form style={{height : "70vh"}} onSubmit={(e) => handleSubmit(e)}>
       <Form.Group>
-        <Form.Control type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-        <Button className="button" variant="success" type="submit" value='change'>Change</Button>
-        <Button className="button" variant="danger" type="submit" value='delete' onClick={(e) => setDelete(true)}>Delete</Button>
+        <h4>
+          Linked Event
+        </h4>
+        <EventSelect title={item == null ? "Pick an Event" : formField == null ? item.name : formField} changeItem={changeItem} idx={0}/>
       </Form.Group>
+      <Form.Group>
+        <h4>
+          Goal Value
+        </h4>
+          <p>Example: I want to lose 20lbs, so I will enter 20lbs in the box</p>
+          <Form.Control style={{width : "30%"}} type="number" defaultValue={value !== undefined ? value : 0} onChange={(e) => {setValue(e.target.value)}} />
+      </Form.Group>
+      <Form.Group>
+        <h4>
+          Due Date
+        </h4>
+        <div style={{width: "30%"}}>
+          <DatePicker className='form-control' selected={() => {let d = new Date(); d.setTime(dueDate * MILLS_IN_DAY); return d}} onChange={(date) => {setDueDate(dateToDay(date));}} dateFormat={'dd / MM / yyyy'}/>
+        </div>
+      </Form.Group>
+      {props.record.goalTarget.event_id === "" &&
+      <Form.Group>
+        <h4>
+          Plan
+        </h4>
+        <Form.Control type="text" placeholder="I will..." style={{marginBottom : "20px"}}>
+        </Form.Control>
+        <textarea class="form-control" placeholder="I am going to stay accountable to my goal by...">
+          
+        </textarea>
+      </Form.Group>}
+      <Button type="submit">Save Changes</Button>
     </Form>
+    </>
+  )
+}
+
+let EditPopover = React.forwardRef((props, ref) => {
+  return <>
+      <h4>{`${props.field}`}</h4>
+      <Form.Group>
+        <Form.Control type="text" placeholder={props.field} value={props.value} onChange={(e) => props.setValue(e.target.value)} />
+      </Form.Group>
   </>
 })
 
@@ -52,11 +109,23 @@ let ActivationPopover = React.forwardRef((props, ref) => {
   const [activationTimeHour, setActivationTimeHour] = useState(Math.floor(props.record.activationTime / 60))
   const [activationTimeMin, setActivationTimeMin] = useState(props.record.activationTime % 60)
 
+
+  const [nameField, setNameField] = useState(props.record.name)
+  const [pointField, setPointField] = useState(props.record.points)
+  const [del, setDelete] = useState(false)
+
+
   async function handleEdit(event) {
     event.preventDefault();
     props.setContext(await updateEvent(context, props.record, {
       activationDays, activationTime: activationTimeHour * 60 + activationTimeMin
     }))
+    props.setContext(await checkStack(context, props.record._id))
+    props.setContext(await (updateEvent(context, props.record, {"points" : pointField})))
+    props.setContext(await (updateEvent(context, props.record, {"name" : nameField})))
+    if (del){
+      props.setContext(await deleteEvent(context, props.record))
+    }
     props.hidePopover()
   }
 
@@ -64,10 +133,19 @@ let ActivationPopover = React.forwardRef((props, ref) => {
 
 
   return <>
-    <hr className="triggers-hr"></hr>
-    <h4>Edit Activation Days</h4>
+    <hr className="triggers-hr" />
     <div className="form-group">
       <Form onSubmit={e => handleEdit(e)}>
+        <EditPopover record={props.record}
+          value={nameField}
+          setValue={setNameField}
+          field={"Name"}/>
+        <EditPopover
+          field={"Points"}
+          value={pointField}
+          setValue={setPointField}/>
+        {!notDashboard.has(props.type) && <>
+        <h4>Schedule Notification Time</h4>
         <Form.Group>
           <Form.Label>Days</Form.Label>
           <Row style={{ paddingRight: "15px", paddingLeft: "15px" }}>
@@ -104,8 +182,10 @@ let ActivationPopover = React.forwardRef((props, ref) => {
             </Col>
           </Row>
         </Form.Group>
+        </>}
 
         <Button className="button" variant="success" type="submit" value='change'>Change</Button>
+        <Button className="button" variant="danger" type="submit" value='delete' onClick={() => setDelete(true)}>Delete</Button>
       </Form>
     </div>
   </>
@@ -113,12 +193,12 @@ let ActivationPopover = React.forwardRef((props, ref) => {
 
 function EventList(props) {
   const [editPopoverId, setEditPopoverId] = useState("")
-  const [activationPopoverId, setActivationPopoverId] = useState("")
   const [formModalShown, setFormModalShown] = useState(false)
   const [formRecord, setFormRecord] = useState({})
 
-  const [name, setName] = useState("")
   const [formVisible, setFormVisible] = useState(false)
+  const [name, setName] = useState("")
+  const [curr, setCurr] = useState("Event")
 
   const context = useContext(appContext)
   let records = context.timedEvents[props.type]
@@ -128,6 +208,21 @@ function EventList(props) {
     props.setContext(await addEvent(context, name, props.type))
     setFormVisible(false)
     setName("")
+  }
+
+
+  let activationField = (record) => {
+    if (!noCheckedHistory.has(props.type)){
+      return(
+        <ActivationPopover
+          record={record}
+          type={props.type}
+          setContext={props.setContext}
+          style={{ maxWidth: '350px' }}
+          hidePopover={setEditPopoverId}
+        />
+      )
+    }
   }
 
   let formModal = () => <Modal
@@ -147,6 +242,15 @@ function EventList(props) {
     </Modal.Body>
   </Modal>
 
+  let style = (label) => {
+    if (label === curr){
+      return "text-underline"
+    }
+    else{
+      return "no-button-style"
+    }
+  }
+
   let modalBody = (record, _id) => <Modal
     size="lg"
     aria-labelledby="contained-modal-title-vcenter"
@@ -161,23 +265,24 @@ function EventList(props) {
       </Modal.Title>
     </Modal.Header>
     <Modal.Body>
-      <EditPopover
-        record={record}
-        type={props.type}
-        setContext={props.setContext}
-        hidePopover={() => { setEditPopoverId("") }} />
-      {!noCheckedHistory.has(props.type) &&
-        <ActivationPopover
-          record={record}
-          type={props.type}
-          setContext={props.setContext}
-          style={{ maxWidth: '350px' }}
-          hidePopover={() => { setActivationPopoverId("") }}
-        />}
-      {!noCheckedHistory.has(props.type) && <Event setContext={props.setContext} key={_id} record={record} />}
-      {props.type === "stack" && <StackBody record={record} />}
-      {props.type === "form" && <EditForm record={record} key={_id} />}
+      <div style={{"display" : "flex"}}>
+        <button className={style("Event")} onClick={() => setCurr("Event")}>Event</button>
+        {props.type === "stack" && <button className={style("Stack")} onClick={() => setCurr("Stack")}>Stack</button>}
+        {props.type === "form" && <button className={style("Form")} onClick={() => setCurr("Form")}>Form</button>}
+        {props.type === "goal" && <button className={style("Goal")} onClick={() => setCurr("Goal")}>Goal</button>}
+        {/* <button className={style("Points")} onClick={() => setCurr("Points")}>Points</button> */}
+        {!noCheckedHistory.has(props.type) && <button className={style("Triggers")} onClick={() => setCurr("Triggers")}>Triggers</button>}
+        {/* <button className={style("Accountability")} onClick={() => setCurr("Accountability")}>Accountability</button> */}
+      </div>
+      {curr === "Goal" && <GoalDescription record={record} hide={setEditPopoverId}/>}
+      {curr === "Event" ? activationField(record) : null}
+      {curr === "Triggers" && <Event setContext={props.setContext} key={_id} record={record} />}
+      {curr === "Stack" && <StackBody record={record} hide={setEditPopoverId}/>}
+      {curr === "Form" && <EditForm record={record} key={_id} hide={setEditPopoverId}/>}
     </Modal.Body>
+    {/* <Modal.Footer>
+      <Button>Save Changes</Button>
+    </Modal.Footer> */}
   </Modal>
 
   if (!context.session.isAuthed) {

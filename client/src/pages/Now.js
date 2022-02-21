@@ -5,8 +5,8 @@ import '../static/page.css'
 import * as Icons from "react-icons/fa";
 import { Button, Modal, Form, Container, Row, Col } from 'react-bootstrap';
 import { appContext } from '../context/appContext';
-import { getAllEvents, getEventById } from '../lib/locateEvents';
-import { getDay, getMin } from '../lib/time';
+import { getAllEvents, getEventById, getSomeEvents } from '../lib/locateEvents';
+import { getDay, getMin, sortGoals } from '../lib/time';
 import { updateEvent, updateEventHistory } from '../services/eventServices';
 import { eventIsActivated, timeSinceStart } from '../lib/eventIsActivated';
 import { updateEventFormHistory } from "../services/eventServices";
@@ -111,12 +111,16 @@ function UpNext(props) {
     const context = useContext(appContext)
     let events = generateEvent(context, props.day, props.min).events
     let habitObj = EventObject(events);
+    let goals = getSomeEvents(context, ["goal"])
+    console.log(goals)
     return events.length > 0 &&
         <div className="nowSide">
             <h4>Up Next</h4>
             {events.map(record =>
                 <DisplayEvent noCheck={true} habitObj={habitObj} index={record._id} context={context}
                     record={record} setContext={context.setContext} all={false} />)}
+        {/* <h4>Upcoming Goals</h4>
+        {sortGoals(context, goals)} */}
         </div>
 
 }
