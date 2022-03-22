@@ -129,7 +129,7 @@
 
 .hover :hover {
     color: rgb(216, 95, 25);
-    opacity: 100%;
+    opacity: 1;
     text-decoration: underline;
 }
 

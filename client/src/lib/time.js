@@ -35,6 +35,45 @@ function getPastDay(daysAgo = 0) {
     return date
 }
 
+function convertMeridianToArmy(am, hour){
+    if(am){
+        if(hour === 12){
+            return 0;
+        }
+        if(hour >= 1 && hour <= 11){
+            return hour;
+        }
+    }
+    else{
+        if(hour === 12){
+            return hour;
+        }
+        if(hour >= 1 && hour <= 11){
+            return hour + 12;
+        }
+    }
+}
+
+function convertArmyToMeridian(am, hour){
+    if(am){
+        if(hour === 0){
+            return hour + 12;
+        }
+        if(hour >= 1 && hour <= 11){
+            return hour;
+        }
+    }
+    else{
+        if(hour === 12){
+            return hour;
+        }
+        if(hour >= 13 && hour <= 23){
+            return hour - 12;
+        }
+    }
+}
+
+
 function sortGoals(context, goals){
     let ret = []
     let d = new Date()
@@ -46,4 +85,4 @@ function sortGoals(context, goals){
         console.log(goal.endDay)
     }
 }
-export { getMin, getDay, getPastDay, sortGoals, date2Day, day2Date, getFutureDate, getDaysToFuture, MILLS_IN_DAY }
+export { getMin, getDay, getPastDay, sortGoals, date2Day, day2Date, getFutureDate, getDaysToFuture, convertMeridianToArmy, convertArmyToMeridian, MILLS_IN_DAY }

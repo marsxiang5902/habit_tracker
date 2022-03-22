@@ -16,7 +16,7 @@ import notDashboard from '../lib/notDashboard';
 import { getEventById, getNumFormFields, getSomeEvents } from '../lib/locateEvents';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'
-import { date2Day, dateToDay, day2Date, getDay, getFutureDate, getDaysToFuture, MILLS_IN_DAY } from '../lib/time';
+import { date2Day, dateToDay, day2Date, getDay, getFutureDate, getDaysToFuture, MILLS_IN_DAY, convertMeridianToArmy, convertArmyToMeridian } from '../lib/time';
 import EventSelect from './EventSelect';
 
 
@@ -125,6 +125,7 @@ let ActivationPopover = React.forwardRef((props, ref) => {
 
   async function handleEdit(event) {
     event.preventDefault();
+    console.log(activationTimeHour);
     props.setContext(await updateEvent(context, props.record, {
       activationDays, activationTime: activationTimeHour * 60 + activationTimeMin
     }))
@@ -175,8 +176,8 @@ let ActivationPopover = React.forwardRef((props, ref) => {
           <Form.Label>Notification Time</Form.Label>
           <Row>
             <Col>
-              <Form.Control type="number" placeholder="Hour" label="test" value={am ? activationTimeHour - 0 : activationTimeHour - 12}
-                onChange={(e) => setActivationTimeHour(parseInt(e.target.value))} />
+              <Form.Control type="number" placeholder="Hour" label="test" value={convertArmyToMeridian(am, activationTimeHour)}
+                onChange={(e) => {setActivationTimeHour(convertMeridianToArmy(am, parseInt(e.target.value)))}} max="12" min="0"/>
             </Col>
             <Col sm={0.5}><h3>:</h3></Col>
             <Col>
@@ -184,10 +185,10 @@ let ActivationPopover = React.forwardRef((props, ref) => {
                 onChange={(e) => setActivationTimeMin(parseInt(e.target.value))} />
             </Col>
             <Col>
-              <Button variant={am ? "primary" : "outline-primary"} style={{"marginRight" : "10px"}} onClick={() => {setActivationTimeHour(am ? activationTimeHour: activationTimeHour - 12); setAm(true)}}>
+              <Button variant={am ? "primary" : "outline-primary"} style={{"marginRight" : "10px"}} onClick={() => {setActivationTimeHour(convertMeridianToArmy(true, activationTimeHour)); setAm(true)}}>
                 AM
               </Button>
-              <Button variant={!am ? "primary" : "outline-primary"} onClick={() => {setActivationTimeHour(am ? activationTimeHour + 12 : activationTimeHour); setAm(false)}}>PM</Button>
+              <Button variant={!am ? "primary" : "outline-primary"} onClick={() => {setActivationTimeHour(convertMeridianToArmy(false, activationTimeHour)); setAm(false)}}>PM</Button>
             </Col>
           </Row>
         </Form.Group>
