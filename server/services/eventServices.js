@@ -59,7 +59,7 @@ async function getEvent(r) {
             let targetEventRecord = await db_getEvent(ObjectId(r.eventRecord.goalTarget.event_id))
             if (targetEventRecord.user === r.user && targetEventRecord.type !== 'goal') {
                 ret = {
-                    ...ret, /*endDay: r.eventRecord.endDay - r.userRecord.lastLoginDay, */ targetEvent: await getEvent({
+                    ...ret, endDay: r.eventRecord.endDay - r.userRecord.lastLoginDay, targetEvent: await getEvent({
                         ...r, event_id: targetEventRecord._id, eventRecord: targetEventRecord
                     })
                 }
@@ -91,11 +91,11 @@ async function updateEvent(r, updObj) {
     }
     let res = sliceObject(updObj, EVENT_UPD_SLICES)
     if (r.eventRecord.type === 'goal') {
-//         if ('endDay' in res) {
-//             res.endDay += r.userRecord.lastLoginDay
-//             if (res.endDay > 1e9 / 2)
-//                 res.endDay = 1e9
-//         }
+        if ('endDay' in res) {
+            res.endDay += r.userRecord.lastLoginDay
+            if (res.endDay > 1e9 / 2)
+                res.endDay = 1e9
+        }
         if ('goalTarget' in res) {
             wrapObject(res.goalTarget, { event_id: '', value: 0, formField: '' }, true)
             res.goalTarget = sliceObject(res.goalTarget, ['event_id', 'value', 'formField'])
