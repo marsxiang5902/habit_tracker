@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300&family=Manrope:wght@400&display=swap');
+
 .App{
   background-color: rgb(243, 244, 247);
   height: 100vh;
-  font-family: 'Manrope', 'Roboto', 'Poppins', sans-serif;
+  font-family: 'Manrope', 'Roboto', 'Poppins', BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
 }
